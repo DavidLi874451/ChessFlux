@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plan 5 - Essential Study Areas & Resources (2000+ Elo)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      transition: width 0.3s ease;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      padding-top: 2rem;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      display: block;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+    }
+
+    #time-box {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255 255 255 / 0.95);
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.9rem;
+      color: #007acc;
+      user-select: none;
+      z-index: 1100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 420px;
+      overflow-x: auto;
+    }
+
+    #sidebar.collapsed ~ #time-box {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+
+    .time-zone-item {
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .time-zone-item strong {
+      color: #007acc;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 900px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    #sidebar.collapsed ~ .main-content {
+      margin-left: 80px;
+    }
+
+    h1, h2, h3 {
+      color: #007acc;
+    }
+
+    ul {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 2rem 0;
+      font-size: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #007acc;
+      padding: 0.6rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    blockquote {
+      border-left: 4px solid #007acc;
+      margin-left: 0;
+      padding-left: 1rem;
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const header = document.getElementById("top-header");
+      if (sidebar.classList.contains("collapsed")) {
+        header.style.width = "calc(100% - 60px)";
+      } else {
+        header.style.width = "calc(100% - 200px)";
+      }
+    }
+
+    function updateTimeZones() {
+      const now = new Date();
+      const utc = now.toUTCString().split(' ')[4];
+      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+
+      document.getElementById('pt-time').textContent = pt;
+      document.getElementById('et-time').textContent = et;
+      document.getElementById('utc-time').textContent = utc;
+      document.getElementById('ist-time').textContent = ist;
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
+          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimeZones();
+      setInterval(updateTimeZones, 1000);
+      renderUserArea();
+    });
+  </script>
+</head>
+<body>
+
+  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center;">
+    <div id="user-area"></div>
+  </header>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a class="nav-link" href="home.html"><span>Home</span></a>
+      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
+      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
+      <a class="nav-link" href="contact.html"><span>Contact</span></a>
+      <a class="nav-link" href="social.html"><span>Social Media</span></a>
+      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <main class="main-content">
+
+    <h1>Essential Study Areas & Resources (2000+ Elo)</h1>
+
+    <h2>1. Opening Theory & Repertoire Building</h2>
+    <h3>Goals:</h3>
+    <ul>
+      <li>Build a reliable, deep opening repertoire tailored to your style</li>
+      <li>Understand strategic ideas behind openings, not just moves</li>
+      <li>Use databases &amp; software to stay updated on theory</li>
+    </ul>
+
+    <h3>Recommended Books &amp; Courses:</h3>
+    <ul>
+      <li><em>Opening Preparation</em> by GM Mark Dvoretsky (advanced concepts)</li>
+      <li><em>Fundamental Chess Openings (FCO)</em> by Paul van der Sterren</li>
+      <li><em>Grandmaster Repertoire</em> series by Quality Chess (Avrukh, Shankland, etc.)</li>
+      <li>Chessable Lifetime Repertoires — pick courses for your preferred openings</li>
+      <li>ChessBase Mega Database for up-to-date theory and novelties</li>
+      <li>Chess.com Mastery level Opening lessons &amp; video series</li>
+    </ul>
+
+    <h2>2. Middlegame Strategy &amp; Positional Play</h2>
+    <h3>Goals:</h3>
+    <ul>
+      <li>Master key strategic concepts: pawn structures, weak squares, outposts, space, initiative, prophylaxis</li>
+      <li>Deepen understanding of positional sacrifices, piece coordination, and imbalances</li>
+    </ul>
+
+    <h3>Recommended Books &amp; Videos:</h3>
+    <ul>
+      <li><em>My System</em> by Aron Nimzowitsch (classic positional ideas)</li>
+      <li><em>Positional Play and Strategic Play</em> by GM Jacob Aagaard (Quality Chess)</li>
+      <li><em>Chess Structures: A Grandmaster Guide</em> by GM Mauricio Flores Rios</li>
+      <li><em>Small Steps to Giant Improvement</em> by GM Sam Shankland</li>
+      <li><em>The Amateur's Mind</em> by IM Jeremy Silman</li>
+      <li>GM Daniel Naroditsky’s YouTube series on Strategy and Positional Concepts</li>
+      <li>Hanging Pawns, Chess Dojo, PowerPlayChess YouTube channels</li>
+    </ul>
+
+    <h2>3. Endgames (Crucial for 2000+)</h2>
+    <h3>Goals:</h3>
+    <ul>
+      <li>Master fundamental and complex theoretical endgames</li>
+      <li>Convert advantages reliably and save difficult positions</li>
+    </ul>
+
+    <h3>Top Books:</h3>
+    <ul>
+      <li><em>Mark Dvoretsky’s Endgame Manual</em> (the ultimate bible)</li>
+      <li><em>100 Endgames You Must Know</em> by Jesus de la Villa (for core essentials)</li>
+      <li><em>Endgame Strategy</em> by Mikhail Shereshevsky</li>
+      <li><em>Practical Chess Endings</em> by Paul Keres</li>
+      <li><em>Theoretical Rook Endgames</em> by GM Sam Shankland</li>
+    </ul>
+
+    <h3>Training Platforms:</h3>
+    <ul>
+      <li>Chessable digital versions of the above</li>
+      <li>Chess.com Endgame drills and lessons</li>
+    </ul>
+
+    <h2>4. Tactics &amp; Calculation</h2>
+    <h3>Goals:</h3>
+    <ul>
+      <li>Maintain tactical sharpness and improve calculation depth</li>
+      <li>Master complex combinations, visualization, and calculation techniques</li>
+    </ul>
+
+    <h3>Top Books &amp; Courses:</h3>
+    <ul>
+      <li><em>The Woodpecker Method</em> by Axel Smith &amp; Hans Tikkanen (intense repetition training)</li>
+      <li><em>Think Like a Grandmaster</em> by Alexander Kotov</li>
+      <li><em>Calculation</em> by Mark Dvoretsky (video lectures)</li>
+      <li><em>Chess Tactics for Advanced Players</em> by Yuri Averbakh</li>
+      <li>CM Can Kabadayi’s Mastering Calculation Chess.com playlist</li>
+      <li>Chess.com Puzzles &amp; Vision Training (daily practice, rated puzzles, Custom Puzzles)</li>
+    </ul>
+
+    <h2>5. Psychology &amp; Training Methodology</h2>
+    <h3>Goals:</h3>
+    <ul>
+      <li>Build resilience, patience, and tournament mindset</li>
+      <li>Develop efficient study habits and self-assessment techniques</li>
+    </ul>
+
+    <h3>Recommended Reading:</h3>
+    <ul>
+      <li><em>The Inner Game of Chess</em> by Andrew Soltis</li>
+      <li><em>Chess Psychology</em> by GM Fernand Gobet</li>
+      <li>GM Jacob Aagaard’s <em>Excelling at Chess</em> (chapters on mindset and training)</li>
+    </ul>
+
+    <h2>6. Chess Software &amp; Tools</h2>
+    <ul>
+      <li>ChessBase Mega Database for opening prep and game analysis</li>
+      <li>Stockfish &amp; Leela Chess Zero for engine-assisted analysis</li>
+      <li>Chessable for spaced repetition of openings, tactics, endgames</li>
+      <li>Chess.com Vision &amp; Puzzles for tactical drills</li>
+      <li>Use a physical board for visualization and calculation training</li>
+    </ul>
+
+    <h2>Intense Weekly Study Plan (Approx. 20+ Hours/Week)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Activity</th>
+          <th>Time (hrs)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Monday</td>
+          <td>Openings study: review theory + play training games focusing on repertoire lines</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>Tuesday</td>
+          <td>Middlegame theory: study pawn structures + strategic videos + annotate key games</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>Wednesday</td>
+          <td>Tactics training: Woodpecker Method (repeated puzzle sets) + Calculation video lessons</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>Thursday</td>
+          <td>Endgame study: read &amp; solve exercises from Dvoretsky’s Manual + Chessable Endgame drills</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>Friday</td>
+          <td>Play serious online/OTB games + analyze without engines + self-review</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>Saturday</td>
+          <td>Psychology &amp; training methodology reading + watch high-level game commentaries</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>Sunday</td>
+          <td>Mixed review: practice vision training, analyze own games with engine, casual practice games</td>
+          <td>3</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Daily Minimum:</strong> 2–3 hours recommended. Adjust intensity depending on tournament schedule.</p>
+
+    <h2>Additional Tips for Maximum Improvement</h2>
+    <ul>
+      <li>Keep a training journal: Record puzzles solved, new ideas learned, mistakes, and insights.</li>
+      <li>Analyze your games deeply: Try to understand WHY you lost or won positions.</li>
+      <li>Use spaced repetition: Review openings and endgames regularly to cement knowledge.</li>
+      <li>Set measurable goals: E.g., solve X puzzles per week, master Y endgame concept, reach Z rating milestone.</li>
+      <li>Join training groups or clubs: Sparring and peer feedback accelerate learning.</li>
+    </ul>
+
+    <h2>Final Note</h2>
+    <p>Progress from 2000+ Elo to master level requires hard, deliberate work across all areas. This guide combines the very best classical and modern chess knowledge, structured for consistent, deep improvement.</p>
+    <p><strong>Stick with the process. Chess greatness is earned, not given.</strong></p>
+
+  </main>
+
+  <div id="time-box">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time"></span>
+    </div>
+  </div>
+
+</body>
+</html>

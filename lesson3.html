@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChessFlux - Lesson 3: Deliberate Practice</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding-top: 60px;
+      padding-left: 200px;
+      transition: padding-left 0.3s ease;
+      min-height: 100vh;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 200px;
+      background-color: #007acc;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: width 0.3s ease;
+      z-index: 1050;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+      outline-offset: 2px;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      white-space: nowrap;
+      display: block;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 60px;
+      background: white;
+      width: calc(100% - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1rem;
+      padding: 0 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1100;
+      transition: width 0.3s ease, right 0.3s ease;
+    }
+
+    #user-area span {
+      font-weight: 600;
+      color: #007acc;
+    }
+
+    #user-area button,
+    #user-area a.login,
+    #user-area a.signup {
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 2px solid #007acc;
+      text-decoration: none;
+      color: #007acc;
+      background: transparent;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      user-select: none;
+    }
+
+    #user-area button {
+      background: #e63946;
+      border-color: #e63946;
+      color: white;
+    }
+
+    #user-area button:hover,
+    #user-area a.login:hover,
+    #user-area a.signup:hover {
+      background-color: #005f99;
+      border-color: #005f99;
+      color: white;
+    }
+
+    #user-area a.signup {
+      background: #007acc;
+      border-color: #007acc;
+      color: white;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 700px;
+      margin: 0 auto 80px auto;
+      transition: margin-left 0.3s ease;
+      line-height: 1.5;
+    }
+
+    code {
+      background: #e0e0e0;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 0.95em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #007acc;
+      color: white;
+      font-weight: 600;
+    }
+
+    ul, ol {
+      margin-left: 1.2rem;
+    }
+
+    blockquote {
+      border-left: 4px solid #007acc;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 1rem;
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      if (sidebar.classList.contains("collapsed")) {
+        document.body.style.paddingLeft = '60px';
+        document.getElementById('top-header').style.width = 'calc(100% - 60px)';
+      } else {
+        document.body.style.paddingLeft = '200px';
+        document.getElementById('top-header').style.width = 'calc(100% - 200px)';
+      }
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderUserArea();
+
+      const sidebar = document.getElementById("sidebar");
+      if (sidebar.classList.contains("collapsed")) {
+        document.body.style.paddingLeft = '60px';
+        document.getElementById('top-header').style.width = 'calc(100% - 60px)';
+      } else {
+        document.body.style.paddingLeft = '200px';
+        document.getElementById('top-header').style.width = 'calc(100% - 200px)';
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
+    <nav class="sidebar-content" aria-label="Main navigation">
+      <a class="nav-link" href="home.html"><span>Home</span></a>
+      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
+      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
+      <a class="nav-link" href="contact.html"><span>Contact</span></a>
+      <a class="nav-link" href="social.html"><span>Social Media</span></a>
+      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </nav>
+  </div>
+
+  <!-- User login/signup fixed top-right -->
+  <header id="top-header" role="banner">
+    <div id="user-area"></div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main-content" role="main" tabindex="-1">
+    <h1>Lesson 3: Deliberate Practice — Mastering Micro-Skills</h1>
+
+    <blockquote>
+      “We do not rise to the level of our goals. We fall to the level of our systems.” — James Clear
+    </blockquote>
+
+    <p>
+      In chess, most improvement stalls not due to lack of talent but vague training. The most common mistake is mindlessly grinding random puzzles and hoping it translates into practical strength. It won’t. This article lays out a surgical method of deliberate practice that develops micro-skills—the smallest components of chess thinking—with precision, feedback, and retention in mind.
+    </p>
+
+    <h2>Principle: Target Specific Weaknesses at the Edge of Competence</h2>
+    <p>Deliberate practice isn't just "working hard." It is:</p>
+    <ul>
+      <li><strong>Specific:</strong> Targets one clearly defined skill at a time.</li>
+      <li><strong>Difficult:</strong> Pushes you just beyond your current level.</li>
+      <li><strong>Feedback-Driven:</strong> Constant error correction and reflection.</li>
+      <li><strong>Repetitive:</strong> Reinforces skill automation through spaced drills.</li>
+    </ul>
+
+    <h2>Micro-Skills and How to Train Them</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Micro-Skill</th>
+          <th>Method</th>
+          <th>Goal</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Calculation Visualization</td>
+          <td>Blindfold calculation from fixed openings</td>
+          <td>Build mental board fluency</td>
+          <td>Pick a sharp opening line. Try visualizing 6–10 moves ahead without a board, then verify with a board or engine.</td>
+        </tr>
+        <tr>
+          <td>Forcing Move Recognition</td>
+          <td>3-minute Forcing Move drills</td>
+          <td>Enumerate threats instantly</td>
+          <td>Random position → List all checks, captures, and threats for both sides. Don’t calculate, identify. Use a timer.</td>
+        </tr>
+        <tr>
+          <td>Tactical Pattern Automation</td>
+          <td>Thematic SRS drilling (e.g., Anki)</td>
+          <td>Pattern chunking for speed</td>
+          <td>Use tagged tactics by motif (“interference,” “double attack”). Review daily, then at spaced intervals (1 day, 3 days, 7 days, etc.).</td>
+        </tr>
+        <tr>
+          <td>Time-Sensitive Decision-Making</td>
+          <td>Bullet + Voice Annotation</td>
+          <td>Recognize panic heuristics</td>
+          <td>Play 1+0 games while recording your thoughts. After each game, rewatch and identify cognitive errors (“I moved fast because I saw a threat but didn’t verify.”)</td>
+        </tr>
+        <tr>
+          <td>Endgame Tablebase Recall</td>
+          <td>Timed execution drills</td>
+          <td>Muscle memory of key endgames</td>
+          <td>Set up K+R vs K, K+P vs K, Lucena and Philidor. Play against engine or friend. Compare with tablebase. Repeat until perfect.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>How to Structure a Weekly Deliberate Practice Routine</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Focus</th>
+          <th>Time</th>
+          <th>Tools</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Mon</td><td>Visualization + Tactical Patterns</td><td>45 mins</td><td>Anki, PGN positions, Lichess</td></tr>
+        <tr><td>Tue</td><td>Forcing Move Drills + Endgame Drills</td><td>45 mins</td><td>CT-Art, manual setup</td></tr>
+        <tr><td>Wed</td><td>Bullet + Voice Log + Review</td><td>60 mins</td><td>OBS/Mic + Lichess</td></tr>
+        <tr><td>Thu</td><td>Deep Calculation from Annotated Games</td><td>1 hour</td><td>Classic GM games, no engine</td></tr>
+        <tr><td>Fri</td><td>Rest or Light Review (Anki)</td><td>20 mins</td><td>Anki only</td></tr>
+        <tr><td>Sat</td><td>“Test Day” — Mix of all skills</td><td>90 mins</td><td>Custom workbook</td></tr>
+        <tr><td>Sun</td><td>Game Play (30+10) + Full Annotation</td><td>90+ mins</td><td>ChessBase / Lichess Studies</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Feedback Loop Within Drills</h2>
+    <p>Each drill must have an end condition and a feedback check. For example:</p>
+    <ul>
+      <li><strong>Drill:</strong> 3-minute Forcing Move Recognition<br />
+          <strong>Check:</strong> After time ends, manually review what you missed. Tag errors like “overlooked backward capture” or “ignored hanging piece.”</li>
+      <li><strong>Drill:</strong> Endgame Recall<br />
+          <strong>Check:</strong> Compare moves with tablebase. Identify deviations and underlying reasons.</li>
+    </ul>
+
+    <h2>How to Know If You’re Improving</h2>
+    <p>Look for:</p>
+    <ul>
+      <li>Fewer missed forcing moves in rapid/classical.</li>
+      <li>Faster recall of known tactical patterns.</li>
+      <li>Less time pressure due to faster decision-making.</li>
+      <li>Cleaner endgame technique in practical games.</li>
+      <li>Improved intuition from mental board visualization.</li>
+    </ul>
+    <p>Quantify with tools like:</p>
+    <ul>
+      <li>Puzzle Rush scores (using trained motifs only)</li>
+      <li>Annotated game error rate (blunders/mistakes per game)</li>
+      <li>Percentage of games where you correctly identify opponent’s threats</li>
+    </ul>
+
+    <h2>Pitfalls to Avoid</h2>
+    <ul>
+      <li>Don’t overtrain one micro-skill. Rotate focus weekly to avoid plateaus.</li>
+      <li>Don’t move on without feedback. Every rep must end with error review.</li>
+      <li>Don’t rely on engines too much when analyzing. You learn more by being wrong before being corrected.</li>
+      <li>Don’t assume solving = learning. If you can't recall and apply in a real game, it’s not learned.</li>
+    </ul>
+
+    <h2>The Compounding Effect</h2>
+    <p>
+      Each micro-skill enhances the others. Better visualization improves calculation. Faster tactical chunking reduces clock pressure. Endgame drills reinforce positional understanding.
+    </p>
+    <blockquote>
+      “Amateurs practice until they get it right. Masters practice until they can’t get it wrong.”
+    </blockquote>
+
+    <h2>Conclusion</h2>
+    <p>
+      The real secret of chess improvement is not playing more or watching more — it’s training with precision. Stop solving random puzzles. Start isolating and mastering micro-skills. Make every minute count. No fluff. No guesswork. Just measurable, compounding improvement — one rep at a time.
+    </p>
+  </main>
+
+</body>
+</html>

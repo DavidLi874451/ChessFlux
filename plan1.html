@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plan 1 - Beginner Chess (0–500)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      transition: width 0.3s ease;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      padding-top: 2rem;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      display: block;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+    }
+
+    #time-box {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255 255 255 / 0.95);
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.9rem;
+      color: #007acc;
+      user-select: none;
+      z-index: 1100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 420px;
+      overflow-x: auto;
+    }
+
+    #sidebar.collapsed ~ #time-box {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+
+    .time-zone-item {
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .time-zone-item strong {
+      color: #007acc;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 900px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    #sidebar.collapsed ~ .main-content {
+      margin-left: 80px;
+    }
+
+    h1, h2, h3 {
+      color: #007acc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 2rem 0;
+      font-size: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #007acc;
+      padding: 0.6rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    blockquote {
+      border-left: 4px solid #007acc;
+      margin-left: 0;
+      padding-left: 1rem;
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const header = document.getElementById("top-header");
+      if (sidebar.classList.contains("collapsed")) {
+        header.style.width = "calc(100% - 60px)";
+      } else {
+        header.style.width = "calc(100% - 200px)";
+      }
+    }
+
+    function updateTimeZones() {
+      const now = new Date();
+      const utc = now.toUTCString().split(' ')[4];
+      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+
+      document.getElementById('pt-time').textContent = pt;
+      document.getElementById('et-time').textContent = et;
+      document.getElementById('utc-time').textContent = utc;
+      document.getElementById('ist-time').textContent = ist;
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
+          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimeZones();
+      setInterval(updateTimeZones, 1000);
+      renderUserArea();
+    });
+  </script>
+</head>
+<body>
+
+  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center;">
+    <div id="user-area"></div>
+  </header>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a class="nav-link" href="home.html"><span>Home</span></a>
+      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
+      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
+      <a class="nav-link" href="contact.html"><span>Contact</span></a>
+      <a class="nav-link" href="social.html"><span>Social Media</span></a>
+      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <main class="main-content">
+
+    <h1>Active Learning: The Ultimate Beginner Chess Study Plan (0–500)</h1>
+
+    <p>If we had to summarize the most effective way to improve at chess from beginner to 500 rating in two words, they would be: <strong>active learning</strong>. The most meaningful improvement comes not from passive watching, but from playing, reviewing, solving, and reflecting. Here's a complete roadmap designed to use <strong>Chess.com's tools</strong> to help you build your fundamentals, step by step.</p>
+
+    <hr/>
+
+    <h2>Phase 1: Core Rules &amp; Movement</h2>
+    <strong>Goal:</strong> Learn the legal moves and rules of chess.<br/>
+    <ul>
+      <li><strong>Tool:</strong> Chess.com Course - <a href="https://www.chess.com/lessons/how-to-move-the-pieces" target="_blank">"How to Move the Pieces"</a></li>
+      <li><strong>Follow-up:</strong> <a href="https://www.chess.com/lessons/everything-you-need-to-know-about-chess" target="_blank">"Everything You Need to Know About Chess"</a></li>
+    </ul>
+    <p><strong>Challenge:</strong> Complete the full interactive course and pass the quizzes.</p>
+    <p>Once done, make sure you can answer:</p>
+    <ul>
+      <li>What is "En Passant"?</li>
+      <li>What is "Castling"?</li>
+      <li>What are the three ways to get out of check?</li>
+    </ul>
+    <p>Also complete:</p>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/playing-the-game" target="_blank">"Playing the Game"</a> to reinforce full-game structure and special rules</li>
+    </ul>
+
+    <hr/>
+
+    <h2>Phase 2: Play Your First Games</h2>
+    <strong>Goal:</strong> Gain comfort with piece movement, turns, and the chess board.<br/>
+    <strong>Option A:</strong> Play Beginner Bots<br/>
+    <ul>
+      <li><strong>Tool:</strong> Go to Play &gt; Computer</li>
+      <li>Start with Martin and progress through all beginner bots (aim to beat each bot 3 times)</li>
+      <li><a href="https://www.chess.com/article/view/how-to-beat-your-first-chess-bot" target="_blank">How to Beat Your First Bot</a></li>
+    </ul>
+    <strong>Option B:</strong> Play a 3-day per move Daily Game<br/>
+    <ul>
+      <li><strong>Tool:</strong> Play &gt; Daily Chess</li>
+      <li>Start a Daily Game with a 72-hour time control</li>
+    </ul>
+    <strong>Option C:</strong> Live Rapid Game (when comfortable)<br/>
+    <ul>
+      <li><strong>Tool:</strong> Play &gt; Live Chess</li>
+      <li>Start with 10|0 or 15|10 Rapid games</li>
+    </ul>
+    <p><strong>Create a playing routine:</strong></p>
+    <ul>
+      <li>Mon/Wed/Fri: Bots or Daily Games</li>
+      <li>Tue/Thu/Sat: Live Rapid</li>
+    </ul>
+
+    <hr/>
+
+    <h2>Phase 3: Endgames &amp; Finishing the Game</h2>
+    <strong>Goal:</strong> Know how to checkmate and convert winning positions.<br/>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/winning-the-game" target="_blank">Winning the Game Course</a></li>
+      <li><a href="https://www.chess.com/drills" target="_blank">Endgame Practice Tool</a></li>
+      <li><strong>Recommended Practice Sets:</strong></li>
+      <ul>
+        <li>Queen vs King</li>
+        <li>Rook vs King</li>
+        <li>Two Rooks vs King</li>
+        <li>King &amp; Pawn vs King</li>
+      </ul>
+    </ul>
+    <p><strong>Stretch goal:</strong> Complete <a href="https://www.chess.com/lessons/understanding-endgames" target="_blank">Understanding Endgames Course</a></p>
+
+    <hr/>
+
+    <h2>Phase 4: Capturing &amp; Tactics</h2>
+    <strong>Goal:</strong> Develop tactical awareness, identify threats, and win material.<br/>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/capturing-the-pieces" target="_blank">Capturing the Pieces Course</a></li>
+      <li><a href="https://www.chess.com/lessons/winning-with-tactics" target="_blank">Winning with Tactics Course</a></li>
+      <li><a href="https://www.chess.com/puzzles" target="_blank">Daily Puzzles</a></li>
+      <li><a href="https://www.chess.com/puzzles/rush" target="_blank">Puzzle Rush</a></li>
+    </ul>
+    <p><strong>Daily Routine:</strong></p>
+    <ul>
+      <li>Solve 3–5 puzzles with explanation mode on</li>
+      <li>Identify themes: fork, pin, skewer, discovered attack, double attack</li>
+      <li>Log any new patterns you learn</li>
+    </ul>
+
+    <hr/>
+
+    <h2>Phase 5: Opening Fundamentals</h2>
+    <strong>Goal:</strong> Learn good habits in the opening.<br/>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/opening-principles" target="_blank">Opening Principles Course</a></li>
+      <li><a href="https://www.chess.com/lessons/intro-to-book-openings" target="_blank">Intro to Book Openings</a> (Optional)</li>
+      <li><a href="https://www.chess.com/explorer" target="_blank">Explorer</a></li>
+      <li>Opening Tree in Game Review</li>
+    </ul>
+    <p>Focus on:</p>
+    <ul>
+      <li>Fight for center (e4, d4)</li>
+      <li>Develop minor pieces (knights before bishops)</li>
+      <li>Castle early</li>
+    </ul>
+    <p><strong>Stretch:</strong> Start building a simple repertoire using <a href="https://www.chess.com/explorer" target="_blank">Opening Explorer</a></p>
+
+    <hr/>
+
+    <h2>Phase 6: Strategy &amp; Game Planning</h2>
+    <strong>Goal:</strong> Learn to think ahead and make strategic decisions.<br/>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/make-the-most-of-your-pieces" target="_blank">Make the Most of Your Pieces Course</a></li>
+      <li><a href="https://www.chess.com/lessons/finding-checkmate" target="_blank">Finding Checkmate Course</a></li>
+      <li><a href="https://www.chess.com/lessons/the-four-move-checkmate" target="_blank">The Four-Move Checkmate Course</a></li>
+      <li><a href="https://www.chess.com/videos" target="_blank">Chess.com Video Library</a></li>
+    </ul>
+    <p>Suggested Focus:</p>
+    <ul>
+      <li>Learn to evaluate checks, captures, threats</li>
+      <li>Avoid back rank issues</li>
+      <li>Control key squares (f2/f7)</li>
+      <li>Coordinate your pieces effectively</li>
+    </ul>
+
+    <hr/>
+
+    <h2>Phase 7: Game Review &amp; Self-Analysis</h2>
+    <strong>Goal:</strong> Learn from your own mistakes and improve consistently.<br/>
+    <ul>
+      <li>Game Archive &gt; Select Game &gt; Click \"Game Review\"</li>
+      <li>Retry missed tactics</li>
+      <li>Compare your ideas with engine recommendations</li>
+      <li>Follow linked lessons from the report</li>
+    </ul>
+    <p><strong>Post-Game Habit:</strong></p>
+    <ul>
+      <li>Write down:</li>
+      <ul>
+        <li>One tactical opportunity you missed</li>
+        <li>One strategic idea that worked well</li>
+        <li>One question you want to research</li>
+      </ul>
+    </ul>
+
+    <hr/>
+
+    <h2>Weekly Training Plan (Sample)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Activity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Mon</td><td>Solve 5 puzzles + 1 endgame drill</td></tr>
+        <tr><td>Tue</td><td>Play 1 bot game + review it</td></tr>
+        <tr><td>Wed</td><td>Watch 1 lesson + solve challenges</td></tr>
+        <tr><td>Thu</td><td>Play 1 rapid game + Game Review</td></tr>
+        <tr><td>Fri</td><td>Opening Practice + Puzzle Rush</td></tr>
+        <tr><td>Sat</td><td>2 rapid games + Game Review</td></tr>
+        <tr><td>Sun</td><td>Light day: Daily game move + puzzle</td></tr>
+      </tbody>
+    </table>
+
+    <hr/>
+
+    <h2>Final Advice</h2>
+    <ul>
+      <li><strong>Consistency beats intensity.</strong> Try to study or play at least 15–30 minutes per day.</li>
+      <li><strong>Be active, not passive.</strong> Solve puzzles, review games, take notes.</li>
+      <li><strong>Track your progress.</strong> Use <a href="https://www.chess.com/insights" target="_blank">Chess.com Insights</a> to monitor your performance.</li>
+      <li><strong>Build your tactical vocabulary.</strong> Forks,      pins, skewers, discovered attacks, and double attacks are your building blocks.</li>
+      <li><strong>Enjoy the process.</strong> Improvement is a journey; celebrate small wins!</li>
+    </ul>
+
+  </main>
+
+  <div id="time-box">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time"></span>
+    </div>
+  </div>
+
+</body>
+</html>
+

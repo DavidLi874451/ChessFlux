@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms and Conditions | ChessFlux</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: #fff;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    h1, h2 {
+      color: #007acc;
+    }
+
+    h2 {
+      margin-top: 1.5rem;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      box-sizing: border-box;
+      padding-top: 2rem;
+    }
+
+    .sidebar-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      transition: background-color 0.3s;
+      white-space: nowrap;
+    }
+
+    .sidebar-content a:hover {
+      background-color: #005f99;
+    }
+
+    /* Top header */
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1100;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    #user-area a, #user-area button {
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      border: 2px solid #007acc;
+      color: #007acc;
+      background: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #user-area a:hover {
+      background-color: #007acc;
+      color: white;
+    }
+
+    #user-area button {
+      border: none;
+      background-color: #e63946;
+      color: white;
+    }
+
+    #user-area button:hover {
+      background-color: #bf2d3a;
+    }
+  </style>
+
+  <script>
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html">Login</a>
+          <a href="signup.html" style="background: #007acc; color: white;">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', renderUserArea);
+  </script>
+</head>
+<body>
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <!-- Terms and Conditions Content -->
+  <div class="container">
+    <h1>TERMS AND CONDITIONS OF USE FOR CHESSFLUX</h1>
+    <p><strong>EFFECTIVE DATE:</strong> APRIL 24, 2025</p>
+    <p><strong>VERSION:</strong> 1.0</p>
+    <p>These Terms and Conditions agreement (the “Agreement”) governs your access to and use of ChessFlux...</p>
+
+    <h2>1. Binding Agreement and Amendments</h2>
+    <p>This Agreement constitutes a legally binding contract between the User and the Club...</p>
+
+    <h2>2. Eligibility and Membership</h2>
+    <p>Membership in ChessFlux is available exclusively to individuals with a valid and active account...</p>
+
+    <h2>3. Scope of Services</h2>
+    <p>ChessFlux offers non-commercial, not-for-profit services intended for the promotion of chess education...</p>
+
+    <h2>4. Intellectual Property and Use Restrictions</h2>
+    <p>All intellectual property, including but not limited to training materials, written content...</p>
+
+    <h2>5. Prohibited Conduct</h2>
+    <p>Users are prohibited from engaging in any conduct that, in the sole judgment of the Club...</p>
+
+    <h2>6. Third-Party Platforms</h2>
+    <p>The Club operates primarily through third-party platforms, including Chess.com...</p>
+
+    <h2>7. Privacy and Data</h2>
+    <p>ChessFlux does not collect, retain, or disseminate personal data beyond what is publicly visible...</p>
+
+    <h2>8. Dispute Resolution</h2>
+    <p>In the event of a dispute between a User and the Club, the User agrees to first engage in good-faith mediation...</p>
+
+    <h2>9. Limitation of Liability</h2>
+    <p>To the fullest extent permitted by law, the Club, its owners, administrators, and affiliates disclaim all liability...</p>
+
+    <h2>10. Termination</h2>
+    <p>The Club may, in its sole discretion, suspend or permanently terminate a User’s access...</p>
+
+    <h2>11. Entire Agreement</h2>
+    <p>This Agreement, including all referenced policies and supplemental materials...</p>
+
+    <p><strong>Contact:</strong> If you require clarification or seek permission for specific uses of Club content or services, please contact the Club Owner or a designated Super Administrator.</p>
+  </div>
+</body>
+</html>

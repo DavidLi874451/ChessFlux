@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 8 - Prophylaxis: The Art of Anticipation</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 220px; height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      transition: width 0.3s ease;
+      z-index: 1300;
+    }
+    #sidebar.collapsed { width: 60px; }
+    #sidebar .toggle-btn {
+      position: fixed; top: 10px; left: 10px;
+      background: #007acc;
+      border: none; color: white;
+      font-size: 22px;
+      width: 40px; height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span { display: none; }
+    #sidebar .sidebar-content {
+      display: flex; flex-direction: column; gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white; text-decoration: none;
+      font-weight: 600; padding: 8px 10px;
+      border-radius: 4px;
+      display: flex; align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover { background-color: #0062cc; }
+    #top-header {
+      position: fixed; top: 0; right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header { width: calc(100% - 60px); }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content { margin-left: 60px; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #007acc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+    #time-box {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <main class="main-content">
+    <h1>Prophylaxis: The Art of Anticipation</h1>
+
+    <p>Prophylaxis isn’t just a fancy term in the chess lexicon—it’s the quiet skill that separates reactive play from true positional maturity. Prophylaxis is about anticipating your opponent’s plans and subtly neutralizing them before they become threats. This article outlines a high-yield approach to integrating prophylactic thinking into your game, drawing on principles from classic strategy, modern cognition, and active training design.</p>
+
+    <h2>Principle 1: Understand the Function of Prophylaxis</h2>
+    <p><strong>Principle:</strong> Prophylaxis is not passivity. It is active prevention—the art of limiting your opponent’s dynamic resources without weakening your own.</p>
+    <p><strong>Method:</strong> Classify typical prophylactic moves based on what they prevent and why they’re effective.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Prophylactic Theme</th>
+          <th>Purpose</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Square Control</td><td>Stop key jumps, invasions, or re-routes</td><td>h3 to stop Bg4/Nf4; a3 to prevent Nb4</td></tr>
+        <tr><td>Pawn Break Prevention</td><td>Halt dynamic central or flank ruptures</td><td>Re1 to prepare against ...d5 in the Ruy Lopez</td></tr>
+        <tr><td>Piece Restriction</td><td>Limit the scope of the opponent’s best piece</td><td>Be2 subtly neutralizes Black's Bg4 pin</td></tr>
+        <tr><td>Strategic Airholes</td><td>Prevent back-rank or king safety issues</td><td>h6 (as Black) to blunt back-rank tactics</td></tr>
+        <tr><td>Preemptive Defense</td><td>Guard against known attacking plans</td><td>Kf1 in the King's Indian to prepare g4 safely</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Principle 2: Train the Habit of Opponent-Centered Thinking</h2>
+    <p><strong>Principle:</strong> Prophylaxis begins by thinking like your opponent. You cannot prevent a threat you haven’t visualized.</p>
+    <p><em>Pre-Move Diagnostic Routine (use during slow or classical games):</em></p>
+    <ul>
+      <li><q>If I were them, what would I play next?</q></li>
+      <li><q>What does my last move allow?</q></li>
+      <li><q>Can I pose an idea against their idea?</q></li>
+    </ul>
+
+    <h2>Principle 3: Make Prophylaxis a Deliberate Part of Training</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Training Method</th>
+          <th>Purpose</th>
+          <th>Example Implementation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>‘Guess the Move’ with Annotated Classics</td>
+          <td>Absorb how masters foresee threats</td>
+          <td>Pause before every move in Karpov or Petrosian games</td>
+        </tr>
+        <tr>
+          <td>Opposite-Color Thinking Drills</td>
+          <td>Build a habit of visualizing enemy plans</td>
+          <td>After every move, write down the opponent's 3 best ideas</td>
+        </tr>
+        <tr>
+          <td>Positional Puzzle Sets</td>
+          <td>Train pattern recognition in quiet positions</td>
+          <td>ChessTempo or CT-Art positional exercises</td>
+        </tr>
+        <tr>
+          <td>Annotation Focused on Preventive Ideas</td>
+          <td>Shift review from tactics to strategy</td>
+          <td>Ask: What was this move preventing? Not just What did it achieve?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Common Missed Prophylactic Opportunities Examples</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Missed Idea</th>
+          <th>Prophylactic Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Opponent preparing ...d5 break</td><td>You develop normally, and allow it</td><td>Play c3 or Re1 first to discourage it</td></tr>
+        <tr><td>Knight is heading to the dominant outpost</td><td>You ignore the re-route</td><td>Play a3/h3 or trade before the knight arrives</td></tr>
+        <tr><td>Tactical idea brewing (e.g., Qxh7+)</td><td>You play passive defense too late</td><td>Spot it early and change the pawn structure, or reroute your bishop</td></tr>
+        <tr><td>Opponent’s bishop eyeing long diagonal</td><td>You cast into the threat</td><td>Challenge it with pawn push or reroute a knight preemptively</td></tr>
+      </tbody>
+    </table>
+
+    <p>Mastering prophylaxis isn’t about fear, but rather it’s about foresight. By regularly asking <q>What is my opponent trying to do?</q>, you train your mind to navigate not just the current position but the future battlefield. In time, this proactive lens transforms your play from reactive to refined.</p>
+  </main>
+
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const topHeader = document.getElementById("top-header");
+      if(sidebar.classList.contains("collapsed")){
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+</body>
+</html>

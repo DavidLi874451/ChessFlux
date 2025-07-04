@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plan 3 - Beginner-Intermediate Chess (1000–1500)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      transition: width 0.3s ease;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      padding-top: 2rem;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      display: block;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+    }
+
+    #time-box {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255 255 255 / 0.95);
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.9rem;
+      color: #007acc;
+      user-select: none;
+      z-index: 1100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 420px;
+      overflow-x: auto;
+    }
+
+    #sidebar.collapsed ~ #time-box {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+
+    .time-zone-item {
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .time-zone-item strong {
+      color: #007acc;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 900px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    #sidebar.collapsed ~ .main-content {
+      margin-left: 80px;
+    }
+
+    h1, h2, h3 {
+      color: #007acc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 2rem 0;
+      font-size: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #007acc;
+      padding: 0.6rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    blockquote {
+      border-left: 4px solid #007acc;
+      margin-left: 0;
+      padding-left: 1rem;
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const header = document.getElementById("top-header");
+      if (sidebar.classList.contains("collapsed")) {
+        header.style.width = "calc(100% - 60px)";
+      } else {
+        header.style.width = "calc(100% - 200px)";
+      }
+    }
+
+    function updateTimeZones() {
+      const now = new Date();
+      const utc = now.toUTCString().split(' ')[4];
+      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+
+      document.getElementById('pt-time').textContent = pt;
+      document.getElementById('et-time').textContent = et;
+      document.getElementById('utc-time').textContent = utc;
+      document.getElementById('ist-time').textContent = ist;
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
+          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimeZones();
+      setInterval(updateTimeZones, 1000);
+      renderUserArea();
+    });
+  </script>
+</head>
+<body>
+
+  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center;">
+    <div id="user-area"></div>
+  </header>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a class="nav-link" href="home.html"><span>Home</span></a>
+      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
+      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
+      <a class="nav-link" href="contact.html"><span>Contact</span></a>
+      <a class="nav-link" href="social.html"><span>Social Media</span></a>
+      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <main class="main-content">
+
+    <h1>Beginner-Intermediate Chess Study Guide (1000-1500 Elo)</h1>
+
+    <p>Struggling to move beyond the 1000-1500 rating range? You’re not alone. This guide offers a practical, resource-packed training plan to help you sharpen your chess skills and reach your next milestone.</p>
+
+    <hr/>
+
+    <h2>1. Practice Makes Progress: Training Routine and Game Review</h2>
+
+    <strong>Daily Routine (90-120 minutes/day):</strong>
+    <ul>
+      <li><strong>15-30 min:</strong> Tactics training (details below)</li>
+      <li><strong>15 min:</strong> Opening review and principle study</li>
+      <li><strong>30-45 min:</strong> Play one or two 15|10 rapid games</li>
+      <li><strong>30 min:</strong> Game analysis (use a physical board or Lichess/ChessBase)</li>
+    </ul>
+
+    <p><strong>Key Tools for Game Analysis:</strong></p>
+    <ul>
+      <li>Lichess: Use the "Analysis Board" + engine and evaluation graph</li>
+      <li>ChessBase (if available)</li>
+      <li>Coach or study partner: Ask questions like "Why was this move a mistake?" and "What would have been better?"</li>
+    </ul>
+
+    <p><strong>Post-Game Analysis Checklist:</strong></p>
+    <ul>
+      <li>Identify major blunders and inaccuracies</li>
+      <li>Spot missed tactics (use tactics explorer if on Lichess)</li>
+      <li>Find positional weaknesses (e.g., weak squares, poor pawn structure)</li>
+      <li>Use engine only <em>after</em> you analyze the game yourself</li>
+    </ul>
+
+    <p><strong>Play Format Focus:</strong></p>
+    <ul>
+      <li>Rapid: 15+10 or 30+0</li>
+      <li>Classical OTB: 45+15 or 60+0 (great for tournaments)</li>
+      <li>Bullet and 1|0: Not recommended</li>
+    </ul>
+
+    <hr/>
+
+    <h2>2. Master Tactics To Level Up Your Game</h2>
+
+    <p><strong>Why Tactics?</strong> Tactical ability decides the outcome of most games at this level. Blunders, missed forks, and free pieces are still common from 1000-1500.</p>
+
+    <p><strong>Daily Tactics Routine:</strong></p>
+    <ul>
+      <li><strong>Chessable Courses:</strong>
+        <ul>
+          <li>"1001 Chess Exercises for Beginners" by Franco Masetti (interactive on Chessable)</li>
+          <li>"Checkmate Patterns Manual" by CraftyRaf</li>
+        </ul>
+      </li>
+      <li><strong>Books:</strong>
+        <ul>
+          <li>"Winning Chess Tactics" by Yasser Seirawan</li>
+          <li>"The Ultimate Chess Puzzle Book" by John Emms</li>
+        </ul>
+      </li>
+      <li><strong>Apps:</strong>
+        <ul>
+          <li>ChessTempo.com: Custom tactic sets by motif and rating range</li>
+          <li>CT-Art 4.0 (Android/iOS)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>Puzzle Practice Goals:</strong></p>
+    <ul>
+      <li>Do 10-20 puzzles/day, untimed</li>
+      <li>Focus on calculating 2-4 move sequences</li>
+      <li>Categorize mistakes: oversight, miscalculation, or misunderstanding</li>
+    </ul>
+
+    <hr/>
+
+    <h2>3. Dive Deep Into Endgames</h2>
+
+    <p><strong>Key Concepts:</strong></p>
+    <ul>
+      <li>King activity: Centralize your king in the endgame</li>
+      <li>Opposition and square rule</li>
+      <li>Creating and queening passed pawns</li>
+      <li>Rook activity and open files</li>
+      <li>When to trade: Convert your material advantage</li>
+    </ul>
+
+    <p><strong>Recommended Endgame Books/Courses:</strong></p>
+    <ul>
+      <li>"Silman’s Complete Endgame Course" (Chapters for 1000-1500: up to Class C)</li>
+      <li>"100 Endgames You Must Know" by Jesus de la Villa (plus Workbook)</li>
+      <li>Chessable Course: "Basic Endgames for Beginners" by GM Quesada</li>
+    </ul>
+
+    <p><strong>Practice Tips:</strong></p>
+    <ul>
+      <li>Use Lichess Endgame Trainer (free)</li>
+      <li>Set up key positions on a real board and practice against a friend or engine</li>
+    </ul>
+
+    <p><strong>Essential Endgames to Learn:</strong></p>
+    <ul>
+      <li>K+P vs K (rule of the square, opposition)</li>
+      <li>Queen vs pawn endings</li>
+      <li>Rook vs pawn on 7th rank</li>
+      <li>Basic rook endgames: "Lucena" and "Philidor" positions</li>
+    </ul>
+
+    <hr/>
+
+    <h2>4. Strategy: Fundamentals of Positional Play</h2>
+
+    <p><strong>Core Concepts:</strong></p>
+    <ul>
+      <li>Strong/weak squares</li>
+      <li>Pawn structure: isolated, doubled, backward pawns</li>
+      <li>Open files: double rooks, rook on 7th rank</li>
+      <li>Space and piece activity</li>
+      <li>Good vs bad bishops</li>
+      <li>Outposts for knights</li>
+    </ul>
+
+    <p><strong>Study Resources:</strong></p>
+    <ul>
+      <li>Book: "How to Reassess Your Chess" by Jeremy Silman (first half)</li>
+      <li>Book: "Simple Chess" by Michael Stean</li>
+      <li>YouTube Series:
+        <ul>
+          <li>Hanging Pawns: Positional chess playlists</li>
+          <li>Chess Dojo: Positional drills and annotated games</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>Practical Tips:</strong></p>
+    <ul>
+      <li>Review master games: Choose one opening and watch how strong players navigate it</li>
+      <li>Play thematic positions: Use Lichess studies or ChessBase for position-specific training</li>
+    </ul>
+
+    <hr/>
+
+    <h2>5. Openings: Learn Principles, Not Lines</h2>
+
+    <p><strong>Opening Priorities at 1000-1500:</strong></p>
+    <ul>
+      <li>Focus on ideas, plans, and structure</li>
+      <li>Memorize the first 6-10 moves only</li>
+      <li>Study common pawn breaks and tactics from your chosen systems</li>
+    </ul>
+
+    <p><strong>White Repertoire Suggestions:</strong></p>
+    <ul>
+      <li><strong>e4 Openings (Classical):</strong>
+        <ul>
+          <li>Italian Game</li>
+          <li>Scotch Game</li>
+          <li>Vienna Game (aggressive option)</li>
+        </ul>
+      </li>
+      <li><strong>d4 Openings (System-based):</strong>
+        <ul>
+          <li>London System (with early Bf4)</li>
+          <li>Colle System (with e3, d4, Nf3)</li>
+        </ul>
+      </li>
+      <li><strong>Alternative:</strong> King’s Indian Attack (for players who want a universal setup)</li>
+    </ul>
+
+    <p><strong>Black Repertoire Suggestions:</strong></p>
+    <ul>
+      <li><strong>Against 1.e4:</strong>
+        <ul>
+          <li>1...e5 with classical responses (learn ideas from the Italian and Four Knights)</li>
+          <li>French Defense (study isolated pawn structures)</li>
+          <li>Caro-Kann (solid, positional)</li>
+        </ul>
+      </li>
+      <li><strong>Against 1.d4:</strong>
+        <ul>
+          <li>1...d5 and Queen’s Gambit Declined</li>
+          <li>Slav Defense</li>
+          <li>Avoid Indian Game/King’s Indian Defense until &gt;1500</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>Opening Resources:</strong></p>
+    <ul>
+      <li>Book: "Discovering Chess Openings" by GM John Emms</li>
+      <li>Chessable: "Short & Sweet" opening courses for your chosen lines</li>
+      <li>YouTube: GothamChess & Hanging Pawns for opening walkthroughs</li>
+    </ul>
+
+    <hr/>
+
+    <h2>6. Play Tournaments & Join a Study Group</h2>
+
+    <p><strong>Why Tournaments Matter:</strong></p>
+    <ul>
+      <li>Help build focus, resilience, and patience</li>
+      <li>Force you to analyze and prepare seriously</li>
+      <li>Provide long time control games</li>
+    </ul>
+
+    <p><strong>How to Start:</strong></p>
+    <ul>
+      <li>Local club tournaments (USCF rated or school-based)</li>
+      <li>Lichess and ICC online events</li>
+      <li>Weekly in-person club games with notation and post-mortems</li>
+    </ul>
+
+    <p><strong>Join a Study Community:</strong></p>
+    <ul>
+      <li>Reddit r/chessbeginners Study Groups</li>
+      <li>Chess Dojo Training Program (structured improvement by rating)</li>
+      <li>Discord communities: ChessPunks, Chess.com Adult Improvers</li>
+    </ul>
+
+    <hr/>
+
+    <h2>Final Advice: Improvement Mindset</h2>
+
+    <ul>
+      <li><strong>Quality over quantity:</strong> Play fewer games but analyze every one deeply</li>
+      <li><strong>Set realistic goals:</strong> Aim for 50-100 points rating jumps every 2-3 months</li>
+      <li><strong>Reflect regularly:</strong> Keep a chess journal with lessons learned</li>
+      <li><strong>Stay curious and enjoy learning!</strong></li>
+    </ul>
+
+  </main>
+
+  <div id="time-box">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time"></span>
+    </div>
+  </div>
+
+</body>
+</html>

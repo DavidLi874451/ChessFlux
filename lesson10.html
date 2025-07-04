@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 10 - When Not to Resign</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 220px; height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      transition: width 0.3s ease;
+      z-index: 1300;
+    }
+    #sidebar.collapsed { width: 60px; }
+    #sidebar .toggle-btn {
+      position: fixed; top: 10px; left: 10px;
+      background: #007acc;
+      border: none; color: white;
+      font-size: 22px;
+      width: 40px; height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span { display: none; }
+    #sidebar .sidebar-content {
+      display: flex; flex-direction: column; gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white; text-decoration: none;
+      font-weight: 600; padding: 8px 10px;
+      border-radius: 4px;
+      display: flex; align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover { background-color: #0062cc; }
+    #top-header {
+      position: fixed; top: 0; right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header { width: calc(100% - 60px); }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content { margin-left: 60px; }
+    h1 {
+      margin-bottom: 15px;
+    }
+    h2 {
+      margin-top: 40px;
+      margin-bottom: 15px;
+    }
+    p {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+    ul li {
+      margin-bottom: 8px;
+    }
+    #time-box {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <main class="main-content">
+    <h1>You can resign too early, but never too late.</h1>
+
+    <p>Resigning is one of the most misunderstood—and overused—moves in the game of chess. Whether it’s a blundered piece, a lost pawn in a drawn-out endgame, or a fear of embarrassment, many players throw in the towel far earlier than they should. This article explores the philosophy, psychology, and practicality behind the principle: <strong>Never resign—unless you are certain the game is over.</strong> I will teach you when that stage is and should be reached.</p>
+
+    <h2>Learning when not to resign may be one of the most valuable skills you’ll develop as a competitive player.</h2>
+
+    <h2>The Myth of “Good Form”</h2>
+    <p>From early tournaments, players are taught etiquette. Shake hands. Sit upright. Be respectful. And—here’s the most common one—don’t drag out lost positions.</p>
+    <p>But who decides when a position is lost? At the club level, where inaccuracies abound and endgame conversion is still shaky, resignation is often premature. A single inaccurate move can reverse a completely "lost" game, especially if your opponent isn’t Magnus Carlsen. In truth, resignation is not about respect—it’s about probability. Resigning before the position has mathematically and psychologically collapsed means you're choosing emotion over data. And in chess, data should rule.</p>
+
+    <h2>The 3 Levels of Premature Resignation</h2>
+
+    <h3>Level 1: The “Oops-I-Blundered” Syndrome</h3>
+    <p>Blunder a knight and resign? Not so fast.</p>
+    <p>A player might give up after hanging a piece, assuming the material imbalance is insurmountable. But psychology often plays a bigger role than evaluation. After winning material, many opponents relax. They simplify unnecessarily. They lose precision and might get overconfident. If you keep creating problems—even simple ones—you can sow enough doubt to induce mistakes.</p>
+    <p><em>Example:</em> GM Mamedyarov famously swindled a win after being down a full rook against a 2600+ opponent, using nothing but piece activity and relentless pressure.</p>
+
+    <h3>Level 2: “I Don’t See a Plan, So I Must Be Lost”</h3>
+    <p>Players often resign when they feel strategically dominated, even if there’s no concrete way to break their position. Here’s the truth: positional pressure does not equal a decisive advantage unless it can be converted. And that conversion is anything but automatic.</p>
+    <p>You must ask yourself:</p>
+    <ul>
+      <li>Are there tactical resources left?</li>
+      <li>Can I complicate the position even further?</li>
+      <li>What is my opponent’s margin for error?</li>
+    </ul>
+    <p>If your opponent must make precise moves and combinations to win, you are still in the game.</p>
+
+    <h3>Level 3: The Fatigue Resignation</h3>
+    <p>This is perhaps the saddest and most preventable of all: resigning because you’re mentally tired. Maybe it’s the fifth round of the day. Or maybe you’ve been defending for 30 moves and don’t see a way out.</p>
+    <p>Please remember this: Pause and remember this: If you resign now, you have 0% chance of saving the game. But if you continue—even at 1%—you still have hope.</p>
+    <p>Think of resignation like a fire extinguisher. You only pull it when the entire house is ablaze, and there's no chance of saving the structure. Not when there’s just smoke.</p>
+
+    <h2>What About Etiquette? Is It Rude Not to Resign?</h2>
+    <p>This is a valid question, especially at the top level. Understandably, the etiquette is often different at the elite level of chess. However, most of you all reading are aspiring to reach master level, but probably are not there yet. Therefore, the answer is:</p>
+    <p><strong>Absolutely not.</strong></p>
+    <p>Some opponents may glare, sigh, or type sarcastic messages online. Don’t let that affect your mindset. Your goal is to maximize learning and opportunity, not protect someone else’s feelings about “dignity.”</p>
+    <p>You must ask yourself before resigning: “Would I win this exact position with reversed colors, against a coach, engine, or top GM—even with little time on the clock?”</p>
+    <p>If the answer is anything but a clear yes, don’t resign.</p>
+  </main>
+
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const topHeader = document.getElementById("top-header");
+      if (sidebar.classList.contains("collapsed")) {
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beginner Chess Plan 500–1000 Elo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      transition: width 0.3s ease;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      padding-top: 2rem;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      display: block;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+    }
+
+    #time-box {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255 255 255 / 0.95);
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.9rem;
+      color: #007acc;
+      user-select: none;
+      z-index: 1100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 420px;
+      overflow-x: auto;
+    }
+
+    #sidebar.collapsed ~ #time-box {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+
+    .time-zone-item {
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .time-zone-item strong {
+      color: #007acc;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 900px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    #sidebar.collapsed ~ .main-content {
+      margin-left: 80px;
+    }
+
+    h1, h2, h3 {
+      color: #007acc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 2rem 0;
+      font-size: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #007acc;
+      padding: 0.6rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    blockquote {
+      border-left: 4px solid #007acc;
+      margin-left: 0;
+      padding-left: 1rem;
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const header = document.getElementById("top-header");
+      if (sidebar.classList.contains("collapsed")) {
+        header.style.width = "calc(100% - 60px)";
+      } else {
+        header.style.width = "calc(100% - 200px)";
+      }
+    }
+
+    function updateTimeZones() {
+      const now = new Date();
+      const utc = now.toUTCString().split(' ')[4];
+      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+
+      document.getElementById('pt-time').textContent = pt;
+      document.getElementById('et-time').textContent = et;
+      document.getElementById('utc-time').textContent = utc;
+      document.getElementById('ist-time').textContent = ist;
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
+          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimeZones();
+      setInterval(updateTimeZones, 1000);
+      renderUserArea();
+    });
+  </script>
+</head>
+<body>
+
+  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center;">
+    <div id="user-area"></div>
+  </header>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a class="nav-link" href="home.html"><span>Home</span></a>
+      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
+      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
+      <a class="nav-link" href="contact.html"><span>Contact</span></a>
+      <a class="nav-link" href="social.html"><span>Social Media</span></a>
+      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <main class="main-content">
+
+    <h1>Beginner Study Guide for 500–1000 Elo Players</h1>
+
+    <p>Welcome! If you are rated between 500 and 1000 Elo and want to improve your chess skills, this guide will help you take your game to the next level. By now, you should have a basic understanding of the rules and be able to recognize how the pieces move. What you need next is to develop your board vision and tactical awareness.</p>
+
+    <p>For example, in a complex position, it may feel overwhelming to spot opportunities, but with practice, you will quickly recognize moves like a bishop capturing a rook on a long diagonal. If you don’t see these moves immediately, don’t worry—board vision develops naturally over time and with consistent practice.</p>
+
+    <h2>Key Areas to Focus On</h2>
+
+    <h3>Tactics</h3>
+    <p>At this stage, tactics are the most important skill to develop. This includes:</p>
+    <ul>
+      <li>Recognizing threats and attacks quickly</li>
+      <li>Identifying unprotected pieces</li>
+      <li>Learning basic checkmate patterns</li>
+    </ul>
+
+    <p>Focus on learning common tactical motifs like forks, pins, skewers, discovered attacks, and mates in one or two moves. Your goal is to find these tactics quickly and create opportunities to apply them in your games.</p>
+
+    <h3>Tactics Training</h3>
+    <p>Use online tools like Chess.com’s tactics trainer to practice puzzles regularly. You can also train by specific themes if you find certain patterns challenging. Practice consistently to build pattern recognition and tactical sharpness.</p>
+
+    <h3>Converting Advantages</h3>
+    <p>Often players gain a material advantage but struggle to convert it into a win. Practice finishing games where you have a lead by playing against computer opponents or using training exercises. This will build your confidence in closing out games.</p>
+
+    <h3>Quick Thinking</h3>
+    <p>Chess requires not only finding good moves but finding them quickly. Use resources like Chess Tempo’s blitz tactics to solve puzzles under time pressure. This helps improve your speed and accuracy during games.</p>
+
+    <h3>Puzzle Rush</h3>
+    <p>Puzzle Rush challenges you to solve as many puzzles as possible before making three mistakes. It’s a great way to practice basic and gradually more difficult tactics. Try different time modes to improve your stamina and quick recognition.</p>
+
+    <h2>Endgames</h2>
+    <p>While tactics are the priority, it’s useful to start learning basic endgames, especially king and pawn endgames. Important concepts include:</p>
+    <ul>
+      <li>Checkmating with a queen, rook, or two rooks</li>
+      <li>Creating and promoting passed pawns</li>
+      <li>Understanding the rule of the square and opposition</li>
+    </ul>
+    <p>Use online videos and lessons to build your endgame foundation.</p>
+
+    <h2>Strategy and Positional Play</h2>
+    <p>Start familiarizing yourself with fundamental strategic ideas, including:</p>
+    <ul>
+      <li>How pawn structures influence plans</li>
+      <li>Identifying weak pawns and weak squares</li>
+      <li>Coordinating your pieces effectively</li>
+      <li>Simplifying the position when ahead</li>
+    </ul>
+    <p>You can find strategy lessons on Chess.com and other free resources online.</p>
+
+    <h2>Openings</h2>
+    <p>At this level, don’t worry about memorizing long opening lines. Instead:</p>
+    <ul>
+      <li>Learn basic opening principles: control the center, develop your minor pieces, and castle early</li>
+      <li>Focus on a few simple openings, like 1.e4 e5 for White, or a basic defense for Black</li>
+      <li>Play your chosen openings and learn from your games</li>
+    </ul>
+    <p>Remember, middlegame and endgame skills are more important than memorizing openings.</p>
+
+    <h2>Playing Games</h2>
+    <p>The best way to improve is by playing regularly. Some tips:</p>
+    <ul>
+      <li>Play both longer time controls (like 15|10) and faster games (like 5|5) to develop different skills</li>
+      <li>Avoid bullet chess at this stage to prevent bad habits</li>
+      <li>Try to play games in one sitting rather than daily correspondence games</li>
+      <li>Review your games afterward to learn from mistakes</li>
+    </ul>
+
+    <h2>Sample Weekly Study Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Activity</th>
+          <th>Duration per Week</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tactics Training</td>
+          <td>45 minutes</td>
+        </tr>
+        <tr>
+          <td>Blitz Tactics</td>
+          <td>30 minutes</td>
+        </tr>
+        <tr>
+          <td>Puzzle Rush</td>
+          <td>1 session</td>
+        </tr>
+        <tr>
+          <td>Endgame Practice</td>
+          <td>30 minutes</td>
+        </tr>
+        <tr>
+          <td>Strategy Lessons</td>
+          <td>30 minutes</td>
+        </tr>
+        <tr>
+          <td>Opening Study</td>
+          <td>Learn 1 chapter or opening sequence</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Additional Exercises</h2>
+    <h3>Two-by-Two Visualization</h3>
+    <p>Practice reading games by visualizing two moves at a time in your head before moving the pieces on the board. This exercise strengthens your calculation and board vision.</p>
+
+    <h3>Reading Chess Books</h3>
+    <p>Start reading beginner-friendly chess books to deepen your understanding. Even if the exercises seem difficult, reviewing the solutions can teach you valuable concepts.</p>
+
+    <p>Consistent practice over time is the key to improvement. Focus on tactics first, build your endgame and strategy knowledge gradually, and enjoy your journey toward becoming a stronger chess player!</p>
+
+    <h2>Customized Weekly Study Schedule (Approx. 4–6 hours per week)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Activity</th>
+          <th>Duration</th>
+          <th>Resources &amp; Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Monday</td>
+          <td>Tactics Training</td>
+          <td>45 minutes</td>
+          <td>Chess.com Tactics Trainer (set medium difficulty)</td>
+        </tr>
+        <tr>
+          <td>Tuesday</td>
+          <td>Endgame Practice</td>
+          <td>30 minutes</td>
+          <td>Chess.com Endgame Lessons or YouTube basics (e.g., "King and Pawn Endgames")</td>
+        </tr>
+        <tr>
+          <td>Wednesday</td>
+          <td>Blitz Tactics (Quick Thinking)</td>
+          <td>30 minutes</td>
+          <td>Chess Tempo Blitz Set (medium difficulty)</td>
+        </tr>
+        <tr>
+          <td>Thursday</td>
+          <td>Strategy Lesson + Review</td>
+          <td>30 minutes</td>
+          <td>Chess.com Lessons (strategy section) or YouTube playlist on chess strategy</td>
+        </tr>
+        <tr>
+          <td>Friday</td>
+          <td>Puzzle Rush (Survival Mode)</td>
+          <td>~20-30 min</td>
+          <td>Chess.com Puzzle Rush Survival Mode</td>
+        </tr>
+        <tr>
+          <td>Saturday</td>
+          <td>Opening Study + Play Games</td>
+          <td>45 minutes study + 1-2 games</td>
+          <td>Learn first 4-5 moves of a simple opening (e.g., Italian Game for White or London System for Black) via Chessable free courses; play games on Chess.com or Lichess</td>
+        </tr>
+        <tr>
+          <td>Sunday</td>
+          <td>Game Review + Visualization Exercise</td>
+          <td>30–45 minutes</td>
+          <td>Use Chess.com Game Review tool to analyze your recent games; practice Two-by-Two visualization on master games from Chess.com database or Lichess Studies</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Resource Recommendations</h2>
+
+    <h3>Tactics and Training</h3>
+    <ul>
+      <li><a href="https://www.chess.com/puzzles" target="_blank" rel="noopener">Chess.com Tactics Trainer</a></li>
+      <li><a href="https://chesstempo.com" target="_blank" rel="noopener">Chess Tempo Blitz Tactics</a></li>
+      <li><a href="https://www.chess.com/puzzle-rush" target="_blank" rel="noopener">Puzzle Rush on Chess.com</a></li>
+    </ul>
+
+    <h3>Endgames</h3>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/endgames" target="_blank" rel="noopener">Chess.com Endgame Lessons</a> (Free lessons and drills)</li>
+      <li>YouTube channels:
+        <ul>
+          <li>Hanging Pawns — beginner-friendly endgame videos</li>
+          <li>ChessNetwork — solid explanations of basic endgames</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Strategy</h3>
+    <ul>
+      <li><a href="https://www.chess.com/lessons/strategy" target="_blank" rel="noopener">Chess.com Strategy Lessons</a></li>
+      <li>YouTube playlist: Search “Beginner Chess Strategy” for step-by-step concepts</li>
+    </ul>
+
+    <h3>Openings</h3>
+    <ul>
+      <li>Chessable free courses:
+        <ul>
+          <li>The Italian Game (1.e4 e5 Nf3 Nc6 Bc4) — great for beginners</li>
+          <li>London System (as Black or White)</li>
+        </ul>
+      </li>
+      <li>Principles: Control center, develop pieces, castle early, don’t move the same piece multiple times in opening</li>
+    </ul>
+
+    <h3>Playing & Reviewing Games</h3>
+    <ul>
+      <li>Play games at 15|10 or 10|5 time control to balance thinking time and practice</li>
+      <li>Use Chess.com Game Review after every game to identify mistakes and learn</li>
+      <li>Avoid bullet (1|0 or less) to prevent bad habits</li>
+    </ul>
+
+    <h2>Tips for Success</h2>
+    <ul>
+      <li>Be consistent, even short daily sessions add up</li>
+      <li>Focus on understanding WHY moves are good or bad, not just memorizing</li>
+      <li>Mix playing with studying to reinforce learning</li>
+      <li>Don’t be discouraged by losses—they’re your best teachers</li>
+      <li>Use the Two-by-Two visualization exercise to improve calculation and board vision: read moves in pairs in master games and visualize positions in your head before moving pieces</li>
+    </ul>
+
+  </main>
+
+  <div id="time-box">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time"></span>
+    </div>
+  </div>
+
+</body>
+</html>

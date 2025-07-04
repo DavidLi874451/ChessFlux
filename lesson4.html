@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 4 - Time Management in Chess</title>
+  <style>
+    /* Basic Reset */
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      transition: width 0.3s ease;
+      overflow-y: auto;
+      z-index: 1300;
+    }
+    #sidebar.collapsed {
+      width: 60px;
+    }
+    #sidebar .toggle-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #007acc;
+      border: none;
+      color: white;
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span {
+      display: none;
+    }
+    #sidebar .sidebar-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover {
+      background-color: #0062cc;
+    }
+
+    /* Top header (login/signup) */
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header {
+      width: calc(100% - 60px);
+    }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+
+    /* Main content */
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content {
+      margin-left: 60px;
+    }
+
+    /* Time zones box (bottom right) */
+    #time-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <!-- Top header -->
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <h1>Time Management in Chess: A Scientific Approach</h1>
+    <p>
+      Time management is not about "playing faster." It is about strategic resource allocation — knowing where to invest time, and when to trust intuition or force precision. Poor time usage leads to catastrophic blunders, even in technically winning positions. This lesson introduces a scientifically designed Time Allocation Framework built on clock control heuristics, decision tree profiling, and cognitive pacing strategies derived from high-level tournament play and time-pressure neuroscience.
+    </p>
+    <p>
+      You will learn to build a Time Budget, train with decision-type tagging, and apply temporal heuristics dynamically across game phases. Precision beats pace, but a structured pace allows precision when it matters most.
+    </p>
+
+    <h2>1. Time Budgeting Per Gaming Format</h2>
+    <p><strong>Principle 1:</strong> Begin with a fixed time-per-decision budget tailored to the game format. Adjust only if the position demands it.</p>
+
+    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 700px; margin-bottom: 20px;">
+      <thead style="background:#007acc; color: white;">
+        <tr>
+          <th>Time Control</th>
+          <th>Opening (0–10 moves)</th>
+          <th>Middlegame (11–35)</th>
+          <th>Endgame (36+)</th>
+          <th>Time Buffer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>90+30 (Classical)</td>
+          <td>~1 min/move</td>
+          <td>~2.5 min/critical, ~1.5 min/quiet</td>
+          <td>2+ min</td>
+          <td>Reserve 20 min</td>
+        </tr>
+        <tr>
+          <td>45+15 (Training Rapid)</td>
+          <td>~30 sec/move</td>
+          <td>1–2 min for tactical/imbalanced</td>
+          <td>1–1.5 min</td>
+          <td>Reserve 10 min</td>
+        </tr>
+        <tr>
+          <td>15+10 (Tournament Rapid)</td>
+          <td>15–25 sec</td>
+          <td>30 sec–1 min for complexity</td>
+          <td>45 sec</td>
+          <td>Reserve 2 min</td>
+        </tr>
+        <tr>
+          <td>5+3 (Blitz)</td>
+          <td>5–10 sec</td>
+          <td>15 sec for tactics</td>
+          <td>10 sec</td>
+          <td>No reserve</td>
+        </tr>
+        <tr>
+          <td>1+0 (Bullet)</td>
+          <td>0.5–1 sec</td>
+          <td>3–4 sec if decisive</td>
+          <td>Flag faster</td>
+          <td>None</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Note:</strong> Create a Time Per Move Ceiling (TPMC) in your notebook or pre-game checklist. Exceed only if critical.</p>
+
+    <h2>2. The Decision-Type Tagging System</h2>
+    <p><strong>Principle:</strong> Not all positions require deep thought. Classify position types to match the appropriate time investment.</p>
+
+    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 700px; margin-bottom: 20px;">
+      <thead style="background:#007acc; color: white;">
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Max Time Allocation (Rapid 15+10)</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Type A: Theoretical Recall</td>
+          <td>Book moves; Known lines</td>
+          <td>≤10 seconds</td>
+          <td>1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6</td>
+        </tr>
+        <tr>
+          <td>Type B: Automatic Move</td>
+          <td>Recaptures: Only legal move</td>
+          <td>≤5 seconds</td>
+          <td>22...gxf6 after 22.Bxf6</td>
+        </tr>
+        <tr>
+          <td>Type C: Strategic Choice</td>
+          <td>Positional tradeoff (e.g., bishop vs knight)</td>
+          <td>≤30–40 seconds</td>
+          <td>Should I trade the light-square bishop on d3 for a knight on f5?</td>
+        </tr>
+        <tr>
+          <td>Type D: Tactical Alert</td>
+          <td>Concrete lines or traps are possible</td>
+          <td>1–2 minutes max</td>
+          <td>Suspicious knight sac on g5 — calculate accurately</td>
+        </tr>
+        <tr>
+          <td>Type E: Critical Decision</td>
+          <td>Game-defining moment</td>
+          <td>Up to 20–25% of the remaining time</td>
+          <td>Choosing to play ...d5 break in closed center with opposite-side castling</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Note:</strong> After each move in study games, label it A–E. Track if you over-/underspent relative to your class. This increases time allocation accuracy by up to 35% within weeks.</p>
+
+    <h2>3. Patterned Instinct - Blitz</h2>
+    <p><strong>Principle:</strong> Blitz time management is about pre-built heuristics and forcing reactive errors.</p>
+
+    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 700px; margin-bottom: 20px;">
+      <thead style="background:#007acc; color: white;">
+        <tr>
+          <th>Rule</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>“Never Think of Opening”</td>
+          <td>First 8–10 moves = &lt;5 sec per move</td>
+        </tr>
+        <tr>
+          <td>“You Move, I Move”</td>
+          <td>Respond to fast opponent moves within 2 seconds — even if it’s off-beat</td>
+        </tr>
+        <tr>
+          <td>“Avoid 30-Second Holes”</td>
+          <td>Never spend more than 20 seconds on any single move</td>
+        </tr>
+        <tr>
+          <td>“Clock Blitzing”</td>
+          <td>If the opponent drops below 30 seconds, switch to threats/forcing moves only.</td>
+        </tr>
+        <tr>
+          <td>“Pre-move Zones”</td>
+          <td>Endgames, known recaptures, single-move threats = use pre-moves</td>
+        </tr>
+        <tr>
+          <td>“3-Second Scan”</td>
+          <td>Final 10 sec: stop calculating. Just scan for mate/blunder, move.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Note:</strong> Drill Blitz with post-game voice logs: After the game, immediately say why you spent time at key moments. Builds awareness.</p>
+
+    <h2>Conclusion</h2>
+    <p>
+      Time management is not a side skill — it is a core calculation amplifier. Structured clock usage prevents time pressure, reduces errors, and lets you out-resource opponents when they collapse. Build your time intuition like any tactical skill: with drills, labels, benchmarks, and review.
+    </p>
+    <p>
+      This lesson provides you with a complete system. Adopt the Decision-Type Tagging method. Track Time Burn patterns. Apply dynamic phase budgets. You don’t need to play faster — you need to play on time.
+    </p>
+  </main>
+
+  <!-- Time zones compact fixed bottom-right -->
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      // Adjust top header width when sidebar collapses
+      const topHeader = document.getElementById("top-header");
+      if(sidebar.classList.contains("collapsed")){
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+
+</body>
+</html>

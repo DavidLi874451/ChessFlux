@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 6 - Blunder Minimization Framework</title>
+  <style>
+    /* Basic Reset */
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      transition: width 0.3s ease;
+      overflow-y: auto;
+      z-index: 1300;
+    }
+    #sidebar.collapsed {
+      width: 60px;
+    }
+    #sidebar .toggle-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #007acc;
+      border: none;
+      color: white;
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span {
+      display: none;
+    }
+    #sidebar .sidebar-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover {
+      background-color: #0062cc;
+    }
+
+    /* Top header (login/signup) */
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header {
+      width: calc(100% - 60px);
+    }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+
+    /* Main content */
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content {
+      margin-left: 60px;
+    }
+
+    /* Tables styling */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #007acc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    /* Time zones box (bottom right) */
+    #time-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <!-- Top header -->
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <h1>Blunder Minimization Framework</h1>
+
+    <p>Blunders are not simply tactical oversights—they often manifest deeper, systemic issues in cognition, preparation, and decision-making. While conventional wisdom suggests “avoiding blunders” is about slowing down or double-checking your moves, this article reframes blunder avoidance as a trainable meta-skill grounded in cognitive science, pattern recognition, and real-time diagnostic routines. Below is a structured, high-yield framework for minimizing common blunders, particularly for intermediate to advanced players seeking serious, sustainable growth.</p>
+
+    <h2>Principle 1: Identify Blunder Archetypes</h2>
+
+    <p>Principle: Not all blunders are created equal. Systematically classifying your errors enables pattern recognition and targeted correction.</p>
+
+    <p><strong>Method: Create a Blunder Journal (Spreadsheet or Chess.com Library)</strong></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Error Type</th>
+          <th>Description</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Calculation Error</td>
+          <td>Miscalculated a concrete sequence, missed a zwischenzug, or tactical shot</td>
+          <td>Missed Qg4+ in a Bogo-Indian</td>
+        </tr>
+        <tr>
+          <td>Premature Commitment</td>
+          <td>Made an irreversible decision too early</td>
+          <td>Played f5 too soon, weakened e5 outpost</td>
+        </tr>
+        <tr>
+          <td>Visual Overload</td>
+          <td>Missed a long-range threat, discovered an attack, or a backward piece</td>
+          <td>Rook on a1 undefended in a closed center</td>
+        </tr>
+        <tr>
+          <td>One-Move Oversight</td>
+          <td>Simply failed to consider the opponent’s most forcing reply</td>
+          <td>Ignored Qxh7+ mate after h6</td>
+        </tr>
+        <tr>
+          <td>Cognitive Fatigue</td>
+          <td>Errors caused by time pressure, tilt, or end-of-session burnout</td>
+          <td>Dropped a pawn after a long calculation session</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Principle 2: Develop Real-Time Blunder Detection Protocols</h2>
+
+    <p>Principle: You can't stop all blunders—but you can train the ability to recognize when you're vulnerable to making one.</p>
+
+    <p>Before committing to a move, mentally go through the following:</p>
+    <ul>
+      <li><strong>Forcing Response Check</strong> – "What are all checks, captures, and threats my opponent can play immediately after this move?"</li>
+      <li><strong>Long-Distance Tactics</strong> – "Are there rooks, queens, or bishops aiming across the board?"</li>
+      <li><strong>Tactical Motif Scan</strong> – "Is any known tactic pattern emerging (pin, skewer, overloading)?"</li>
+      <li><strong>Exclusion Test</strong> – "Why not play the most obvious move?" (Try to refute your candidate before playing it)</li>
+    </ul>
+
+    <h2>Principle 3: Integrate Blunder Reduction into Your Training Routine</h2>
+
+    <p>Principle: Most players train for tactical sharpness but not for cognitive resilience under pressure. You must simulate stressful conditions and analyze reactions.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Training Method</th>
+          <th>Purpose</th>
+          <th>Example Implementation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1+0 Bullet Games + Verbal Analysis</td>
+          <td>Identify "snap-move" blunders</td>
+          <td>Record yourself explaining your thought process mid-game</td>
+        </tr>
+        <tr>
+          <td>5+5 with Forced Calculation Prompts</td>
+          <td>Encourage deeper search trees</td>
+          <td>Pause every 5 moves to verbalize 3 candidate lines</td>
+        </tr>
+        <tr>
+          <td>Puzzle Rush with Review</td>
+          <td>Quantify pattern recognition lapses</td>
+          <td>Review missed motifs, not just scores</td>
+        </tr>
+        <tr>
+          <td>Endgame Speed Drills</td>
+          <td>Test precision under clock pressure</td>
+          <td>Practice K+P vs K with &lt;20 seconds</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Conclusion</h2>
+    <p>Minimizing blunders is less about being cautious and more about building systems of mental vigilance. Players can dramatically reduce critical oversights through personalized error mapping, real-time safety protocols, diagnostic review routines, and simulated pressure environments. Chess mastery is not perfection—it’s recovery speed, self-awareness, and training the right habits at the right cognitive level. Make your mistakes work for you, not against you.</p>
+  </main>
+
+  <!-- Time zones compact fixed bottom-right -->
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const topHeader = document.getElementById("top-header");
+      if(sidebar.classList.contains("collapsed")){
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+
+</body>
+</html>

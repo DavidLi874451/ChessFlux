@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson - Opening Repertoire Tips</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 220px; height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      transition: width 0.3s ease;
+      z-index: 1300;
+    }
+    #sidebar.collapsed { width: 60px; }
+    #sidebar .toggle-btn {
+      position: fixed; top: 10px; left: 10px;
+      background: #007acc;
+      border: none; color: white;
+      font-size: 22px;
+      width: 40px; height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span { display: none; }
+    #sidebar .sidebar-content {
+      display: flex; flex-direction: column; gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white; text-decoration: none;
+      font-weight: 600; padding: 8px 10px;
+      border-radius: 4px;
+      display: flex; align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover { background-color: #0062cc; }
+    #top-header {
+      position: fixed; top: 0; right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header { width: calc(100% - 60px); }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content { margin-left: 60px; }
+    h1 {
+      margin-bottom: 15px;
+    }
+    h2 {
+      margin-top: 40px;
+      margin-bottom: 15px;
+    }
+    p {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+    ul li {
+      margin-bottom: 8px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 25px;
+    }
+    th, td {
+      border: 1px solid #007acc;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    #time-box {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <main class="main-content">
+    <h1>Opening Repertoire Tips: Build Confidence from the Start</h1>
+
+    <p>Do you want to enter the opening phase with confidence, knowing your moves, understanding your ideas, and smoothly steering into favorable middlegames?</p>
+    <p>Then you’re not alone. But here's the catch: most players never get there. Why? Because they build their opening repertoire the wrong way.</p>
+    <p>Let’s fix that. Below, I’ll walk you through the five most common opening repertoire mistakes—and show you what to do instead.</p>
+
+    <h2>❌ Mistake #1: Skipping the Fundamentals</h2>
+    <p>You wouldn't build a house without a foundation. So why try building an opening without understanding opening principles?</p>
+    <p>Players often jump straight into lines like the King's Indian or Sicilian without grasping why we fight for the center, how to develop efficiently, or when to break the rules.</p>
+    <p><strong>Fix:</strong> Learn the why before the what. Build your base with core ideas like center control, piece activity, king safety, and development speed. This way, when your opponent leaves theory, you’re still playing good chess.</p>
+
+    <h2>❌ Mistake #2: Playing “Cool” Openings Instead of the Right Ones</h2>
+    <p>Everyone wants to play like Nakamura or Carlsen—but if you're rated 1000 and trying to survive the complexities of the Najdorf or Grünfeld, you're setting yourself up to fail.</p>
+    <p>Advanced openings are full of nuance—subtle pawn breaks, deep positional concessions, and sharp tactical lines that require hours of study.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Rating Range</th>
+          <th>Recommended Opening Types</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Below 1000</td><td>Focus on open games (e.g., Italian, Scandinavian)</td></tr>
+        <tr><td>1000–1600</td><td>Learn structured systems (e.g., London, Caro-Kann)</td></tr>
+        <tr><td>1600–2000+</td><td>Branch out into richer openings with clear strategic themes</td></tr>
+      </tbody>
+    </table>
+
+    <h2>❌ Mistake #3: Memorizing Without Context</h2>
+    <p>Some players treat openings like a script—memorizing 15 moves deep without knowing why they’re played. As soon as the opponent deviates, the game starts to spiral.</p>
+    <p>Don’t just study moves. Study motifs. Ask questions like:</p>
+    <ul>
+      <li>What’s the idea behind this pawn move?</li>
+      <li>Which piece is the weakest?</li>
+      <li>What type of middlegame is this opening trying to reach, and how comfortable will this be for me?</li>
+    </ul>
+    <p>Ultimately, understandability equals flexibility, where flexibility is a crucial component to winning games.</p>
+
+    <h2>❌ Mistake #4: Ignoring Middlegame Plans</h2>
+    <p>Let’s say you survive the opening. Great. Now what?</p>
+    <p>If you don’t know the strategic ideas behind your opening, you’ll flounder in the middlegame. It’s like finishing the introduction of a book and not knowing how the story continues.</p>
+    <p><strong>Fix:</strong> Study model games in your chosen openings. Watch how strong players handle common pawn structures. Observe typical maneuvers and plans—like minority attacks in the Queen’s Gambit or e5 breaks in the London.</p>
+    <p>You’ll learn more from five annotated games than from fifty move sequences.</p>
+
+    <h2>❌ Mistake #5: Never Reviewing Your Games</h2>
+    <p>Opening preparation doesn’t stop after studying. It continues in your own games.</p>
+    <p>Yet most players make the same errors repeatedly because they never check their games against their prep. “Oh, I played h6 here again…was that in my repertoire?”</p>
+    <p>Try to:</p>
+    <ul>
+      <li>Identify where you left prep — This is extremely important!</li>
+      <li>Look up better / more playable lines</li>
+      <li>Add to your files</li>
+      <li>Fix holes in your understanding</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+    <p>Openings don’t need to be a mystery or a memory contest. With the right approach, they can become a powerful factor in playing more dynamic, enjoyable games.</p>
+    <p>Stop trying to memorize your way to mastery. Start learning your openings the way strong players do: with clarity and purpose.</p>
+  </main>
+
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const topHeader = document.getElementById("top-header");
+      if (sidebar.classList.contains("collapsed")) {
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+
+</body>
+</html>

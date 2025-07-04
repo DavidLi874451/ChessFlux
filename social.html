@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChessFlux - Social Media</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1c1c1c, #3a3a3a);
+      color: #ffffff;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00aced;
+    }
+
+    .description {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .social-container {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .social-card {
+      padding: 1.5rem;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+      transition: transform 0.3s;
+      background-color: #2c2c2c;
+      box-shadow: 0 0 15px rgba(0, 172, 237, 0.3);
+      color: white;
+    }
+
+    .social-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .social-card img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 1rem;
+      object-fit: contain;
+    }
+
+    .social-card a {
+      display: block;
+      margin-top: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      color: #00aced;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      overflow-x: hidden;
+      z-index: 1000;
+      padding-top: 2rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+
+    .sidebar-content a:hover {
+      background-color: #005f99;
+    }
+
+    #time-box {
+      text-align: center;
+      background-color: #007acc;
+      padding: 1rem;
+      border-radius: 10px;
+      width: calc(100% - 200px);
+      margin: auto auto 2rem auto;
+      box-sizing: border-box;
+    }
+
+    #time-box p, #time-box h4 {
+      color: white;
+      margin: 0.5rem 0;
+    }
+
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1100;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      box-sizing: border-box;
+    }
+
+    #user-area a, #user-area button {
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      border: 2px solid #007acc;
+      color: #007acc;
+      background: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #user-area a:hover {
+      background-color: #007acc;
+      color: white;
+    }
+
+    #user-area button {
+      border: none;
+      background-color: #e63946;
+      color: white;
+      border-radius: 5px;
+    }
+
+    #user-area button:hover {
+      background-color: #bf2d3a;
+    }
+  </style>
+</head>
+<body>
+<header id="top-header">
+  <div id="user-area"></div>
+</header>
+
+<div id="sidebar">
+  <div class="sidebar-content">
+    <a href="home.html"><span>Home</span></a>
+    <a href="lessons.html"><span>Lessons</span></a>
+    <a href="plans.html"><span>Personal Plans</span></a>
+    <a href="contact.html"><span>Contact</span></a>
+    <a href="social.html"><span>Social Media</span></a>
+    <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+  </div>
+</div>
+
+<h1>Follow ChessFlux on Social Media</h1>
+<div class="description">
+  Stay connected with us and never miss updates, puzzles, lessons, or tournament announcements!<br />
+  Join our growing community across all platforms.
+</div>
+
+<div class="social-container">
+  <div class="social-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/X_logo.jpg" alt="X Logo" />
+    <div>@ChessFlux1</div>
+    <a href="https://twitter.com/ChessFlux1" target="_blank" rel="noopener noreferrer">Visit X</a>
+  </div>
+  <div class="social-card">
+    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram Logo" />
+    <div>@ChessFlux1</div>
+    <a href="https://instagram.com/ChessFlux1" target="_blank" rel="noopener noreferrer">Visit Instagram</a>
+  </div>
+  <div class="social-card">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube Logo" />
+    <div>@ChessFlux1</div>
+    <a href="https://youtube.com/@ChessFlux1" target="_blank" rel="noopener noreferrer">Visit YouTube</a>
+  </div>
+  <div class="social-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Discord_logo_wordmark.svg" alt="Discord Logo" />
+    <div>@ChessFlux</div>
+    <a href="https://discord.gg/qKUQB36gq2" target="_blank" rel="noopener noreferrer">Join our Discord</a>
+  </div>
+</div>
+
+<div id="time-box">
+  <h4>Live Time Zones</h4>
+  <p><strong>Pacific Time:</strong> <span id="pt-time"></span></p>
+  <p><strong>Eastern Time:</strong> <span id="et-time"></span></p>
+  <p><strong>UTC:</strong> <span id="utc-time"></span></p>
+  <p><strong>New Delhi:</strong> <span id="ist-time"></span></p>
+</div>
+
+<script>
+  function updateTimeZones() {
+    const now = new Date();
+    document.getElementById('pt-time').textContent = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+    document.getElementById('et-time').textContent = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+    document.getElementById('utc-time').textContent = now.toUTCString().split(' ')[4];
+    document.getElementById('ist-time').textContent = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+  }
+
+  function renderUserArea() {
+    const userArea = document.getElementById('user-area');
+    const userJSON = localStorage.getItem('loggedInUser');
+    const user = userJSON ? JSON.parse(userJSON) : null;
+
+    if (user) {
+      userArea.innerHTML = `
+        <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+        <button id="logout-btn">Logout</button>
+      `;
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('loggedInUser');
+        renderUserArea();
+      });
+    } else {
+      userArea.innerHTML = `
+        <a href="login.html">Login</a>
+        <a href="signup.html" style="background: #007acc; color: white;">Sign Up</a>
+      `;
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    renderUserArea();
+    updateTimeZones();
+    setInterval(updateTimeZones, 1000);
+  });
+</script>
+</body>
+</html>

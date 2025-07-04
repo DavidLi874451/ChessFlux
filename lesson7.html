@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 7 - Mastering the Middlegame to Endgame Transition</title>
+  <style>
+    /* Basic Reset */
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      transition: width 0.3s ease;
+      overflow-y: auto;
+      z-index: 1300;
+    }
+    #sidebar.collapsed {
+      width: 60px;
+    }
+    #sidebar .toggle-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #007acc;
+      border: none;
+      color: white;
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span {
+      display: none;
+    }
+    #sidebar .sidebar-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover {
+      background-color: #0062cc;
+    }
+
+    /* Top header (login/signup) */
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header {
+      width: calc(100% - 60px);
+    }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+
+    /* Main content */
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content {
+      margin-left: 60px;
+    }
+
+    /* Tables styling */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #007acc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    /* Time zones box (bottom right) */
+    #time-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <!-- Top header -->
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <h1>Mastering the Middlegame to Endgame Transition</h1>
+
+    <p>Most players spend hours training openings and endgames. However, one of the most fragile, often misplayed phases is the transition between the middle and endgame—the moment when plans fracture, activity shifts, and small inaccuracies lead to irreversible damage. This article focuses on building clarity, timing sense, and structural awareness when liquidating into an endgame. Specifically designed for advanced-intermediate and club-level players, this lesson gives you practical frameworks and diagnostic tools for mastering the transition phase.</p>
+
+    <h2>Principle 1: Recognize a “Transition Point” Before You’re In It</h2>
+
+    <p><strong>Principle:</strong> Many errors occur because players drift into an endgame without realizing it’s happening. Recognizing the transition before material is exchanged gives you more control.</p>
+
+    <p><strong>Method:</strong> Learn to identify 3 classic transition indicators:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Indicator</th>
+          <th>Meaning</th>
+          <th>Sample Game Situation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Queen Simplification Tension</td>
+          <td>One side is aiming to trade queens—why?</td>
+          <td>You’re up a pawn, opponent offers Q-trade—should you accept or not?</td>
+        </tr>
+        <tr>
+          <td>Pawn Lock Breaks</td>
+          <td>Locked structures are opening—plans must shift</td>
+          <td>c5 break finally happens in a French—what endgames does this favor?</td>
+        </tr>
+        <tr>
+          <td>King Mobility Threshold</td>
+          <td>The opponent starts centralizing the king during the middlegame</td>
+          <td>Should you start centralizing yours, too?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Actionable Habit:</strong> During each game review, tag the move where you believe the endgame “began”—then rewind 5 moves and analyze whether you anticipated it or just coasted into it.</p>
+
+    <h2>Principle 2: Never Liquidate Without a Purpose</h2>
+
+    <p><strong>Principle:</strong> Many players simplify when they feel confused. This is a mistake. Endgame clarity should precede liquidation, not result from it.</p>
+
+    <p><strong>Decision Tree – Before trading down, ask:</strong></p>
+    <ul>
+      <li>What changes when major pieces come off?</li>
+      <li>Who benefits from the new space dynamics?</li>
+      <li>Does the weaker side’s king become safer or weaker?</li>
+      <li>Do I win the race to the activity?</li>
+      <li>After queens and rooks are traded, who controls open files, outposts, or ranks?</li>
+      <li>What’s the pawn structure trajectory?</li>
+      <li>Will it lead to fixed weaknesses (isolated pawn, backward pawn) that matter more in the endgame?</li>
+    </ul>
+
+    <h2>Principle 3: Build a “Transitional Index Card” of Concepts</h2>
+
+    <p>Most endgame transitions involve recurring structural and tactical shifts. Memorize and internalize key concepts like these, and practice spotting them before they arise. And no, don't make index cards to practice recognizing these patterns! Just practice this routine throughout your games!</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Theme</th>
+          <th>What It Looks Like</th>
+          <th>Tactical Motif</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Good Knight vs Bad Bishop</td>
+          <td>Bishop is stuck behind its pawns in symmetrical endings</td>
+          <td>Trade down when it favors your knight’s range</td>
+        </tr>
+        <tr>
+          <td>Outside Passed Pawn</td>
+          <td>Endgame with potential for decisive distraction</td>
+          <td>Can tie the enemy king down—convert extra tempo into zugzwang</td>
+        </tr>
+        <tr>
+          <td>Active King vs Passive King</td>
+          <td>Who centralizes first by move 30?</td>
+          <td>Activity = tempo; tempo = initiative</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Principle 4: Timing the Shift — Don’t Rush or Delay</h2>
+
+    <p><strong>Principle:</strong> Transitioning too early or too late kills initiative. Learn to delay liquidation when you have attacking chances, and accelerate it when the position calls for technical conversion.</p>
+
+    <p><strong>Training Exercise – “Stabilize or Simplify?”</strong></p>
+
+    <p>Use annotated master games. Pause at move 30–35. Ask: “Stabilize or Simplify?”</p>
+    <ul>
+      <li>Is simplification here a strategy or a coping mechanism?</li>
+      <li>Who benefits from piece reduction based on piece activity right now?</li>
+    </ul>
+
+    <h2>Principle 5: Visualize the Post-Trade Position</h2>
+
+    <p><strong>Principle:</strong> Train your “mental board projection” by imagining positions 5 moves after simplification. This anticipates issues before you trade.</p>
+
+    <p><strong>Routine:</strong></p>
+    <ul>
+      <li>During slow games, pause before a major trade.</li>
+      <li>Without moving pieces, picture the board 5 moves after.</li>
+      <li>Ask:</li>
+      <ul>
+        <li>Is my king better?</li>
+        <li>Are my pawns more vulnerable or more mobile?</li>
+        <li>Did I lose any imbalance I could’ve used?</li>
+      </ul>
+    </ul>
+
+    <h2>Conclusion</h2>
+
+    <p>The middlegame-to-endgame transition is not a fade-out—it’s a pivot. Strong players don’t simplify because they’re confused; they simplify because they know the outcome will favor them. Mastering this phase isn’t about memorizing endgames—it’s about learning to read future landscapes before the fog clears.</p>
+
+    <h3>Key Takeaways</h3>
+    <ul>
+      <li>Anticipate the transition before it begins.</li>
+      <li>Never simplify without a tangible structural or activity-based gain.</li>
+      <li>Practice “if-then” trading analysis with diagrams and flashcards.</li>
+      <li>Train for visualization after simplification, not just calculation before it.</li>
+      <li>Your king is an endgame piece waiting to be activated. Don’t let it sleep too long.</li>
+    </ul>
+  </main>
+
+  <!-- Time zones compact fixed bottom-right -->
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const topHeader = document.getElementById("top-header");
+      if(sidebar.classList.contains("collapsed")){
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+
+</body>
+</html>

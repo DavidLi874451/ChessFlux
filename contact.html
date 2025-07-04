@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChessFlux - Contact</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px;
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      padding-top: 2rem;
+    }
+
+    .sidebar-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .sidebar-content a:hover {
+      background-color: #005f99;
+    }
+
+    /* Time zone box */
+    #time-box {
+      width: calc(100% - 200px);
+      margin-left: 200px;
+      background-color: #ffffff;
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-sizing: border-box;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+
+    .time-zone-item {
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .time-zone-item strong {
+      color: #007acc;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Main content */
+    .main-content {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .contact-message {
+      font-size: 1.25rem;
+      font-weight: bold;
+      max-width: 700px;
+      margin: 0 auto 2rem auto;
+      line-height: 1.6;
+    }
+
+    .contact-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-button {
+      background-color: #007acc;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      user-select: text;
+    }
+
+    .contact-buttons a {
+      background-color: #007acc;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .contact-buttons a:hover {
+      background-color: #005f99;
+      transform: translateY(-2px);
+    }
+
+    header#top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1100;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+  </style>
+
+  <script>
+    function updateTimeZones() {
+      const now = new Date();
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      document.getElementById('et-time').textContent = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      document.getElementById('utc-time').textContent = now.toUTCString().split(' ')[4];
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
+          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
+        `;
+      }
+    }
+
+    setInterval(updateTimeZones, 1000);
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimeZones();
+      renderUserArea();
+    });
+  </script>
+</head>
+<body>
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <div id="sidebar">
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1>Contact ChessFlux</h1>
+    <p class="contact-message">
+      To contact ChessFlux, please use the options below.<br>
+      We will respond immediately or within 2 business days at the latest.
+    </p>
+    <div class="contact-buttons">
+      <div class="contact-button">📧 Email: chessflux1@gmail.com</div>
+      <a href="https://www.chess.com/member/flujodeajedrez" target="_blank">♟️ Message @flujodeajedrez on Chess.com</a>
+    </div>
+  </div>
+
+  <div id="time-box">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time"></span>
+    </div>
+  </div>
+</body>
+</html>

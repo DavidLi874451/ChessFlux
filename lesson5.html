@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 5 - Pawn Structures and Positional Fluency</title>
+  <style>
+    /* Basic Reset */
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: #004a99;
+      color: white;
+      padding-top: 60px;
+      box-sizing: border-box;
+      transition: width 0.3s ease;
+      overflow-y: auto;
+      z-index: 1300;
+    }
+    #sidebar.collapsed {
+      width: 60px;
+    }
+    #sidebar .toggle-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #007acc;
+      border: none;
+      color: white;
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 1350;
+    }
+    #sidebar.collapsed .sidebar-content a span {
+      display: none;
+    }
+    #sidebar .sidebar-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-left: 15px;
+    }
+    #sidebar .sidebar-content a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    #sidebar .sidebar-content a:hover {
+      background-color: #0062cc;
+    }
+
+    /* Top header (login/signup) */
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 50px;
+      width: calc(100% - 220px);
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1400;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed + #top-header {
+      width: calc(100% - 60px);
+    }
+    #user-area a {
+      margin-left: 15px;
+      color: #007acc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    #user-area button {
+      background: none;
+      border: none;
+      color: #007acc;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+
+    /* Main content */
+    main.main-content {
+      margin-left: 220px;
+      padding: 70px 30px 100px 30px;
+      max-width: 900px;
+      transition: margin-left 0.3s ease;
+    }
+    #sidebar.collapsed ~ main.main-content {
+      margin-left: 60px;
+    }
+
+    /* Tables styling */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #007acc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #007acc;
+      color: white;
+    }
+
+    /* Time zones box (bottom right) */
+    #time-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #007acc;
+      max-width: 180px;
+      user-select: none;
+      z-index: 1200;
+    }
+    .time-zone-item {
+      margin-bottom: 6px;
+    }
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-content">
+      <a href="home.html"><span>Home</span></a>
+      <a href="lessons.html"><span>Lessons</span></a>
+      <a href="plans.html"><span>Personal Plans</span></a>
+      <a href="contact.html"><span>Contact</span></a>
+      <a href="social.html"><span>Social Media</span></a>
+      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </div>
+  </div>
+
+  <!-- Top header -->
+  <header id="top-header">
+    <div id="user-area"></div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <h1>Pawn Structures and Positional Fluency</h1>
+
+    <p>“Tactics flow from a superior position.” — Bobby Fischer.</p>
+
+    <p>Most superior positions often flow from superior pawn structures. If strategy is the soul of chess, then pawn structures are its skeleton. Yet most players never go beyond vague notions of “weakness” or “doubled pawns.” To master positional play, you must read the structure as if it were a language, interpreting space, plans, and long-term imbalances from the shape of the pawns alone. This guide breaks down a precision framework for training structural fluency — developing the ability to evaluate and exploit pawn formations with depth, flexibility, and foresight.</p>
+
+    <h2>Principle 1: Internalize Common Structures and Their Strategic DNA</h2>
+
+    <p>Memorizing isolated rules won’t cut it. True mastery comes from studying structures as recurring archetypes with thematic plans.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Structure</th>
+          <th>Strategic Themes</th>
+          <th>Common Openings</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Isolated Queen’s Pawn (IQP)</td>
+          <td>Dynamic potential vs. long-term weakness. Use a piece activity before the endgame.</td>
+          <td>Tarrasch, Panov Attack, Caro-Kann</td>
+        </tr>
+        <tr>
+          <td>Hedgehog</td>
+          <td>Flexibility, waiting strategy, central breaks with ...d5 or ...b5.</td>
+          <td>English, Sicilian Scheveningen</td>
+        </tr>
+        <tr>
+          <td>Minority Attack</td>
+          <td>Create queenside weaknesses, provoke pawn targets.</td>
+          <td>Queen’s Gambit Declined</td>
+        </tr>
+        <tr>
+          <td>King’s Indian vs. Maróczy Bind</td>
+          <td>Clash of space vs. counterattack. Time the pawn breaks (e.g., ...f5, ...b5).</td>
+          <td>KID, Accelerated Dragon</td>
+        </tr>
+        <tr>
+          <td>Stonewall</td>
+          <td>Strong e5 square, but bad light-square bishop. Patience and rerouting are key.</td>
+          <td>Dutch Defense, Colle System</td>
+        </tr>
+        <tr>
+          <td>Symmetrical Center (e4-e5 or d4-d5)</td>
+          <td>Maneuvering battles, control of tension, and well-timed breaks.</td>
+          <td>Ruy Lopez, French Defense</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Principle 2: Train Structural Fluency Like a Language</h2>
+
+    <h3>Method 1: Structure-to-Plan Flashcards</h3>
+    <p>Create flashcards showing only pawn skeletons (no pieces). On the back:</p>
+    <ul>
+      <li>List 2-3 strategic goals (e.g., "Pressure d5", "Break with f4-f5")</li>
+      <li>Include both sides' perspectives.</li>
+      <li>Drill: Flip cards and brainstorm plans without moving pieces. Then compare with annotated GM examples.</li>
+    </ul>
+
+    <h3>Method 2: Structural Reconstruction</h3>
+    <p>Take a middlegame position and erase all pawns.</p>
+    <p><strong>Challenge:</strong></p>
+    <ul>
+      <li>Rebuild the pawn structure from clues: outposts, locked diagonals, tension squares.</li>
+      <li>Then evaluate who benefits structurally and why.</li>
+    </ul>
+
+    <h3>Method 3: Pawn Break Visualization</h3>
+    <p>From a given position, list all possible pawn breaks for both sides. For each:</p>
+    <ul>
+      <li>Evaluate timing and risk/reward.</li>
+      <li>Label: destructive, clarifying, or stabilizing.</li>
+      <li>Then play through the position and observe whether the break was used, and when.</li>
+    </ul>
+
+    <h2>Schedule</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Focus</th>
+          <th>Time</th>
+          <th>Tools</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Mon</td><td>Flashcards: IQP, Stonewall, Hedgehog</td><td>45 mins</td><td>Chessable, Custom Cards</td></tr>
+        <tr><td>Tue</td><td>Annotated Structure Game + Quiz</td><td>60 mins</td><td>GM Gamebase (e.g., Karpov, Petrosian)</td></tr>
+        <tr><td>Wed</td><td>Break Timing Challenge</td><td>45 mins</td><td>Lichess Studies, Visual Board</td></tr>
+        <tr><td>Thu</td><td>"Pawn Skeleton" Exercise</td><td>60 mins</td><td>Diagram-Only Sets</td></tr>
+        <tr><td>Fri</td><td>Reverse Engineering: Find the Opening from the Structure</td><td>30 mins</td><td>Training Positions</td></tr>
+        <tr><td>Sat</td><td>Structure-Themed Simul (vs engine or sparring partner)</td><td>90 mins</td><td>Lichess / ChessBase</td></tr>
+        <tr><td>Sun</td><td>Long Game (60+15) with Structure-Only Postmortem</td><td>90+ mins</td><td>Notebook, No Engine First</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Conclusion</h2>
+    <p>Understanding pawn structures isn’t passive learning — it’s muscle memory for the strategic mind. Don’t rely on intuition alone. Break down, drill, and reconstruct the bones of chess until each structure triggers reflexive plans, piece placements, and break evaluations. True positional players don’t “feel” structure — they speak it. Quiet mastery begins when you stop reacting to pawn shapes… and start commanding them.</p>
+  </main>
+
+  <!-- Time zones compact fixed bottom-right -->
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      const topHeader = document.getElementById("top-header");
+      if(sidebar.classList.contains("collapsed")){
+        topHeader.style.width = "calc(100% - 60px)";
+      } else {
+        topHeader.style.width = "calc(100% - 220px)";
+      }
+    }
+
+    function updateTimes() {
+      const now = new Date();
+
+      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+
+      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      });
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimes();
+      setInterval(updateTimes, 1000);
+      renderUserArea();
+    });
+  </script>
+
+</body>
+</html>

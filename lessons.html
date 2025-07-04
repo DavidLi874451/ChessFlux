@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChessFlux - Lessons</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding-top: 60px;
+      padding-left: 200px;
+      transition: padding-left 0.3s ease;
+      min-height: 100vh;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 200px;
+      background-color: #007acc;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: width 0.3s ease;
+      z-index: 1050;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+      outline-offset: 2px;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      white-space: nowrap;
+      display: block;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    #top-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 60px;
+      background: white;
+      width: calc(100% - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1rem;
+      padding: 0 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1100;
+      transition: width 0.3s ease, right 0.3s ease;
+    }
+
+    #user-area span {
+      font-weight: 600;
+      color: #007acc;
+    }
+
+    #user-area button,
+    #user-area a.login,
+    #user-area a.signup {
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 2px solid #007acc;
+      text-decoration: none;
+      color: #007acc;
+      background: transparent;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      user-select: none;
+    }
+
+    #user-area button {
+      background: #e63946;
+      border-color: #e63946;
+      color: white;
+    }
+
+    #user-area button:hover,
+    #user-area a.login:hover,
+    #user-area a.signup:hover {
+      background-color: #005f99;
+      border-color: #005f99;
+      color: white;
+    }
+
+    #user-area a.signup {
+      background: #007acc;
+      border-color: #007acc;
+      color: white;
+    }
+
+    .main-content {
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto 80px auto;
+      transition: margin-left 0.3s ease;
+    }
+
+    #time-box {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: #ffffff;
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: #007acc;
+      user-select: none;
+      z-index: 1100;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+      overflow-x: auto;
+    }
+
+    .time-zone-item {
+      text-align: center;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+
+    .time-zone-item strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+
+    button.lesson-btn {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      border: 2px solid #007acc;
+      background: white;
+      color: #007acc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+      text-align: left;
+    }
+
+    button.lesson-btn:hover {
+      background-color: #007acc;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding-left: 60px;
+      }
+      #sidebar {
+        width: 60px;
+      }
+      #top-header {
+        width: calc(100% - 60px);
+      }
+      .main-content {
+        margin-left: 60px;
+        padding: 1rem;
+      }
+      #time-box {
+        max-width: 95vw;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+      }
+    }
+  </style>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+      if (sidebar.classList.contains("collapsed")) {
+        document.body.style.paddingLeft = '60px';
+        document.getElementById('top-header').style.width = 'calc(100% - 60px)';
+      } else {
+        document.body.style.paddingLeft = '200px';
+        document.getElementById('top-header').style.width = 'calc(100% - 200px)';
+      }
+    }
+
+    function updateTimeZones() {
+      const now = new Date();
+      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      const utc = now.toLocaleTimeString("en-US", { timeZone: "UTC" });
+      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+
+      document.getElementById('pt-time').textContent = pt;
+      document.getElementById('et-time').textContent = et;
+      document.getElementById('utc-time').textContent = utc;
+      document.getElementById('ist-time').textContent = ist;
+    }
+
+    function renderUserArea() {
+      const userArea = document.getElementById('user-area');
+      const userJSON = localStorage.getItem('loggedInUser');
+      const user = userJSON ? JSON.parse(userJSON) : null;
+
+      if (user) {
+        userArea.innerHTML = `
+          <span>Hello, ${user.firstName}!</span>
+          <button id="logout-btn">Logout</button>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('loggedInUser');
+          renderUserArea();
+        });
+      } else {
+        userArea.innerHTML = `
+          <a href="login.html" class="login">Login</a>
+          <a href="signup.html" class="signup">Sign Up</a>
+        `;
+      }
+    }
+
+    function goToLesson(n) {
+      window.location.href = `lesson${n}.html`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTimeZones();
+      setInterval(updateTimeZones, 1000);
+      renderUserArea();
+
+      // Initialize sidebar padding on load
+      const sidebar = document.getElementById("sidebar");
+      if (sidebar.classList.contains("collapsed")) {
+        document.body.style.paddingLeft = '60px';
+        document.getElementById('top-header').style.width = 'calc(100% - 60px)';
+      } else {
+        document.body.style.paddingLeft = '200px';
+        document.getElementById('top-header').style.width = 'calc(100% - 200px)';
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <div id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
+    <nav class="sidebar-content" aria-label="Main navigation">
+      <a class="nav-link" href="home.html"><span>Home</span></a>
+      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
+      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
+      <a class="nav-link" href="contact.html"><span>Contact</span></a>
+      <a class="nav-link" href="social.html"><span>Social Media</span></a>
+      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
+    </nav>
+  </div>
+
+  <header id="top-header" role="banner">
+    <div id="user-area"></div>
+  </header>
+
+  <main class="main-content" role="main" tabindex="-1">
+    <h1>Lessons</h1>
+
+    <button class="lesson-btn" onclick="goToLesson(1)">Lesson 1: Opening Repertoire Tips</button>
+    <button class="lesson-btn" onclick="goToLesson(2)">Lesson 2: Positional Understanding</button>
+    <button class="lesson-btn" onclick="goToLesson(3)">Lesson 3: Mastering Pawn Structures</button>
+    <button class="lesson-btn" onclick="goToLesson(4)">Lesson 4: Deliberate Practice</button>
+    <button class="lesson-btn" onclick="goToLesson(5)">Lesson 5: Endgame Fundamentals</button>
+    <button class="lesson-btn" onclick="goToLesson(6)">Lesson 6: Tactical Motifs</button>
+    <button class="lesson-btn" onclick="goToLesson(7)">Lesson 7: Time Management</button>
+    <button class="lesson-btn" onclick="goToLesson(8)">Lesson 8: Opening Traps</button>
+    <button class="lesson-btn" onclick="goToLesson(9)">Lesson 9: Psychological Aspects</button>
+    <button class="lesson-btn" onclick="goToLesson(10)">Lesson 10: When Not to Resign</button>
+
+  </main>
+
+  <div id="time-box" aria-label="Current time zones">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+
+</body>
+</html>
