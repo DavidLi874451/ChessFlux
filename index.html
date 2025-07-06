@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChessFlux</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding-left: 200px; /* Reserve space for sidebar */
+      box-sizing: border-box;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #007acc;
+      transition: width 0.3s ease;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      display: block;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background-color: #005f99;
+    }
+
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    .sidebar-content {
+      flex-grow: 1;
+    }
+
+    /* Content layout */
+    .container {
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+      transition: margin-left 0.3s ease;
+    }
+
+    #sidebar.collapsed ~ .container {
+      margin-left: 80px;
+    }
+
+    .image-box {
+      width: 20%;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: auto;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+    }
+
+    .welcome-box {
+      width: 80%;
+      border: 2px solid #007acc;
+      background-color: #ffffff;
+      padding: 1.5rem;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #007acc;
+    }
+
+    /* Time zone box styling */
+    #time-box {
+      width: calc(100% - 200px);
+      margin-left: 200px;
+      background-color: #ffffff;
+      border: 2px solid #007acc;
+      border-radius: 10px;
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-sizing: border-box;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+
+    #sidebar.collapsed ~ #time-box {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+
+    .time-zone-item {
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+
+    .time-zone-item strong {
+      color: #007acc;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+    }
+
+    function updateTimeZones() {
+      const now = new Date();
+      const utc = now.toUTCString().split(' ')[4];
+      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
+      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
+      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
+
+      document.getElementById('pt-time').textContent = pt;
+      document.getElementById('et-time').textContent = et;
+      document.getElementById('utc-time').textContent = utc;
+      document.getElementById('ist-time').textContent = ist;
+    }
+
+    setInterval(updateTimeZones, 1000);
+    window.onload = updateTimeZones;
+  </script>
+</head>
+<body>
+  
+  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center; font-family: Arial, sans-serif;">
+  <div id="user-area">
+    <!-- Content controlled by JavaScript -->
+  </div>
+</header>
+
+<!-- Add padding-top to body or main container to avoid content being hidden under fixed header -->
+<style>
+  body {
+    padding-top: 60px; /* adjust based on header height */
+  }
+</style>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div>
+      <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+      <div class="sidebar-content">
+        <a href="index.html" class="nav-link"><span>Home</span></a>
+        <a href="lessons.html" class="nav-link"><span>Lessons</span></a>
+        <a href="plans.html" class="nav-link"><span>Personal Plans</span></a>
+        <a href="contact.html" class="nav-link"><span>Contact</span></a>
+        <a href="social.html" class="nav-link"><span>Social Media</span></a>
+        <a href="termsandconditions.html" class="nav-link"><span>Terms & Conditions</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="image-box">
+      <img src="logo.png" alt="ChessFlux Logo">
+    </div>
+    <div class="welcome-box">
+      <h1>Welcome to ChessFlux!</h1>
+      <p>We are so glad for you to be able to join this amazing community of like-minded individuals and cannot wait to assist you with your chess endeavors!</p>
+
+      <p><strong>ChessFlux</strong> is a community designed to assist all aspiring chess players towards becoming stronger players. This club provides several opportunities for individuals from all chess backgrounds to improve their game as they receive free coaching and guidance from professional coaches and top players.</p>
+
+      <p>We frequently post instructional articles and lessons that help individuals expand their sphere of chess knowledge for free. We also provide multiple chess exercises for all individuals to attempt and learn from.</p>
+
+      <p>Additionally, we offer free individualized plans and access to all members who desire to be coached and optimize their journey towards chess progression!</p>
+    </div>
+  </div>
+
+  <!-- Time Zones -->
+  <div id="time-box">
+    <div class="time-zone-item">
+      <strong>Pacific Time</strong>
+      <span id="pt-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>Eastern Time</strong>
+      <span id="et-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>UTC</strong>
+      <span id="utc-time"></span>
+    </div>
+    <div class="time-zone-item">
+      <strong>New Delhi</strong>
+      <span id="ist-time"></span>
+    </div>
+  </div>
+<!-- Simulate user session stored in localStorage -->
+<script>
+  function renderUserArea() {
+    const userArea = document.getElementById('user-area');
+    const userJSON = localStorage.getItem('loggedInUser');
+    const user = userJSON ? JSON.parse(userJSON) : null;
+
+    if (user) {
+      userArea.innerHTML = `
+        <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
+        <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
+      `;
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('loggedInUser');
+        renderUserArea();
+        // Optionally redirect to homepage after logout
+        // window.location.href = 'index.html';
+      });
+    } else {
+      userArea.innerHTML = `
+        <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
+        <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
+      `;
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    renderUserArea();
+    updateTimeZones();
+  });
+</script>
+
+</body>
+</html>
