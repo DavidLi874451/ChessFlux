@@ -1,464 +1,1000 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Beginner Chess Plan 500–1000 Elo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beginner Chess Plan 500–1000 Elo | ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    * {
       margin: 0;
-      padding-left: 200px;
-      padding-top: 60px;
+      padding: 0;
       box-sizing: border-box;
     }
 
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 200px;
-      background-color: #007acc;
-      transition: width 0.3s ease;
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
       overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      z-index: 1000;
-      padding-top: 2rem;
+      perspective: 1000px;
     }
 
-    #sidebar.collapsed {
-      width: 60px;
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
     }
 
     .toggle-btn {
       background: none;
       border: none;
-      color: white;
+      color: var(--primary);
       font-size: 1.5rem;
-      padding: 1rem;
       cursor: pointer;
-      text-align: left;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .nav-link {
-      color: white;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
       text-decoration: none;
-      padding: 1rem;
-      display: block;
-      transition: background-color 0.3s ease;
-      white-space: nowrap;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
     }
 
     .nav-link:hover {
-      background-color: #005f99;
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
     }
 
-    #sidebar.collapsed .nav-link span {
-      display: none;
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
     }
 
-    .sidebar-content {
-      flex-grow: 1;
+    .nav-link.active::before {
+      transform: scaleY(1);
     }
 
-    #time-box {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background-color: rgba(255 255 255 / 0.95);
-      border: 2px solid #007acc;
-      border-radius: 10px;
-      padding: 0.5rem 1rem;
-      display: flex;
-      gap: 1.2rem;
-      font-size: 0.9rem;
-      color: #007acc;
-      user-select: none;
-      z-index: 1100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      max-width: 420px;
-      overflow-x: auto;
-    }
-
-    #sidebar.collapsed ~ #time-box {
-      margin-left: 60px;
-      width: calc(100% - 60px);
-    }
-
-    .time-zone-item {
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
       text-align: center;
-      padding: 0.5rem 1rem;
+      flex-shrink: 0;
     }
 
-    .time-zone-item strong {
-      color: #007acc;
-      display: block;
-      margin-bottom: 0.25rem;
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
     }
 
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
     .main-content {
-      padding: 2rem;
-      max-width: 900px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
+      padding: 30px;
+      position: relative;
+      overflow-y: auto;
     }
 
-    #sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
+    /* === Cyber Header === */
+    .cyber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
     }
 
-    h1, h2, h3 {
-      color: #007acc;
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
-    table {
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Plan Content === */
+    .plan-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin: 30px 0 15px 0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    .section-subtitle {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      margin: 25px 0 10px 0;
+      color: var(--primary);
+    }
+
+    .plan-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    /* === Lists === */
+    .styled-list {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    .styled-list li {
+      margin-bottom: 10px;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .styled-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    /* === Tables === */
+    .data-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 1rem 0 2rem 0;
-      font-size: 1rem;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
-    th, td {
-      border: 1px solid #007acc;
-      padding: 0.6rem 1rem;
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      font-weight: 600;
+      padding: 12px 15px;
       text-align: left;
     }
 
-    th {
-      background-color: #007acc;
-      color: white;
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
     }
 
-    blockquote {
-      border-left: 4px solid #007acc;
-      margin-left: 0;
-      padding-left: 1rem;
-      color: #555;
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 247, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* === Links === */
+    .resource-link {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .resource-link:hover {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+    }
+
+    /* === Blockquotes === */
+    .quote-block {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
       font-style: italic;
     }
+
+    /* === Time Zone Bar === */
+    .time-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 20, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .app-container.expanded .time-bar {
+      left: 280px;
+    }
+
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
+    }
+
+    .time-zone:last-child::after {
+      display: none;
+    }
+
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .time-zone {
+        padding: 0 15px;
+      }
+      
+      .time-label {
+        font-size: 0.8rem;
+      }
+      
+      .time-value {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* === Animation Classes === */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
   </style>
-
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-      const header = document.getElementById("top-header");
-      if (sidebar.classList.contains("collapsed")) {
-        header.style.width = "calc(100% - 60px)";
-      } else {
-        header.style.width = "calc(100% - 200px)";
-      }
-    }
-
-    function updateTimeZones() {
-      const now = new Date();
-      const utc = now.toUTCString().split(' ')[4];
-      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
-      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
-      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
-
-      document.getElementById('pt-time').textContent = pt;
-      document.getElementById('et-time').textContent = et;
-      document.getElementById('utc-time').textContent = utc;
-      document.getElementById('ist-time').textContent = ist;
-    }
-
-    function renderUserArea() {
-      const userArea = document.getElementById('user-area');
-      const userJSON = localStorage.getItem('loggedInUser');
-      const user = userJSON ? JSON.parse(userJSON) : null;
-
-      if (user) {
-        userArea.innerHTML = `
-          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
-          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', () => {
-          localStorage.removeItem('loggedInUser');
-          renderUserArea();
-        });
-      } else {
-        userArea.innerHTML = `
-          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
-          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
-        `;
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      updateTimeZones();
-      setInterval(updateTimeZones, 1000);
-      renderUserArea();
-    });
-  </script>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center;">
-    <div id="user-area"></div>
-  </header>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
+      </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link active">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
 
-  <div id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar-content">
-      <a class="nav-link" href="index.html"><span>Home</span></a>
-      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
-      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
-      <a class="nav-link" href="contact.html"><span>Contact</span></a>
-      <a class="nav-link" href="social.html"><span>Social Media</span></a>
-      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
-    </div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Plan Content -->
+      <div class="plan-container fade-in delay-1">
+        <h1 class="page-title">BEGINNER STUDY GUIDE <span style="color: var(--primary);">500–1000 ELO</span></h1>
+        
+        <p class="plan-text">Welcome! If you are rated between 500 and 1000 Elo and want to improve your chess skills, this guide will help you take your game to the next level. By now, you should have a basic understanding of the rules and be able to recognize how the pieces move. What you need next is to develop your board vision and tactical awareness.</p>
+
+        <p class="plan-text">For example, in a complex position, it may feel overwhelming to spot opportunities, but with practice, you will quickly recognize moves like a bishop capturing a rook on a long diagonal. If you don't see these moves immediately, don't worry—board vision develops naturally over time and with consistent practice.</p>
+
+        <h2 class="section-title"><i class="fas fa-chess-knight"></i> KEY AREAS TO FOCUS ON</h2>
+
+        <h3 class="section-subtitle"><i class="fas fa-bolt"></i> TACTICS</h3>
+        <p class="plan-text">At this stage, tactics are the most important skill to develop. This includes:</p>
+        <ul class="styled-list">
+          <li>Recognizing threats and attacks quickly</li>
+          <li>Identifying unprotected pieces</li>
+          <li>Learning basic checkmate patterns</li>
+        </ul>
+
+        <p class="plan-text">Focus on learning common tactical motifs like forks, pins, skewers, discovered attacks, and mates in one or two moves. Your goal is to find these tactics quickly and create opportunities to apply them in your games.</p>
+
+        <h3 class="section-subtitle"><i class="fas fa-stopwatch"></i> TACTICS TRAINING</h3>
+        <p class="plan-text">Use online tools like Chess.com's tactics trainer to practice puzzles regularly. You can also train by specific themes if you find certain patterns challenging. Practice consistently to build pattern recognition and tactical sharpness.</p>
+
+        <h3 class="section-subtitle"><i class="fas fa-trophy"></i> CONVERTING ADVANTAGES</h3>
+        <p class="plan-text">Often players gain a material advantage but struggle to convert it into a win. Practice finishing games where you have a lead by playing against computer opponents or using training exercises. This will build your confidence in closing out games.</p>
+
+        <h3 class="section-subtitle"><i class="fas fa-brain"></i> QUICK THINKING</h3>
+        <p class="plan-text">Chess requires not only finding good moves but finding them quickly. Use resources like Chess Tempo's blitz tactics to solve puzzles under time pressure. This helps improve your speed and accuracy during games.</p>
+
+        <h3 class="section-subtitle"><i class="fas fa-puzzle-piece"></i> PUZZLE RUSH</h3>
+        <p class="plan-text">Puzzle Rush challenges you to solve as many puzzles as possible before making three mistakes. It's a great way to practice basic and gradually more difficult tactics. Try different time modes to improve your stamina and quick recognition.</p>
+
+        <h2 class="section-title"><i class="fas fa-chess-king"></i> ENDGAMES</h2>
+        <p class="plan-text">While tactics are the priority, it's useful to start learning basic endgames, especially king and pawn endgames. Important concepts include:</p>
+        <ul class="styled-list">
+          <li>Checkmating with a queen, rook, or two rooks</li>
+          <li>Creating and promoting passed pawns</li>
+          <li>Understanding the rule of the square and opposition</li>
+        </ul>
+        <p class="plan-text">Use online videos and lessons to build your endgame foundation.</p>
+
+        <h2 class="section-title"><i class="fas fa-chess-board"></i> STRATEGY AND POSITIONAL PLAY</h2>
+        <p class="plan-text">Start familiarizing yourself with fundamental strategic ideas, including:</p>
+        <ul class="styled-list">
+          <li>How pawn structures influence plans</li>
+          <li>Identifying weak pawns and weak squares</li>
+          <li>Coordinating your pieces effectively</li>
+          <li>Simplifying the position when ahead</li>
+        </ul>
+        <p class="plan-text">You can find strategy lessons on Chess.com and other free resources online.</p>
+
+        <h2 class="section-title"><i class="fas fa-chess-pawn"></i> OPENINGS</h2>
+        <p class="plan-text">At this level, don't worry about memorizing long opening lines. Instead:</p>
+        <ul class="styled-list">
+          <li>Learn basic opening principles: control the center, develop your minor pieces, and castle early</li>
+          <li>Focus on a few simple openings, like 1.e4 e5 for White, or a basic defense for Black</li>
+          <li>Play your chosen openings and learn from your games</li>
+        </ul>
+        <p class="plan-text">Remember, middlegame and endgame skills are more important than memorizing openings.</p>
+
+        <h2 class="section-title"><i class="fas fa-gamepad"></i> PLAYING GAMES</h2>
+        <p class="plan-text">The best way to improve is by playing regularly. Some tips:</p>
+        <ul class="styled-list">
+          <li>Play both longer time controls (like 15|10) and faster games (like 5|5) to develop different skills</li>
+          <li>Avoid bullet chess at this stage to prevent bad habits</li>
+          <li>Try to play games in one sitting rather than daily correspondence games</li>
+          <li>Review your games afterward to learn from mistakes</li>
+        </ul>
+
+        <h2 class="section-title"><i class="fas fa-calendar-alt"></i> SAMPLE WEEKLY STUDY PLAN</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Activity</th>
+              <th>Duration per Week</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tactics Training</td>
+              <td>45 minutes</td>
+            </tr>
+            <tr>
+              <td>Blitz Tactics</td>
+              <td>30 minutes</td>
+            </tr>
+            <tr>
+              <td>Puzzle Rush</td>
+              <td>1 session</td>
+            </tr>
+            <tr>
+              <td>Endgame Practice</td>
+              <td>30 minutes</td>
+            </tr>
+            <tr>
+              <td>Strategy Lessons</td>
+              <td>30 minutes</td>
+            </tr>
+            <tr>
+              <td>Opening Study</td>
+              <td>Learn 1 chapter or opening sequence</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-title"><i class="fas fa-lightbulb"></i> ADDITIONAL EXERCISES</h2>
+        <h3 class="section-subtitle"><i class="fas fa-eye"></i> TWO-BY-TWO VISUALIZATION</h3>
+        <p class="plan-text">Practice reading games by visualizing two moves at a time in your head before moving the pieces on the board. This exercise strengthens your calculation and board vision.</p>
+
+        <h3 class="section-subtitle"><i class="fas fa-book"></i> READING CHESS BOOKS</h3>
+        <p class="plan-text">Start reading beginner-friendly chess books to deepen your understanding. Even if the exercises seem difficult, reviewing the solutions can teach you valuable concepts.</p>
+
+        <p class="plan-text">Consistent practice over time is the key to improvement. Focus on tactics first, build your endgame and strategy knowledge gradually, and enjoy your journey toward becoming a stronger chess player!</p>
+
+        <h2 class="section-title"><i class="fas fa-calendar-check"></i> CUSTOMIZED WEEKLY STUDY SCHEDULE</h2>
+        <p class="plan-text">(Approx. 4–6 hours per week)</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Activity</th>
+              <th>Duration</th>
+              <th>Resources &amp; Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monday</td>
+              <td>Tactics Training</td>
+              <td>45 minutes</td>
+              <td>Chess.com Tactics Trainer (set medium difficulty)</td>
+            </tr>
+            <tr>
+              <td>Tuesday</td>
+              <td>Endgame Practice</td>
+              <td>30 minutes</td>
+              <td>Chess.com Endgame Lessons or YouTube basics (e.g., "King and Pawn Endgames")</td>
+            </tr>
+            <tr>
+              <td>Wednesday</td>
+              <td>Blitz Tactics (Quick Thinking)</td>
+              <td>30 minutes</td>
+              <td>Chess Tempo Blitz Set (medium difficulty)</td>
+            </tr>
+            <tr>
+              <td>Thursday</td>
+              <td>Strategy Lesson + Review</td>
+              <td>30 minutes</td>
+              <td>Chess.com Lessons (strategy section) or YouTube playlist on chess strategy</td>
+            </tr>
+            <tr>
+              <td>Friday</td>
+              <td>Puzzle Rush (Survival Mode)</td>
+              <td>~20-30 min</td>
+              <td>Chess.com Puzzle Rush Survival Mode</td>
+            </tr>
+            <tr>
+              <td>Saturday</td>
+              <td>Opening Study + Play Games</td>
+              <td>45 minutes study + 1-2 games</td>
+              <td>Learn first 4-5 moves of a simple opening (e.g., Italian Game for White or London System for Black) via Chessable free courses; play games on Chess.com or Lichess</td>
+            </tr>
+            <tr>
+              <td>Sunday</td>
+              <td>Game Review + Visualization Exercise</td>
+              <td>30–45 minutes</td>
+              <td>Use Chess.com Game Review tool to analyze your recent games; practice Two-by-Two visualization on master games from Chess.com database or Lichess Studies</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-title"><i class="fas fa-link"></i> RESOURCE RECOMMENDATIONS</h2>
+
+        <h3 class="section-subtitle"><i class="fas fa-bolt"></i> TACTICS AND TRAINING</h3>
+        <ul class="styled-list">
+          <li><a href="https://www.chess.com/puzzles" target="_blank" rel="noopener" class="resource-link">Chess.com Tactics Trainer</a></li>
+          <li><a href="https://chesstempo.com" target="_blank" rel="noopener" class="resource-link">Chess Tempo Blitz Tactics</a></li>
+          <li><a href="https://www.chess.com/puzzle-rush" target="_blank" rel="noopener" class="resource-link">Puzzle Rush on Chess.com</a></li>
+        </ul>
+
+        <h3 class="section-subtitle"><i class="fas fa-chess-king"></i> ENDGAMES</h3>
+        <ul class="styled-list">
+          <li><a href="https://www.chess.com/lessons/endgames" target="_blank" rel="noopener" class="resource-link">Chess.com Endgame Lessons</a> (Free lessons and drills)</li>
+          <li>YouTube channels:
+            <ul class="styled-list">
+              <li>Hanging Pawns — beginner-friendly endgame videos</li>
+              <li>ChessNetwork — solid explanations of basic endgames</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3 class="section-subtitle"><i class="fas fa-chess-board"></i> STRATEGY</h3>
+        <ul class="styled-list">
+          <li><a href="https://www.chess.com/lessons/strategy" target="_blank" rel="noopener" class="resource-link">Chess.com Strategy Lessons</a></li>
+          <li>YouTube playlist: Search "Beginner Chess Strategy" for step-by-step concepts</li>
+        </ul>
+
+        <h3 class="section-subtitle"><i class="fas fa-chess-pawn"></i> OPENINGS</h3>
+        <ul class="styled-list">
+          <li>Chessable free courses:
+            <ul class="styled-list">
+              <li>The Italian Game (1.e4 e5 Nf3 Nc6 Bc4) — great for beginners</li>
+              <li>London System (as Black or White)</li>
+            </ul>
+          </li>
+          <li>Principles: Control center, develop pieces, castle early, don't move the same piece multiple times in opening</li>
+        </ul>
+
+        <h3 class="section-subtitle"><i class="fas fa-gamepad"></i> PLAYING &amp; REVIEWING GAMES</h3>
+        <ul class="styled-list">
+          <li>Play games at 15|10 or 10|5 time control to balance thinking time and practice</li>
+          <li>Use Chess.com Game Review after every game to identify mistakes and learn</li>
+          <li>Avoid bullet (1|0 or less) to prevent bad habits</li>
+        </ul>
+
+        <h2 class="section-title"><i class="fas fa-trophy"></i> TIPS FOR SUCCESS</h2>
+        <ul class="styled-list">
+          <li>Be consistent, even short daily sessions add up</li>
+          <li>Focus on understanding WHY moves are good or bad, not just memorizing</li>
+          <li>Mix playing with studying to reinforce learning</li>
+          <li>Don't be discouraged by losses—they're your best teachers</li>
+          <li>Use the Two-by-Two visualization exercise to improve calculation and board vision: read moves in pairs in master games and visualize positions in your head before moving pieces</li>
+        </ul>
+
+      </div>
+    </main>
   </div>
 
-  <main class="main-content">
-
-    <h1>Beginner Study Guide for 500–1000 Elo Players</h1>
-
-    <p>Welcome! If you are rated between 500 and 1000 Elo and want to improve your chess skills, this guide will help you take your game to the next level. By now, you should have a basic understanding of the rules and be able to recognize how the pieces move. What you need next is to develop your board vision and tactical awareness.</p>
-
-    <p>For example, in a complex position, it may feel overwhelming to spot opportunities, but with practice, you will quickly recognize moves like a bishop capturing a rook on a long diagonal. If you don’t see these moves immediately, don’t worry—board vision develops naturally over time and with consistent practice.</p>
-
-    <h2>Key Areas to Focus On</h2>
-
-    <h3>Tactics</h3>
-    <p>At this stage, tactics are the most important skill to develop. This includes:</p>
-    <ul>
-      <li>Recognizing threats and attacks quickly</li>
-      <li>Identifying unprotected pieces</li>
-      <li>Learning basic checkmate patterns</li>
-    </ul>
-
-    <p>Focus on learning common tactical motifs like forks, pins, skewers, discovered attacks, and mates in one or two moves. Your goal is to find these tactics quickly and create opportunities to apply them in your games.</p>
-
-    <h3>Tactics Training</h3>
-    <p>Use online tools like Chess.com’s tactics trainer to practice puzzles regularly. You can also train by specific themes if you find certain patterns challenging. Practice consistently to build pattern recognition and tactical sharpness.</p>
-
-    <h3>Converting Advantages</h3>
-    <p>Often players gain a material advantage but struggle to convert it into a win. Practice finishing games where you have a lead by playing against computer opponents or using training exercises. This will build your confidence in closing out games.</p>
-
-    <h3>Quick Thinking</h3>
-    <p>Chess requires not only finding good moves but finding them quickly. Use resources like Chess Tempo’s blitz tactics to solve puzzles under time pressure. This helps improve your speed and accuracy during games.</p>
-
-    <h3>Puzzle Rush</h3>
-    <p>Puzzle Rush challenges you to solve as many puzzles as possible before making three mistakes. It’s a great way to practice basic and gradually more difficult tactics. Try different time modes to improve your stamina and quick recognition.</p>
-
-    <h2>Endgames</h2>
-    <p>While tactics are the priority, it’s useful to start learning basic endgames, especially king and pawn endgames. Important concepts include:</p>
-    <ul>
-      <li>Checkmating with a queen, rook, or two rooks</li>
-      <li>Creating and promoting passed pawns</li>
-      <li>Understanding the rule of the square and opposition</li>
-    </ul>
-    <p>Use online videos and lessons to build your endgame foundation.</p>
-
-    <h2>Strategy and Positional Play</h2>
-    <p>Start familiarizing yourself with fundamental strategic ideas, including:</p>
-    <ul>
-      <li>How pawn structures influence plans</li>
-      <li>Identifying weak pawns and weak squares</li>
-      <li>Coordinating your pieces effectively</li>
-      <li>Simplifying the position when ahead</li>
-    </ul>
-    <p>You can find strategy lessons on Chess.com and other free resources online.</p>
-
-    <h2>Openings</h2>
-    <p>At this level, don’t worry about memorizing long opening lines. Instead:</p>
-    <ul>
-      <li>Learn basic opening principles: control the center, develop your minor pieces, and castle early</li>
-      <li>Focus on a few simple openings, like 1.e4 e5 for White, or a basic defense for Black</li>
-      <li>Play your chosen openings and learn from your games</li>
-    </ul>
-    <p>Remember, middlegame and endgame skills are more important than memorizing openings.</p>
-
-    <h2>Playing Games</h2>
-    <p>The best way to improve is by playing regularly. Some tips:</p>
-    <ul>
-      <li>Play both longer time controls (like 15|10) and faster games (like 5|5) to develop different skills</li>
-      <li>Avoid bullet chess at this stage to prevent bad habits</li>
-      <li>Try to play games in one sitting rather than daily correspondence games</li>
-      <li>Review your games afterward to learn from mistakes</li>
-    </ul>
-
-    <h2>Sample Weekly Study Plan</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Activity</th>
-          <th>Duration per Week</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Tactics Training</td>
-          <td>45 minutes</td>
-        </tr>
-        <tr>
-          <td>Blitz Tactics</td>
-          <td>30 minutes</td>
-        </tr>
-        <tr>
-          <td>Puzzle Rush</td>
-          <td>1 session</td>
-        </tr>
-        <tr>
-          <td>Endgame Practice</td>
-          <td>30 minutes</td>
-        </tr>
-        <tr>
-          <td>Strategy Lessons</td>
-          <td>30 minutes</td>
-        </tr>
-        <tr>
-          <td>Opening Study</td>
-          <td>Learn 1 chapter or opening sequence</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>Additional Exercises</h2>
-    <h3>Two-by-Two Visualization</h3>
-    <p>Practice reading games by visualizing two moves at a time in your head before moving the pieces on the board. This exercise strengthens your calculation and board vision.</p>
-
-    <h3>Reading Chess Books</h3>
-    <p>Start reading beginner-friendly chess books to deepen your understanding. Even if the exercises seem difficult, reviewing the solutions can teach you valuable concepts.</p>
-
-    <p>Consistent practice over time is the key to improvement. Focus on tactics first, build your endgame and strategy knowledge gradually, and enjoy your journey toward becoming a stronger chess player!</p>
-
-    <h2>Customized Weekly Study Schedule (Approx. 4–6 hours per week)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Activity</th>
-          <th>Duration</th>
-          <th>Resources &amp; Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Monday</td>
-          <td>Tactics Training</td>
-          <td>45 minutes</td>
-          <td>Chess.com Tactics Trainer (set medium difficulty)</td>
-        </tr>
-        <tr>
-          <td>Tuesday</td>
-          <td>Endgame Practice</td>
-          <td>30 minutes</td>
-          <td>Chess.com Endgame Lessons or YouTube basics (e.g., "King and Pawn Endgames")</td>
-        </tr>
-        <tr>
-          <td>Wednesday</td>
-          <td>Blitz Tactics (Quick Thinking)</td>
-          <td>30 minutes</td>
-          <td>Chess Tempo Blitz Set (medium difficulty)</td>
-        </tr>
-        <tr>
-          <td>Thursday</td>
-          <td>Strategy Lesson + Review</td>
-          <td>30 minutes</td>
-          <td>Chess.com Lessons (strategy section) or YouTube playlist on chess strategy</td>
-        </tr>
-        <tr>
-          <td>Friday</td>
-          <td>Puzzle Rush (Survival Mode)</td>
-          <td>~20-30 min</td>
-          <td>Chess.com Puzzle Rush Survival Mode</td>
-        </tr>
-        <tr>
-          <td>Saturday</td>
-          <td>Opening Study + Play Games</td>
-          <td>45 minutes study + 1-2 games</td>
-          <td>Learn first 4-5 moves of a simple opening (e.g., Italian Game for White or London System for Black) via Chessable free courses; play games on Chess.com or Lichess</td>
-        </tr>
-        <tr>
-          <td>Sunday</td>
-          <td>Game Review + Visualization Exercise</td>
-          <td>30–45 minutes</td>
-          <td>Use Chess.com Game Review tool to analyze your recent games; practice Two-by-Two visualization on master games from Chess.com database or Lichess Studies</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>Resource Recommendations</h2>
-
-    <h3>Tactics and Training</h3>
-    <ul>
-      <li><a href="https://www.chess.com/puzzles" target="_blank" rel="noopener">Chess.com Tactics Trainer</a></li>
-      <li><a href="https://chesstempo.com" target="_blank" rel="noopener">Chess Tempo Blitz Tactics</a></li>
-      <li><a href="https://www.chess.com/puzzle-rush" target="_blank" rel="noopener">Puzzle Rush on Chess.com</a></li>
-    </ul>
-
-    <h3>Endgames</h3>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/endgames" target="_blank" rel="noopener">Chess.com Endgame Lessons</a> (Free lessons and drills)</li>
-      <li>YouTube channels:
-        <ul>
-          <li>Hanging Pawns — beginner-friendly endgame videos</li>
-          <li>ChessNetwork — solid explanations of basic endgames</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h3>Strategy</h3>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/strategy" target="_blank" rel="noopener">Chess.com Strategy Lessons</a></li>
-      <li>YouTube playlist: Search “Beginner Chess Strategy” for step-by-step concepts</li>
-    </ul>
-
-    <h3>Openings</h3>
-    <ul>
-      <li>Chessable free courses:
-        <ul>
-          <li>The Italian Game (1.e4 e5 Nf3 Nc6 Bc4) — great for beginners</li>
-          <li>London System (as Black or White)</li>
-        </ul>
-      </li>
-      <li>Principles: Control center, develop pieces, castle early, don’t move the same piece multiple times in opening</li>
-    </ul>
-
-    <h3>Playing & Reviewing Games</h3>
-    <ul>
-      <li>Play games at 15|10 or 10|5 time control to balance thinking time and practice</li>
-      <li>Use Chess.com Game Review after every game to identify mistakes and learn</li>
-      <li>Avoid bullet (1|0 or less) to prevent bad habits</li>
-    </ul>
-
-    <h2>Tips for Success</h2>
-    <ul>
-      <li>Be consistent, even short daily sessions add up</li>
-      <li>Focus on understanding WHY moves are good or bad, not just memorizing</li>
-      <li>Mix playing with studying to reinforce learning</li>
-      <li>Don’t be discouraged by losses—they’re your best teachers</li>
-      <li>Use the Two-by-Two visualization exercise to improve calculation and board vision: read moves in pairs in master games and visualize positions in your head before moving pieces</li>
-    </ul>
-
-  </main>
-
-  <div id="time-box">
-    <div class="time-zone-item">
-      <strong>Pacific Time</strong>
-      <span id="pt-time"></span>
+  <!-- Time Zone Bar -->
+  <footer class="time-bar">
+    <div class="time-zone">
+      <div class="time-label">LOCAL TIME</div>
+      <div class="time-value" id="local-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>Eastern Time</strong>
-      <span id="et-time"></span>
+    <div class="time-zone">
+      <div class="time-label">PACIFIC</div>
+      <div class="time-value" id="pt-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>UTC</strong>
-      <span id="utc-time"></span>
+    <div class="time-zone">
+      <div class="time-label">EASTERN</div>
+      <div class="time-value" id="et-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>New Delhi</strong>
-      <span id="ist-time"></span>
+    <div class="time-zone">
+      <div class="time-label">UTC</div>
+      <div class="time-value" id="utc-time">--:--:--</div>
     </div>
-  </div>
+    <div class="time-zone">
+      <div class="time-label">NEW DELHI</div>
+      <div class="time-value" id="ist-time">--:--:--</div>
+    </div>
+  </footer>
 
+  <script>
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+       
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
+      }
+      
+      renderUserArea();
+      
+      // === GSAP Animations ===
+      // Initial load animations
+      gsap.from(".cyber-sidebar", {
+        duration: 1,
+        x: -300,
+        ease: "power3.out",
+        delay: 0.3
+      });
+      
+      gsap.from(".cyber-header", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5
+      });
+      
+      gsap.from(".plan-container", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1
+      });
+      
+      gsap.from(".section-title", {
+        duration: 0.8,
+        x: -20,
+        opacity: 0,
+        stagger: 0.1,
+        ease: "back.out",
+        delay: 1.2
+      });
+      
+      gsap.from(".time-bar", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.4
+      });
+    });
+  </script>
 </body>
 </html>

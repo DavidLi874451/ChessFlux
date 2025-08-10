@@ -1,380 +1,912 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ChessFlux - Lesson 3: Deliberate Practice</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3 - Deliberate Practice | ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-      padding-top: 60px;
-      padding-left: 200px;
-      transition: padding-left 0.3s ease;
-      min-height: 100vh;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
     }
 
-    #sidebar {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
       position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
       top: 0;
       left: 0;
-      height: 100vh;
-      width: 200px;
-      background-color: #007acc;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      transition: width 0.3s ease;
-      z-index: 1050;
     }
 
-    #sidebar.collapsed {
-      width: 60px;
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
     }
 
     .toggle-btn {
       background: none;
       border: none;
-      color: white;
+      color: var(--primary);
       font-size: 1.5rem;
-      padding: 1rem;
       cursor: pointer;
-      text-align: left;
-      outline-offset: 2px;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
     }
 
-    .sidebar-content {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .nav-link {
-      color: white;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
       text-decoration: none;
-      padding: 1rem;
-      white-space: nowrap;
-      display: block;
-      transition: background-color 0.3s ease;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
     }
 
     .nav-link:hover {
-      background-color: #005f99;
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
     }
 
-    #sidebar.collapsed .nav-link span {
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
+    }
+
+    .nav-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
+    .main-content {
+      padding: 30px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* === Cyber Header === */
+    .cyber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Lesson Content === */
+    .lesson-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .lesson-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .lesson-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .lesson-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    /* === Tables === */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      font-weight: 600;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 247, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* === Lists === */
+    .styled-list {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    .styled-list li {
+      margin-bottom: 10px;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .styled-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    /* === Blockquotes === */
+    .quote-block {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* === Code Blocks === */
+    .code-block {
+      font-family: var(--font-code);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 3px solid var(--secondary);
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    /* === Time Zone Bar === */
+    .time-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 20, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .app-container.expanded .time-bar {
+      left: 280px;
+    }
+
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
+    }
+
+    .time-zone:last-child::after {
       display: none;
     }
 
-    #top-header {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 60px;
-      background: white;
-      width: calc(100% - 200px);
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 1rem;
-      padding: 0 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      z-index: 1100;
-      transition: width 0.3s ease, right 0.3s ease;
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    #user-area span {
-      font-weight: 600;
-      color: #007acc;
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
     }
 
-    #user-area button,
-    #user-area a.login,
-    #user-area a.signup {
-      font-weight: 600;
-      padding: 0.4rem 0.9rem;
-      border-radius: 5px;
-      cursor: pointer;
-      border: 2px solid #007acc;
-      text-decoration: none;
-      color: #007acc;
-      background: transparent;
-      transition: background-color 0.2s ease, color 0.2s ease;
-      user-select: none;
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .time-zone {
+        padding: 0 15px;
+      }
+      
+      .time-label {
+        font-size: 0.8rem;
+      }
+      
+      .time-value {
+        font-size: 1rem;
+      }
     }
 
-    #user-area button {
-      background: #e63946;
-      border-color: #e63946;
-      color: white;
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+
+      .lesson-title {
+        font-size: 2rem;
+      }
     }
 
-    #user-area button:hover,
-    #user-area a.login:hover,
-    #user-area a.signup:hover {
-      background-color: #005f99;
-      border-color: #005f99;
-      color: white;
+    /* === Animation Classes === */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
     }
 
-    #user-area a.signup {
-      background: #007acc;
-      border-color: #007acc;
-      color: white;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    .main-content {
-      padding: 2rem;
-      max-width: 700px;
-      margin: 0 auto 80px auto;
-      transition: margin-left 0.3s ease;
-      line-height: 1.5;
-    }
-
-    code {
-      background: #e0e0e0;
-      padding: 2px 5px;
-      border-radius: 3px;
-      font-family: monospace;
-      font-size: 0.95em;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 0.6rem 0.8rem;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      background-color: #007acc;
-      color: white;
-      font-weight: 600;
-    }
-
-    ul, ol {
-      margin-left: 1.2rem;
-    }
-
-    blockquote {
-      border-left: 4px solid #007acc;
-      margin-left: 0;
-      margin-right: 0;
-      padding-left: 1rem;
-      color: #555;
-      font-style: italic;
-    }
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
   </style>
-
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-      if (sidebar.classList.contains("collapsed")) {
-        document.body.style.paddingLeft = '60px';
-        document.getElementById('top-header').style.width = 'calc(100% - 60px)';
-      } else {
-        document.body.style.paddingLeft = '200px';
-        document.getElementById('top-header').style.width = 'calc(100% - 200px)';
-      }
-    }
-
-    function renderUserArea() {
-      const userArea = document.getElementById('user-area');
-      const userJSON = localStorage.getItem('loggedInUser');
-      const user = userJSON ? JSON.parse(userJSON) : null;
-
-      if (user) {
-        userArea.innerHTML = `
-          <span>Hello, ${user.firstName}!</span>
-          <button id="logout-btn">Logout</button>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', () => {
-          localStorage.removeItem('loggedInUser');
-          renderUserArea();
-        });
-      } else {
-        userArea.innerHTML = `
-          <a href="login.html" class="login">Login</a>
-          <a href="signup.html" class="signup">Sign Up</a>
-        `;
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      renderUserArea();
-
-      const sidebar = document.getElementById("sidebar");
-      if (sidebar.classList.contains("collapsed")) {
-        document.body.style.paddingLeft = '60px';
-        document.getElementById('top-header').style.width = 'calc(100% - 60px)';
-      } else {
-        document.body.style.paddingLeft = '200px';
-        document.getElementById('top-header').style.width = 'calc(100% - 200px)';
-      }
-    });
-  </script>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
-    <nav class="sidebar-content" aria-label="Main navigation">
-      <a class="nav-link" href="index.html"><span>Home</span></a>
-      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
-      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
-      <a class="nav-link" href="contact.html"><span>Contact</span></a>
-      <a class="nav-link" href="social.html"><span>Social Media</span></a>
-      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
-    </nav>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
+      </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link active">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Lesson Content -->
+      <div class="lesson-container fade-in delay-1">
+        <h1 class="lesson-title">DELIBERATE PRACTICE — MASTERING MICRO-SKILLS</h1>
+        
+        <div class="lesson-section">
+          <blockquote class="quote-block">
+            "We do not rise to the level of our goals. We fall to the level of our systems." — James Clear
+          </blockquote>
+          
+          <p class="lesson-text">In chess, most improvement stalls not due to lack of talent but vague training. The most common mistake is mindlessly grinding random puzzles and hoping it translates into practical strength. It won't. This article lays out a surgical method of deliberate practice that develops micro-skills—the smallest components of chess thinking—with precision, feedback, and retention in mind.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-crosshairs"></i> PRINCIPLE: TARGET SPECIFIC WEAKNESSES AT THE EDGE OF COMPETENCE</h2>
+          <p class="lesson-text">Deliberate practice isn't just "working hard." It is:</p>
+          <ul class="styled-list">
+            <li><strong>Specific:</strong> Targets one clearly defined skill at a time.</li>
+            <li><strong>Difficult:</strong> Pushes you just beyond your current level.</li>
+            <li><strong>Feedback-Driven:</strong> Constant error correction and reflection.</li>
+            <li><strong>Repetitive:</strong> Reinforces skill automation through spaced drills.</li>
+          </ul>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-microscope"></i> MICRO-SKILLS AND HOW TO TRAIN THEM</h2>
+          
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Micro-Skill</th>
+                <th>Method</th>
+                <th>Goal</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Calculation Visualization</td>
+                <td>Blindfold calculation from fixed openings</td>
+                <td>Build mental board fluency</td>
+                <td>Pick a sharp opening line. Try visualizing 6–10 moves ahead without a board, then verify with a board or engine.</td>
+              </tr>
+              <tr>
+                <td>Forcing Move Recognition</td>
+                <td>3-minute Forcing Move drills</td>
+                <td>Enumerate threats instantly</td>
+                <td>Random position → List all checks, captures, and threats for both sides. Don't calculate, identify. Use a timer.</td>
+              </tr>
+              <tr>
+                <td>Tactical Pattern Automation</td>
+                <td>Thematic SRS drilling (e.g., Anki)</td>
+                <td>Pattern chunking for speed</td>
+                <td>Use tagged tactics by motif ("interference," "double attack"). Review daily, then at spaced intervals (1 day, 3 days, 7 days, etc.).</td>
+              </tr>
+              <tr>
+                <td>Time-Sensitive Decision-Making</td>
+                <td>Bullet + Voice Annotation</td>
+                <td>Recognize panic heuristics</td>
+                <td>Play 1+0 games while recording your thoughts. After each game, rewatch and identify cognitive errors ("I moved fast because I saw a threat but didn't verify.")</td>
+              </tr>
+              <tr>
+                <td>Endgame Tablebase Recall</td>
+                <td>Timed execution drills</td>
+                <td>Muscle memory of key endgames</td>
+                <td>Set up K+R vs K, K+P vs K, Lucena and Philidor. Play against engine or friend. Compare with tablebase. Repeat until perfect.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-calendar-alt"></i> HOW TO STRUCTURE A WEEKLY DELIBERATE PRACTICE ROUTINE</h2>
+          
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Focus</th>
+                <th>Time</th>
+                <th>Tools</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Mon</td><td>Visualization + Tactical Patterns</td><td>45 mins</td><td>Anki, PGN positions, Lichess</td></tr>
+              <tr><td>Tue</td><td>Forcing Move Drills + Endgame Drills</td><td>45 mins</td><td>CT-Art, manual setup</td></tr>
+              <tr><td>Wed</td><td>Bullet + Voice Log + Review</td><td>60 mins</td><td>OBS/Mic + Lichess</td></tr>
+              <tr><td>Thu</td><td>Deep Calculation from Annotated Games</td><td>1 hour</td><td>Classic GM games, no engine</td></tr>
+              <tr><td>Fri</td><td>Rest or Light Review (Anki)</td><td>20 mins</td><td>Anki only</td></tr>
+              <tr><td>Sat</td><td>"Test Day" — Mix of all skills</td><td>90 mins</td><td>Custom workbook</td></tr>
+              <tr><td>Sun</td><td>Game Play (30+10) + Full Annotation</td><td>90+ mins</td><td>ChessBase / Lichess Studies</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-sync-alt"></i> FEEDBACK LOOP WITHIN DRILLS</h2>
+          <p class="lesson-text">Each drill must have an end condition and a feedback check. For example:</p>
+          <ul class="styled-list">
+            <li><strong>Drill:</strong> 3-minute Forcing Move Recognition<br />
+                <strong>Check:</strong> After time ends, manually review what you missed. Tag errors like "overlooked backward capture" or "ignored hanging piece."</li>
+            <li><strong>Drill:</strong> Endgame Recall<br />
+                <strong>Check:</strong> Compare moves with tablebase. Identify deviations and underlying reasons.</li>
+          </ul>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-chart-line"></i> HOW TO KNOW IF YOU'RE IMPROVING</h2>
+          <p class="lesson-text">Look for:</p>
+          <ul class="styled-list">
+            <li>Fewer missed forcing moves in rapid/classical.</li>
+            <li>Faster recall of known tactical patterns.</li>
+            <li>Less time pressure due to faster decision-making.</li>
+            <li>Cleaner endgame technique in practical games.</li>
+            <li>Improved intuition from mental board visualization.</li>
+          </ul>
+          <p class="lesson-text">Quantify with tools like:</p>
+          <ul class="styled-list">
+            <li>Puzzle Rush scores (using trained motifs only)</li>
+            <li>Annotated game error rate (blunders/mistakes per game)</li>
+            <li>Percentage of games where you correctly identify opponent's threats</li>
+          </ul>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> PITFALLS TO AVOID</h2>
+          <ul class="styled-list">
+            <li>Don't overtrain one micro-skill. Rotate focus weekly to avoid plateaus.</li>
+            <li>Don't move on without feedback. Every rep must end with error review.</li>
+            <li>Don't rely on engines too much when analyzing. You learn more by being wrong before being corrected.</li>
+            <li>Don't assume solving = learning. If you can't recall and apply in a real game, it's not learned.</li>
+          </ul>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-layer-group"></i> THE COMPOUNDING EFFECT</h2>
+          <p class="lesson-text">
+            Each micro-skill enhances the others. Better visualization improves calculation. Faster tactical chunking reduces clock pressure. Endgame drills reinforce positional understanding.
+          </p>
+          <blockquote class="quote-block">
+            "Amateurs practice until they get it right. Masters practice until they can't get it wrong."
+          </blockquote>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-flag-checkered"></i> CONCLUSION</h2>
+          <p class="lesson-text">
+            The real secret of chess improvement is not playing more or watching more — it's training with precision. Stop solving random puzzles. Start isolating and mastering micro-skills. Make every minute count. No fluff. No guesswork. Just measurable, compounding improvement — one rep at a time.
+          </p>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- User login/signup fixed top-right -->
-  <header id="top-header" role="banner">
-    <div id="user-area"></div>
-  </header>
+  <!-- Time Zone Bar -->
+  <footer class="time-bar">
+    <div class="time-zone">
+      <div class="time-label">LOCAL TIME</div>
+      <div class="time-value" id="local-time">--:--:--</div>
+    </div>
+    <div class="time-zone">
+      <div class="time-label">PACIFIC</div>
+      <div class="time-value" id="pt-time">--:--:--</div>
+    </div>
+    <div class="time-zone">
+      <div class="time-label">EASTERN</div>
+      <div class="time-value" id="et-time">--:--:--</div>
+    </div>
+    <div class="time-zone">
+      <div class="time-label">UTC</div>
+      <div class="time-value" id="utc-time">--:--:--</div>
+    </div>
+    <div class="time-zone">
+      <div class="time-label">NEW DELHI</div>
+      <div class="time-value" id="ist-time">--:--:--</div>
+    </div>
+  </footer>
 
-  <!-- Main content -->
-  <main class="main-content" role="main" tabindex="-1">
-    <h1>Lesson 3: Deliberate Practice — Mastering Micro-Skills</h1>
+  <script>
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+      
 
-    <blockquote>
-      “We do not rise to the level of our goals. We fall to the level of our systems.” — James Clear
-    </blockquote>
-
-    <p>
-      In chess, most improvement stalls not due to lack of talent but vague training. The most common mistake is mindlessly grinding random puzzles and hoping it translates into practical strength. It won’t. This article lays out a surgical method of deliberate practice that develops micro-skills—the smallest components of chess thinking—with precision, feedback, and retention in mind.
-    </p>
-
-    <h2>Principle: Target Specific Weaknesses at the Edge of Competence</h2>
-    <p>Deliberate practice isn't just "working hard." It is:</p>
-    <ul>
-      <li><strong>Specific:</strong> Targets one clearly defined skill at a time.</li>
-      <li><strong>Difficult:</strong> Pushes you just beyond your current level.</li>
-      <li><strong>Feedback-Driven:</strong> Constant error correction and reflection.</li>
-      <li><strong>Repetitive:</strong> Reinforces skill automation through spaced drills.</li>
-    </ul>
-
-    <h2>Micro-Skills and How to Train Them</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Micro-Skill</th>
-          <th>Method</th>
-          <th>Goal</th>
-          <th>Example</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Calculation Visualization</td>
-          <td>Blindfold calculation from fixed openings</td>
-          <td>Build mental board fluency</td>
-          <td>Pick a sharp opening line. Try visualizing 6–10 moves ahead without a board, then verify with a board or engine.</td>
-        </tr>
-        <tr>
-          <td>Forcing Move Recognition</td>
-          <td>3-minute Forcing Move drills</td>
-          <td>Enumerate threats instantly</td>
-          <td>Random position → List all checks, captures, and threats for both sides. Don’t calculate, identify. Use a timer.</td>
-        </tr>
-        <tr>
-          <td>Tactical Pattern Automation</td>
-          <td>Thematic SRS drilling (e.g., Anki)</td>
-          <td>Pattern chunking for speed</td>
-          <td>Use tagged tactics by motif (“interference,” “double attack”). Review daily, then at spaced intervals (1 day, 3 days, 7 days, etc.).</td>
-        </tr>
-        <tr>
-          <td>Time-Sensitive Decision-Making</td>
-          <td>Bullet + Voice Annotation</td>
-          <td>Recognize panic heuristics</td>
-          <td>Play 1+0 games while recording your thoughts. After each game, rewatch and identify cognitive errors (“I moved fast because I saw a threat but didn’t verify.”)</td>
-        </tr>
-        <tr>
-          <td>Endgame Tablebase Recall</td>
-          <td>Timed execution drills</td>
-          <td>Muscle memory of key endgames</td>
-          <td>Set up K+R vs K, K+P vs K, Lucena and Philidor. Play against engine or friend. Compare with tablebase. Repeat until perfect.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>How to Structure a Weekly Deliberate Practice Routine</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Focus</th>
-          <th>Time</th>
-          <th>Tools</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Mon</td><td>Visualization + Tactical Patterns</td><td>45 mins</td><td>Anki, PGN positions, Lichess</td></tr>
-        <tr><td>Tue</td><td>Forcing Move Drills + Endgame Drills</td><td>45 mins</td><td>CT-Art, manual setup</td></tr>
-        <tr><td>Wed</td><td>Bullet + Voice Log + Review</td><td>60 mins</td><td>OBS/Mic + Lichess</td></tr>
-        <tr><td>Thu</td><td>Deep Calculation from Annotated Games</td><td>1 hour</td><td>Classic GM games, no engine</td></tr>
-        <tr><td>Fri</td><td>Rest or Light Review (Anki)</td><td>20 mins</td><td>Anki only</td></tr>
-        <tr><td>Sat</td><td>“Test Day” — Mix of all skills</td><td>90 mins</td><td>Custom workbook</td></tr>
-        <tr><td>Sun</td><td>Game Play (30+10) + Full Annotation</td><td>90+ mins</td><td>ChessBase / Lichess Studies</td></tr>
-      </tbody>
-    </table>
-
-    <h2>Feedback Loop Within Drills</h2>
-    <p>Each drill must have an end condition and a feedback check. For example:</p>
-    <ul>
-      <li><strong>Drill:</strong> 3-minute Forcing Move Recognition<br />
-          <strong>Check:</strong> After time ends, manually review what you missed. Tag errors like “overlooked backward capture” or “ignored hanging piece.”</li>
-      <li><strong>Drill:</strong> Endgame Recall<br />
-          <strong>Check:</strong> Compare moves with tablebase. Identify deviations and underlying reasons.</li>
-    </ul>
-
-    <h2>How to Know If You’re Improving</h2>
-    <p>Look for:</p>
-    <ul>
-      <li>Fewer missed forcing moves in rapid/classical.</li>
-      <li>Faster recall of known tactical patterns.</li>
-      <li>Less time pressure due to faster decision-making.</li>
-      <li>Cleaner endgame technique in practical games.</li>
-      <li>Improved intuition from mental board visualization.</li>
-    </ul>
-    <p>Quantify with tools like:</p>
-    <ul>
-      <li>Puzzle Rush scores (using trained motifs only)</li>
-      <li>Annotated game error rate (blunders/mistakes per game)</li>
-      <li>Percentage of games where you correctly identify opponent’s threats</li>
-    </ul>
-
-    <h2>Pitfalls to Avoid</h2>
-    <ul>
-      <li>Don’t overtrain one micro-skill. Rotate focus weekly to avoid plateaus.</li>
-      <li>Don’t move on without feedback. Every rep must end with error review.</li>
-      <li>Don’t rely on engines too much when analyzing. You learn more by being wrong before being corrected.</li>
-      <li>Don’t assume solving = learning. If you can't recall and apply in a real game, it’s not learned.</li>
-    </ul>
-
-    <h2>The Compounding Effect</h2>
-    <p>
-      Each micro-skill enhances the others. Better visualization improves calculation. Faster tactical chunking reduces clock pressure. Endgame drills reinforce positional understanding.
-    </p>
-    <blockquote>
-      “Amateurs practice until they get it right. Masters practice until they can’t get it wrong.”
-    </blockquote>
-
-    <h2>Conclusion</h2>
-    <p>
-      The real secret of chess improvement is not playing more or watching more — it’s training with precision. Stop solving random puzzles. Start isolating and mastering micro-skills. Make every minute count. No fluff. No guesswork. Just measurable, compounding improvement — one rep at a time.
-    </p>
-  </main>
-
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
+      }
+      
+      renderUserArea();
+      
+      // === GSAP Animations ===
+      // Initial load animations
+      gsap.from(".cyber-sidebar", {
+        duration: 1,
+        x: -300,
+        ease: "power3.out",
+        delay: 0.3
+      });
+      
+      gsap.from(".cyber-header", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5
+      });
+      
+      gsap.from(".lesson-container", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1
+      });
+      
+      gsap.from(".time-bar", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.2
+      });
+    });
+  </script>
 </body>
 </html>

@@ -1,377 +1,878 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lesson 5 - Pawn Structures and Positional Fluency</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5 - Pawn Structures | ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    /* Basic Reset */
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
     }
 
-    /* Sidebar styles */
-    #sidebar {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
       position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
       top: 0;
       left: 0;
-      width: 220px;
-      height: 100%;
-      background: #004a99;
-      color: white;
-      padding-top: 60px;
-      box-sizing: border-box;
-      transition: width 0.3s ease;
-      overflow-y: auto;
-      z-index: 1300;
     }
-    #sidebar.collapsed {
-      width: 60px;
+
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
-    #sidebar .toggle-btn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: #007acc;
-      border: none;
-      color: white;
-      font-size: 22px;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      border-radius: 4px;
-      z-index: 1350;
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
     }
-    #sidebar.collapsed .sidebar-content a span {
-      display: none;
-    }
-    #sidebar .sidebar-content {
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      padding-left: 15px;
-    }
-    #sidebar .sidebar-content a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 10px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      transition: background-color 0.2s ease;
-    }
-    #sidebar .sidebar-content a:hover {
-      background-color: #0062cc;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
-    /* Top header (login/signup) */
-    #top-header {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 50px;
-      width: calc(100% - 220px);
-      background: white;
-      border-bottom: 1px solid #ddd;
+    .sidebar-header {
+      padding: 20px;
       display: flex;
-      justify-content: flex-end;
       align-items: center;
-      padding: 0 20px;
-      box-sizing: border-box;
-      z-index: 1400;
-      transition: width 0.3s ease;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
     }
-    #sidebar.collapsed + #top-header {
-      width: calc(100% - 60px);
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
     }
-    #user-area a {
-      margin-left: 15px;
-      color: #007acc;
-      text-decoration: none;
-      font-weight: 600;
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
     }
-    #user-area button {
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    .toggle-btn {
       background: none;
       border: none;
-      color: #007acc;
-      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.5rem;
       cursor: pointer;
-      margin-left: 15px;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
     }
 
-    /* Main content */
-    main.main-content {
-      margin-left: 220px;
-      padding: 70px 30px 100px 30px;
-      max-width: 900px;
-      transition: margin-left 0.3s ease;
-    }
-    #sidebar.collapsed ~ main.main-content {
-      margin-left: 60px;
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
     }
 
-    /* Tables styling */
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 700px;
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
+    }
+
+    .nav-link:hover {
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
+    }
+
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
+    }
+
+    .nav-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
+    .main-content {
+      padding: 30px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* === Cyber Header === */
+    .cyber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Lesson Content === */
+    .lesson-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .lesson-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
       margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
     }
-    th, td {
-      border: 1px solid #007acc;
-      padding: 8px;
+
+    .lesson-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .lesson-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    /* === Tables === */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      font-weight: 600;
+      padding: 12px 15px;
       text-align: left;
     }
-    th {
-      background-color: #007acc;
-      color: white;
+
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
     }
 
-    /* Time zones box (bottom right) */
-    #time-box {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #fff;
-      border: 2px solid #007acc;
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 247, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* === Lists === */
+    .styled-list {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    .styled-list li {
+      margin-bottom: 10px;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .styled-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    /* === Blockquotes === */
+    .quote-block {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* === Code Blocks === */
+    .code-block {
+      font-family: var(--font-code);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
       border-radius: 8px;
-      padding: 10px 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: #007acc;
-      max-width: 180px;
-      user-select: none;
-      z-index: 1200;
+      border-left: 3px solid var(--secondary);
+      margin: 20px 0;
+      overflow-x: auto;
     }
-    .time-zone-item {
-      margin-bottom: 6px;
+
+    /* === Time Zone Bar === */
+    .time-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 20, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
-    .time-zone-item strong {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 2px;
+
+    .app-container.expanded .time-bar {
+      left: 280px;
     }
+
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
+    }
+
+    .time-zone:last-child::after {
+      display: none;
+    }
+
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .time-zone {
+        padding: 0 15px;
+      }
+      
+      .time-label {
+        font-size: 0.8rem;
+      }
+      
+      .time-value {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+
+      .lesson-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* === Animation Classes === */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
   </style>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar-content">
-      <a href="index.html"><span>Home</span></a>
-      <a href="lessons.html"><span>Lessons</span></a>
-      <a href="plans.html"><span>Personal Plans</span></a>
-      <a href="contact.html"><span>Contact</span></a>
-      <a href="social.html"><span>Social Media</span></a>
-      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
-    </div>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
+      </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link active">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Lesson Content -->
+      <div class="lesson-container fade-in delay-1">
+        <h1 class="lesson-title">PAWN STRUCTURES AND POSITIONAL FLUENCY</h1>
+        
+        <div class="lesson-section">
+          <blockquote class="quote-block">
+            "Tactics flow from a superior position." — Bobby Fischer.
+          </blockquote>
+          
+          <p class="lesson-text">Most superior positions often flow from superior pawn structures. If strategy is the soul of chess, then pawn structures are its skeleton. Yet most players never go beyond vague notions of "weakness" or "doubled pawns." To master positional play, you must read the structure as if it were a language, interpreting space, plans, and long-term imbalances from the shape of the pawns alone. This guide breaks down a precision framework for training structural fluency — developing the ability to evaluate and exploit pawn formations with depth, flexibility, and foresight.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-chess-pawn"></i> PRINCIPLE 1: INTERNALIZE COMMON STRUCTURES AND THEIR STRATEGIC DNA</h2>
+          <p class="lesson-text">Memorizing isolated rules won't cut it. True mastery comes from studying structures as recurring archetypes with thematic plans.</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Structure</th>
+                <th>Strategic Themes</th>
+                <th>Common Openings</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Isolated Queen's Pawn (IQP)</td>
+                <td>Dynamic potential vs. long-term weakness. Use a piece activity before the endgame.</td>
+                <td>Tarrasch, Panov Attack, Caro-Kann</td>
+              </tr>
+              <tr>
+                <td>Hedgehog</td>
+                <td>Flexibility, waiting strategy, central breaks with ...d5 or ...b5.</td>
+                <td>English, Sicilian Scheveningen</td>
+              </tr>
+              <tr>
+                <td>Minority Attack</td>
+                <td>Create queenside weaknesses, provoke pawn targets.</td>
+                <td>Queen's Gambit Declined</td>
+              </tr>
+              <tr>
+                <td>King's Indian vs. Maróczy Bind</td>
+                <td>Clash of space vs. counterattack. Time the pawn breaks (e.g., ...f5, ...b5).</td>
+                <td>KID, Accelerated Dragon</td>
+              </tr>
+              <tr>
+                <td>Stonewall</td>
+                <td>Strong e5 square, but bad light-square bishop. Patience and rerouting are key.</td>
+                <td>Dutch Defense, Colle System</td>
+              </tr>
+              <tr>
+                <td>Symmetrical Center (e4-e5 or d4-d5)</td>
+                <td>Maneuvering battles, control of tension, and well-timed breaks.</td>
+                <td>Ruy Lopez, French Defense</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-language"></i> PRINCIPLE 2: TRAIN STRUCTURAL FLUENCY LIKE A LANGUAGE</h2>
+          
+          <h3 class="section-title" style="font-size: 1.4rem;"><i class="fas fa-flask"></i> METHOD 1: STRUCTURE-TO-PLAN FLASHCARDS</h3>
+          <p class="lesson-text">Create flashcards showing only pawn skeletons (no pieces). On the back:</p>
+          <ul class="styled-list">
+            <li>List 2-3 strategic goals (e.g., "Pressure d5", "Break with f4-f5")</li>
+            <li>Include both sides' perspectives.</li>
+            <li>Drill: Flip cards and brainstorm plans without moving pieces. Then compare with annotated GM examples.</li>
+          </ul>
+
+          <h3 class="section-title" style="font-size: 1.4rem;"><i class="fas fa-puzzle-piece"></i> METHOD 2: STRUCTURAL RECONSTRUCTION</h3>
+          <p class="lesson-text">Take a middlegame position and erase all pawns.</p>
+          <p class="lesson-text"><strong>Challenge:</strong></p>
+          <ul class="styled-list">
+            <li>Rebuild the pawn structure from clues: outposts, locked diagonals, tension squares.</li>
+            <li>Then evaluate who benefits structurally and why.</li>
+          </ul>
+
+          <h3 class="section-title" style="font-size: 1.4rem;"><i class="fas fa-arrows-alt-h"></i> METHOD 3: PAWN BREAK VISUALIZATION</h3>
+          <p class="lesson-text">From a given position, list all possible pawn breaks for both sides. For each:</p>
+          <ul class="styled-list">
+            <li>Evaluate timing and risk/reward.</li>
+            <li>Label: destructive, clarifying, or stabilizing.</li>
+            <li>Then play through the position and observe whether the break was used, and when.</li>
+          </ul>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-calendar-alt"></i> SCHEDULE</h2>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Focus</th>
+                <th>Time</th>
+                <th>Tools</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Mon</td><td>Flashcards: IQP, Stonewall, Hedgehog</td><td>45 mins</td><td>Chessable, Custom Cards</td></tr>
+              <tr><td>Tue</td><td>Annotated Structure Game + Quiz</td><td>60 mins</td><td>GM Gamebase (e.g., Karpov, Petrosian)</td></tr>
+              <tr><td>Wed</td><td>Break Timing Challenge</td><td>45 mins</td><td>Lichess Studies, Visual Board</td></tr>
+              <tr><td>Thu</td><td>"Pawn Skeleton" Exercise</td><td>60 mins</td><td>Diagram-Only Sets</td></tr>
+              <tr><td>Fri</td><td>Reverse Engineering: Find the Opening from the Structure</td><td>30 mins</td><td>Training Positions</td></tr>
+              <tr><td>Sat</td><td>Structure-Themed Simul (vs engine or sparring partner)</td><td>90 mins</td><td>Lichess / ChessBase</td></tr>
+              <tr><td>Sun</td><td>Long Game (60+15) with Structure-Only Postmortem</td><td>90+ mins</td><td>Notebook, No Engine First</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-flag-checkered"></i> CONCLUSION</h2>
+          <p class="lesson-text">Understanding pawn structures isn't passive learning — it's muscle memory for the strategic mind. Don't rely on intuition alone. Break down, drill, and reconstruct the bones of chess until each structure triggers reflexive plans, piece placements, and break evaluations. True positional players don't "feel" structure — they speak it. Quiet mastery begins when you stop reacting to pawn shapes... and start commanding them.</p>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- Top header -->
-  <header id="top-header">
-    <div id="user-area"></div>
-  </header>
-
-  <!-- Main content -->
-  <main class="main-content">
-    <h1>Pawn Structures and Positional Fluency</h1>
-
-    <p>“Tactics flow from a superior position.” — Bobby Fischer.</p>
-
-    <p>Most superior positions often flow from superior pawn structures. If strategy is the soul of chess, then pawn structures are its skeleton. Yet most players never go beyond vague notions of “weakness” or “doubled pawns.” To master positional play, you must read the structure as if it were a language, interpreting space, plans, and long-term imbalances from the shape of the pawns alone. This guide breaks down a precision framework for training structural fluency — developing the ability to evaluate and exploit pawn formations with depth, flexibility, and foresight.</p>
-
-    <h2>Principle 1: Internalize Common Structures and Their Strategic DNA</h2>
-
-    <p>Memorizing isolated rules won’t cut it. True mastery comes from studying structures as recurring archetypes with thematic plans.</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Structure</th>
-          <th>Strategic Themes</th>
-          <th>Common Openings</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Isolated Queen’s Pawn (IQP)</td>
-          <td>Dynamic potential vs. long-term weakness. Use a piece activity before the endgame.</td>
-          <td>Tarrasch, Panov Attack, Caro-Kann</td>
-        </tr>
-        <tr>
-          <td>Hedgehog</td>
-          <td>Flexibility, waiting strategy, central breaks with ...d5 or ...b5.</td>
-          <td>English, Sicilian Scheveningen</td>
-        </tr>
-        <tr>
-          <td>Minority Attack</td>
-          <td>Create queenside weaknesses, provoke pawn targets.</td>
-          <td>Queen’s Gambit Declined</td>
-        </tr>
-        <tr>
-          <td>King’s Indian vs. Maróczy Bind</td>
-          <td>Clash of space vs. counterattack. Time the pawn breaks (e.g., ...f5, ...b5).</td>
-          <td>KID, Accelerated Dragon</td>
-        </tr>
-        <tr>
-          <td>Stonewall</td>
-          <td>Strong e5 square, but bad light-square bishop. Patience and rerouting are key.</td>
-          <td>Dutch Defense, Colle System</td>
-        </tr>
-        <tr>
-          <td>Symmetrical Center (e4-e5 or d4-d5)</td>
-          <td>Maneuvering battles, control of tension, and well-timed breaks.</td>
-          <td>Ruy Lopez, French Defense</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>Principle 2: Train Structural Fluency Like a Language</h2>
-
-    <h3>Method 1: Structure-to-Plan Flashcards</h3>
-    <p>Create flashcards showing only pawn skeletons (no pieces). On the back:</p>
-    <ul>
-      <li>List 2-3 strategic goals (e.g., "Pressure d5", "Break with f4-f5")</li>
-      <li>Include both sides' perspectives.</li>
-      <li>Drill: Flip cards and brainstorm plans without moving pieces. Then compare with annotated GM examples.</li>
-    </ul>
-
-    <h3>Method 2: Structural Reconstruction</h3>
-    <p>Take a middlegame position and erase all pawns.</p>
-    <p><strong>Challenge:</strong></p>
-    <ul>
-      <li>Rebuild the pawn structure from clues: outposts, locked diagonals, tension squares.</li>
-      <li>Then evaluate who benefits structurally and why.</li>
-    </ul>
-
-    <h3>Method 3: Pawn Break Visualization</h3>
-    <p>From a given position, list all possible pawn breaks for both sides. For each:</p>
-    <ul>
-      <li>Evaluate timing and risk/reward.</li>
-      <li>Label: destructive, clarifying, or stabilizing.</li>
-      <li>Then play through the position and observe whether the break was used, and when.</li>
-    </ul>
-
-    <h2>Schedule</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Focus</th>
-          <th>Time</th>
-          <th>Tools</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Mon</td><td>Flashcards: IQP, Stonewall, Hedgehog</td><td>45 mins</td><td>Chessable, Custom Cards</td></tr>
-        <tr><td>Tue</td><td>Annotated Structure Game + Quiz</td><td>60 mins</td><td>GM Gamebase (e.g., Karpov, Petrosian)</td></tr>
-        <tr><td>Wed</td><td>Break Timing Challenge</td><td>45 mins</td><td>Lichess Studies, Visual Board</td></tr>
-        <tr><td>Thu</td><td>"Pawn Skeleton" Exercise</td><td>60 mins</td><td>Diagram-Only Sets</td></tr>
-        <tr><td>Fri</td><td>Reverse Engineering: Find the Opening from the Structure</td><td>30 mins</td><td>Training Positions</td></tr>
-        <tr><td>Sat</td><td>Structure-Themed Simul (vs engine or sparring partner)</td><td>90 mins</td><td>Lichess / ChessBase</td></tr>
-        <tr><td>Sun</td><td>Long Game (60+15) with Structure-Only Postmortem</td><td>90+ mins</td><td>Notebook, No Engine First</td></tr>
-      </tbody>
-    </table>
-
-    <h2>Conclusion</h2>
-    <p>Understanding pawn structures isn’t passive learning — it’s muscle memory for the strategic mind. Don’t rely on intuition alone. Break down, drill, and reconstruct the bones of chess until each structure triggers reflexive plans, piece placements, and break evaluations. True positional players don’t “feel” structure — they speak it. Quiet mastery begins when you stop reacting to pawn shapes… and start commanding them.</p>
-  </main>
-
-  <!-- Time zones compact fixed bottom-right -->
-  <div id="time-box" aria-label="Current time zones">
-    <div class="time-zone-item">
-      <strong>Pacific Time</strong>
-      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+  <!-- Time Zone Bar -->
+  <footer class="time-bar">
+    <div class="time-zone">
+      <div class="time-label">LOCAL TIME</div>
+      <div class="time-value" id="local-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>Eastern Time</strong>
-      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">PACIFIC</div>
+      <div class="time-value" id="pt-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>UTC</strong>
-      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">EASTERN</div>
+      <div class="time-value" id="et-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>New Delhi</strong>
-      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">UTC</div>
+      <div class="time-value" id="utc-time">--:--:--</div>
     </div>
-  </div>
+    <div class="time-zone">
+      <div class="time-label">NEW DELHI</div>
+      <div class="time-value" id="ist-time">--:--:--</div>
+    </div>
+  </footer>
 
   <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-      const topHeader = document.getElementById("top-header");
-      if(sidebar.classList.contains("collapsed")){
-        topHeader.style.width = "calc(100% - 60px)";
-      } else {
-        topHeader.style.width = "calc(100% - 220px)";
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+      
+      
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
       }
-    }
-
-    function updateTimes() {
-      const now = new Date();
-
-      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
-        timeZone: 'America/Los_Angeles',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-
-      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
-        timeZone: 'America/New_York',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-
-      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
-        timeZone: 'UTC',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      });
-
-      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      });
-    }
-
-    function renderUserArea() {
-      const userArea = document.getElementById('user-area');
-      const userJSON = localStorage.getItem('loggedInUser');
-      const user = userJSON ? JSON.parse(userJSON) : null;
-
-      if (user) {
-        userArea.innerHTML = `
-          <span>Hello, ${user.firstName}!</span>
-          <button id="logout-btn">Logout</button>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', () => {
-          localStorage.removeItem('loggedInUser');
-          renderUserArea();
-        });
-      } else {
-        userArea.innerHTML = `
-          <a href="login.html" class="login">Login</a>
-          <a href="signup.html" class="signup">Sign Up</a>
-        `;
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      updateTimes();
-      setInterval(updateTimes, 1000);
+      
       renderUserArea();
+      
+      // === GSAP Animations ===
+      // Initial load animations
+      gsap.from(".cyber-sidebar", {
+        duration: 1,
+        x: -300,
+        ease: "power3.out",
+        delay: 0.3
+      });
+      
+      gsap.from(".cyber-header", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5
+      });
+      
+      gsap.from(".lesson-container", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1
+      });
+      
+      gsap.from(".time-bar", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.2
+      });
     });
   </script>
-
 </body>
 </html>

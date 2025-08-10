@@ -1,416 +1,1008 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plan 1 - Beginner Chess (0–500)</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan 1 - Beginner Chess (0–500) | ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    * {
       margin: 0;
-      padding-left: 200px;
-      padding-top: 60px;
+      padding: 0;
       box-sizing: border-box;
     }
 
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 200px;
-      background-color: #007acc;
-      transition: width 0.3s ease;
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
       overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      z-index: 1000;
-      padding-top: 2rem;
+      perspective: 1000px;
     }
 
-    #sidebar.collapsed {
-      width: 60px;
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
     }
 
     .toggle-btn {
       background: none;
       border: none;
-      color: white;
+      color: var(--primary);
       font-size: 1.5rem;
-      padding: 1rem;
       cursor: pointer;
-      text-align: left;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .nav-link {
-      color: white;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
       text-decoration: none;
-      padding: 1rem;
-      display: block;
-      transition: background-color 0.3s ease;
-      white-space: nowrap;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
     }
 
     .nav-link:hover {
-      background-color: #005f99;
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
     }
 
-    #sidebar.collapsed .nav-link span {
-      display: none;
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
     }
 
-    .sidebar-content {
-      flex-grow: 1;
+    .nav-link.active::before {
+      transform: scaleY(1);
     }
 
-    #time-box {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background-color: rgba(255 255 255 / 0.95);
-      border: 2px solid #007acc;
-      border-radius: 10px;
-      padding: 0.5rem 1rem;
-      display: flex;
-      gap: 1.2rem;
-      font-size: 0.9rem;
-      color: #007acc;
-      user-select: none;
-      z-index: 1100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      max-width: 420px;
-      overflow-x: auto;
-    }
-
-    #sidebar.collapsed ~ #time-box {
-      margin-left: 60px;
-      width: calc(100% - 60px);
-    }
-
-    .time-zone-item {
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
       text-align: center;
-      padding: 0.5rem 1rem;
+      flex-shrink: 0;
     }
 
-    .time-zone-item strong {
-      color: #007acc;
-      display: block;
-      margin-bottom: 0.25rem;
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
     }
 
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
     .main-content {
-      padding: 2rem;
-      max-width: 900px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
+      padding: 30px;
+      position: relative;
+      overflow-y: auto;
     }
 
-    #sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
+    /* === Cyber Header === */
+    .cyber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
     }
 
-    h1, h2, h3 {
-      color: #007acc;
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
-    table {
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Lesson Content === */
+    .plan-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .plan-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .plan-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .plan-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    .subsection-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      margin: 25px 0 15px 0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* === Tables === */
+    .data-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 1rem 0 2rem 0;
-      font-size: 1rem;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
-    th, td {
-      border: 1px solid #007acc;
-      padding: 0.6rem 1rem;
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      font-weight: 600;
+      padding: 12px 15px;
       text-align: left;
     }
 
-    th {
-      background-color: #007acc;
-      color: white;
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
     }
 
-    blockquote {
-      border-left: 4px solid #007acc;
-      margin-left: 0;
-      padding-left: 1rem;
-      color: #555;
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 247, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* === Lists === */
+    .styled-list {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    .styled-list li {
+      margin-bottom: 10px;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .styled-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    .nested-list {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    /* === Links === */
+    .cyber-link {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .cyber-link:hover {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+    }
+
+    /* === Blockquotes === */
+    .quote-block {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
       font-style: italic;
     }
+
+    .emphasis-block {
+      border-left: 3px solid var(--secondary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* === Dividers === */
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      margin: 30px 0;
+      border: none;
+    }
+
+    /* === Time Zone Bar === */
+    .time-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 20, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .app-container.expanded .time-bar {
+      left: 280px;
+    }
+
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
+    }
+
+    .time-zone:last-child::after {
+      display: none;
+    }
+
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .time-zone {
+        padding: 0 15px;
+      }
+      
+      .time-label {
+        font-size: 0.8rem;
+      }
+      
+      .time-value {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+
+      .plan-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* === Animation Classes === */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
   </style>
-
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-      const header = document.getElementById("top-header");
-      if (sidebar.classList.contains("collapsed")) {
-        header.style.width = "calc(100% - 60px)";
-      } else {
-        header.style.width = "calc(100% - 200px)";
-      }
-    }
-
-    function updateTimeZones() {
-      const now = new Date();
-      const utc = now.toUTCString().split(' ')[4];
-      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
-      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
-      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
-
-      document.getElementById('pt-time').textContent = pt;
-      document.getElementById('et-time').textContent = et;
-      document.getElementById('utc-time').textContent = utc;
-      document.getElementById('ist-time').textContent = ist;
-    }
-
-    function renderUserArea() {
-      const userArea = document.getElementById('user-area');
-      const userJSON = localStorage.getItem('loggedInUser');
-      const user = userJSON ? JSON.parse(userJSON) : null;
-
-      if (user) {
-        userArea.innerHTML = `
-          <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
-          <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', () => {
-          localStorage.removeItem('loggedInUser');
-          renderUserArea();
-        });
-      } else {
-        userArea.innerHTML = `
-          <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
-          <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
-        `;
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      updateTimeZones();
-      setInterval(updateTimeZones, 1000);
-      renderUserArea();
-    });
-  </script>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center;">
-    <div id="user-area"></div>
-  </header>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
+      </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link active">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
 
-  <div id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar-content">
-      <a class="nav-link" href="index.html"><span>Home</span></a>
-      <a class="nav-link" href="lessons.html"><span>Lessons</span></a>
-      <a class="nav-link" href="plans.html"><span>Personal Plans</span></a>
-      <a class="nav-link" href="contact.html"><span>Contact</span></a>
-      <a class="nav-link" href="social.html"><span>Social Media</span></a>
-      <a class="nav-link" href="termsandconditions.html"><span>Terms & Conditions</span></a>
-    </div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Plan Content -->
+      <div class="plan-container fade-in delay-1">
+        <h1 class="plan-title">ACTIVE LEARNING: THE ULTIMATE BEGINNER CHESS STUDY PLAN (0–500)</h1>
+        
+        <p class="plan-text">If we had to summarize the most effective way to improve at chess from beginner to 500 rating in two words, they would be: <strong>active learning</strong>. The most meaningful improvement comes not from passive watching, but from playing, reviewing, solving, and reflecting. Here's a complete roadmap designed to use <strong>Chess.com's tools</strong> to help you build your fundamentals, step by step.</p>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-chess-board"></i> PHASE 1: CORE RULES & MOVEMENT</h2>
+          <p class="plan-text"><strong>Goal:</strong> Learn the legal moves and rules of chess.</p>
+          
+          <ul class="styled-list">
+            <li><strong>Tool:</strong> Chess.com Course - <a href="https://www.chess.com/lessons/how-to-move-the-pieces" target="_blank" class="cyber-link">"How to Move the Pieces"</a></li>
+            <li><strong>Follow-up:</strong> <a href="https://www.chess.com/lessons/everything-you-need-to-know-about-chess" target="_blank" class="cyber-link">"Everything You Need to Know About Chess"</a></li>
+          </ul>
+          
+          <p class="plan-text"><strong>Challenge:</strong> Complete the full interactive course and pass the quizzes.</p>
+          
+          <p class="plan-text">Once done, make sure you can answer:</p>
+          <ul class="styled-list">
+            <li>What is "En Passant"?</li>
+            <li>What is "Castling"?</li>
+            <li>What are the three ways to get out of check?</li>
+          </ul>
+          
+          <p class="plan-text">Also complete:</p>
+          <ul class="styled-list">
+            <li><a href="https://www.chess.com/lessons/playing-the-game" target="_blank" class="cyber-link">"Playing the Game"</a> to reinforce full-game structure and special rules</li>
+          </ul>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-gamepad"></i> PHASE 2: PLAY YOUR FIRST GAMES</h2>
+          <p class="plan-text"><strong>Goal:</strong> Gain comfort with piece movement, turns, and the chess board.</p>
+          
+          <h3 class="subsection-title"><i class="fas fa-robot"></i> OPTION A: PLAY BEGINNER BOTS</h3>
+          <ul class="styled-list">
+            <li><strong>Tool:</strong> Go to Play &gt; Computer</li>
+            <li>Start with Martin and progress through all beginner bots (aim to beat each bot 3 times)</li>
+            <li><a href="https://www.chess.com/article/view/how-to-beat-your-first-chess-bot" target="_blank" class="cyber-link">How to Beat Your First Bot</a></li>
+          </ul>
+          
+          <h3 class="subsection-title"><i class="fas fa-clock"></i> OPTION B: PLAY A 3-DAY PER MOVE DAILY GAME</h3>
+          <ul class="styled-list">
+            <li><strong>Tool:</strong> Play &gt; Daily Chess</li>
+            <li>Start a Daily Game with a 72-hour time control</li>
+          </ul>
+          
+          <h3 class="subsection-title"><i class="fas fa-bolt"></i> OPTION C: LIVE RAPID GAME (WHEN COMFORTABLE)</h3>
+          <ul class="styled-list">
+            <li><strong>Tool:</strong> Play &gt; Live Chess</li>
+            <li>Start with 10|0 or 15|10 Rapid games</li>
+          </ul>
+          
+          <p class="plan-text"><strong>Create a playing routine:</strong></p>
+          <ul class="styled-list">
+            <li>Mon/Wed/Fri: Bots or Daily Games</li>
+            <li>Tue/Thu/Sat: Live Rapid</li>
+          </ul>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-chess-king"></i> PHASE 3: ENDGAMES & FINISHING THE GAME</h2>
+          <p class="plan-text"><strong>Goal:</strong> Know how to checkmate and convert winning positions.</p>
+          
+          <ul class="styled-list">
+            <li><a href="https://www.chess.com/lessons/winning-the-game" target="_blank" class="cyber-link">Winning the Game Course</a></li>
+            <li><a href="https://www.chess.com/drills" target="_blank" class="cyber-link">Endgame Practice Tool</a></li>
+            <li><strong>Recommended Practice Sets:</strong></li>
+            <ul class="nested-list">
+              <li>Queen vs King</li>
+              <li>Rook vs King</li>
+              <li>Two Rooks vs King</li>
+              <li>King & Pawn vs King</li>
+            </ul>
+          </ul>
+          
+          <p class="plan-text"><strong>Stretch goal:</strong> Complete <a href="https://www.chess.com/lessons/understanding-endgames" target="_blank" class="cyber-link">Understanding Endgames Course</a></p>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-chess-knight"></i> PHASE 4: CAPTURING & TACTICS</h2>
+          <p class="plan-text"><strong>Goal:</strong> Develop tactical awareness, identify threats, and win material.</p>
+          
+          <ul class="styled-list">
+            <li><a href="https://www.chess.com/lessons/capturing-the-pieces" target="_blank" class="cyber-link">Capturing the Pieces Course</a></li>
+            <li><a href="https://www.chess.com/lessons/winning-with-tactics" target="_blank" class="cyber-link">Winning with Tactics Course</a></li>
+            <li><a href="https://www.chess.com/puzzles" target="_blank" class="cyber-link">Daily Puzzles</a></li>
+            <li><a href="https://www.chess.com/puzzles/rush" target="_blank" class="cyber-link">Puzzle Rush</a></li>
+          </ul>
+          
+          <p class="plan-text"><strong>Daily Routine:</strong></p>
+          <ul class="styled-list">
+            <li>Solve 3–5 puzzles with explanation mode on</li>
+            <li>Identify themes: fork, pin, skewer, discovered attack, double attack</li>
+            <li>Log any new patterns you learn</li>
+          </ul>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-chess-rook"></i> PHASE 5: OPENING FUNDAMENTALS</h2>
+          <p class="plan-text"><strong>Goal:</strong> Learn good habits in the opening.</p>
+          
+          <ul class="styled-list">
+            <li><a href="https://www.chess.com/lessons/opening-principles" target="_blank" class="cyber-link">Opening Principles Course</a></li>
+            <li><a href="https://www.chess.com/lessons/intro-to-book-openings" target="_blank" class="cyber-link">Intro to Book Openings</a> (Optional)</li>
+            <li><a href="https://www.chess.com/explorer" target="_blank" class="cyber-link">Explorer</a></li>
+            <li>Opening Tree in Game Review</li>
+          </ul>
+          
+          <p class="plan-text">Focus on:</p>
+          <ul class="styled-list">
+            <li>Fight for center (e4, d4)</li>
+            <li>Develop minor pieces (knights before bishops)</li>
+            <li>Castle early</li>
+          </ul>
+          
+          <p class="plan-text"><strong>Stretch:</strong> Start building a simple repertoire using <a href="https://www.chess.com/explorer" target="_blank" class="cyber-link">Opening Explorer</a></p>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-brain"></i> PHASE 6: STRATEGY & GAME PLANNING</h2>
+          <p class="plan-text"><strong>Goal:</strong> Learn to think ahead and make strategic decisions.</p>
+          
+          <ul class="styled-list">
+            <li><a href="https://www.chess.com/lessons/make-the-most-of-your-pieces" target="_blank" class="cyber-link">Make the Most of Your Pieces Course</a></li>
+            <li><a href="https://www.chess.com/lessons/finding-checkmate" target="_blank" class="cyber-link">Finding Checkmate Course</a></li>
+            <li><a href="https://www.chess.com/lessons/the-four-move-checkmate" target="_blank" class="cyber-link">The Four-Move Checkmate Course</a></li>
+            <li><a href="https://www.chess.com/videos" target="_blank" class="cyber-link">Chess.com Video Library</a></li>
+          </ul>
+          
+          <p class="plan-text">Suggested Focus:</p>
+          <ul class="styled-list">
+            <li>Learn to evaluate checks, captures, threats</li>
+            <li>Avoid back rank issues</li>
+            <li>Control key squares (f2/f7)</li>
+            <li>Coordinate your pieces effectively</li>
+          </ul>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-chart-line"></i> PHASE 7: GAME REVIEW & SELF-ANALYSIS</h2>
+          <p class="plan-text"><strong>Goal:</strong> Learn from your own mistakes and improve consistently.</p>
+          
+          <ul class="styled-list">
+            <li>Game Archive &gt; Select Game &gt; Click "Game Review"</li>
+            <li>Retry missed tactics</li>
+            <li>Compare your ideas with engine recommendations</li>
+            <li>Follow linked lessons from the report</li>
+          </ul>
+          
+          <p class="plan-text"><strong>Post-Game Habit:</strong></p>
+          <ul class="styled-list">
+            <li>Write down:</li>
+            <ul class="nested-list">
+              <li>One tactical opportunity you missed</li>
+              <li>One strategic idea that worked well</li>
+              <li>One question you want to research</li>
+            </ul>
+          </ul>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-calendar-alt"></i> WEEKLY TRAINING PLAN (SAMPLE)</h2>
+          
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Activity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Mon</td><td>Solve 5 puzzles + 1 endgame drill</td></tr>
+              <tr><td>Tue</td><td>Play 1 bot game + review it</td></tr>
+              <tr><td>Wed</td><td>Watch 1 lesson + solve challenges</td></tr>
+              <tr><td>Thu</td><td>Play 1 rapid game + Game Review</td></tr>
+              <tr><td>Fri</td><td>Opening Practice + Puzzle Rush</td></tr>
+              <tr><td>Sat</td><td>2 rapid games + Game Review</td></tr>
+              <tr><td>Sun</td><td>Light day: Daily game move + puzzle</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="divider">
+
+        <div class="plan-section">
+          <h2 class="section-title"><i class="fas fa-lightbulb"></i> FINAL ADVICE</h2>
+          
+          <ul class="styled-list">
+            <li><strong>Consistency beats intensity.</strong> Try to study or play at least 15–30 minutes per day.</li>
+            <li><strong>Be active, not passive.</strong> Solve puzzles, review games, take notes.</li>
+            <li><strong>Track your progress.</strong> Use <a href="https://www.chess.com/insights" target="_blank" class="cyber-link">Chess.com Insights</a> to monitor your performance.</li>
+            <li><strong>Build your tactical vocabulary.</strong> Forks, pins, skewers, discovered attacks, and double attacks are your building blocks.</li>
+            <li><strong>Enjoy the process.</strong> Improvement is a journey; celebrate small wins!</li>
+          </ul>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <main class="main-content">
-
-    <h1>Active Learning: The Ultimate Beginner Chess Study Plan (0–500)</h1>
-
-    <p>If we had to summarize the most effective way to improve at chess from beginner to 500 rating in two words, they would be: <strong>active learning</strong>. The most meaningful improvement comes not from passive watching, but from playing, reviewing, solving, and reflecting. Here's a complete roadmap designed to use <strong>Chess.com's tools</strong> to help you build your fundamentals, step by step.</p>
-
-    <hr/>
-
-    <h2>Phase 1: Core Rules &amp; Movement</h2>
-    <strong>Goal:</strong> Learn the legal moves and rules of chess.<br/>
-    <ul>
-      <li><strong>Tool:</strong> Chess.com Course - <a href="https://www.chess.com/lessons/how-to-move-the-pieces" target="_blank">"How to Move the Pieces"</a></li>
-      <li><strong>Follow-up:</strong> <a href="https://www.chess.com/lessons/everything-you-need-to-know-about-chess" target="_blank">"Everything You Need to Know About Chess"</a></li>
-    </ul>
-    <p><strong>Challenge:</strong> Complete the full interactive course and pass the quizzes.</p>
-    <p>Once done, make sure you can answer:</p>
-    <ul>
-      <li>What is "En Passant"?</li>
-      <li>What is "Castling"?</li>
-      <li>What are the three ways to get out of check?</li>
-    </ul>
-    <p>Also complete:</p>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/playing-the-game" target="_blank">"Playing the Game"</a> to reinforce full-game structure and special rules</li>
-    </ul>
-
-    <hr/>
-
-    <h2>Phase 2: Play Your First Games</h2>
-    <strong>Goal:</strong> Gain comfort with piece movement, turns, and the chess board.<br/>
-    <strong>Option A:</strong> Play Beginner Bots<br/>
-    <ul>
-      <li><strong>Tool:</strong> Go to Play &gt; Computer</li>
-      <li>Start with Martin and progress through all beginner bots (aim to beat each bot 3 times)</li>
-      <li><a href="https://www.chess.com/article/view/how-to-beat-your-first-chess-bot" target="_blank">How to Beat Your First Bot</a></li>
-    </ul>
-    <strong>Option B:</strong> Play a 3-day per move Daily Game<br/>
-    <ul>
-      <li><strong>Tool:</strong> Play &gt; Daily Chess</li>
-      <li>Start a Daily Game with a 72-hour time control</li>
-    </ul>
-    <strong>Option C:</strong> Live Rapid Game (when comfortable)<br/>
-    <ul>
-      <li><strong>Tool:</strong> Play &gt; Live Chess</li>
-      <li>Start with 10|0 or 15|10 Rapid games</li>
-    </ul>
-    <p><strong>Create a playing routine:</strong></p>
-    <ul>
-      <li>Mon/Wed/Fri: Bots or Daily Games</li>
-      <li>Tue/Thu/Sat: Live Rapid</li>
-    </ul>
-
-    <hr/>
-
-    <h2>Phase 3: Endgames &amp; Finishing the Game</h2>
-    <strong>Goal:</strong> Know how to checkmate and convert winning positions.<br/>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/winning-the-game" target="_blank">Winning the Game Course</a></li>
-      <li><a href="https://www.chess.com/drills" target="_blank">Endgame Practice Tool</a></li>
-      <li><strong>Recommended Practice Sets:</strong></li>
-      <ul>
-        <li>Queen vs King</li>
-        <li>Rook vs King</li>
-        <li>Two Rooks vs King</li>
-        <li>King &amp; Pawn vs King</li>
-      </ul>
-    </ul>
-    <p><strong>Stretch goal:</strong> Complete <a href="https://www.chess.com/lessons/understanding-endgames" target="_blank">Understanding Endgames Course</a></p>
-
-    <hr/>
-
-    <h2>Phase 4: Capturing &amp; Tactics</h2>
-    <strong>Goal:</strong> Develop tactical awareness, identify threats, and win material.<br/>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/capturing-the-pieces" target="_blank">Capturing the Pieces Course</a></li>
-      <li><a href="https://www.chess.com/lessons/winning-with-tactics" target="_blank">Winning with Tactics Course</a></li>
-      <li><a href="https://www.chess.com/puzzles" target="_blank">Daily Puzzles</a></li>
-      <li><a href="https://www.chess.com/puzzles/rush" target="_blank">Puzzle Rush</a></li>
-    </ul>
-    <p><strong>Daily Routine:</strong></p>
-    <ul>
-      <li>Solve 3–5 puzzles with explanation mode on</li>
-      <li>Identify themes: fork, pin, skewer, discovered attack, double attack</li>
-      <li>Log any new patterns you learn</li>
-    </ul>
-
-    <hr/>
-
-    <h2>Phase 5: Opening Fundamentals</h2>
-    <strong>Goal:</strong> Learn good habits in the opening.<br/>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/opening-principles" target="_blank">Opening Principles Course</a></li>
-      <li><a href="https://www.chess.com/lessons/intro-to-book-openings" target="_blank">Intro to Book Openings</a> (Optional)</li>
-      <li><a href="https://www.chess.com/explorer" target="_blank">Explorer</a></li>
-      <li>Opening Tree in Game Review</li>
-    </ul>
-    <p>Focus on:</p>
-    <ul>
-      <li>Fight for center (e4, d4)</li>
-      <li>Develop minor pieces (knights before bishops)</li>
-      <li>Castle early</li>
-    </ul>
-    <p><strong>Stretch:</strong> Start building a simple repertoire using <a href="https://www.chess.com/explorer" target="_blank">Opening Explorer</a></p>
-
-    <hr/>
-
-    <h2>Phase 6: Strategy &amp; Game Planning</h2>
-    <strong>Goal:</strong> Learn to think ahead and make strategic decisions.<br/>
-    <ul>
-      <li><a href="https://www.chess.com/lessons/make-the-most-of-your-pieces" target="_blank">Make the Most of Your Pieces Course</a></li>
-      <li><a href="https://www.chess.com/lessons/finding-checkmate" target="_blank">Finding Checkmate Course</a></li>
-      <li><a href="https://www.chess.com/lessons/the-four-move-checkmate" target="_blank">The Four-Move Checkmate Course</a></li>
-      <li><a href="https://www.chess.com/videos" target="_blank">Chess.com Video Library</a></li>
-    </ul>
-    <p>Suggested Focus:</p>
-    <ul>
-      <li>Learn to evaluate checks, captures, threats</li>
-      <li>Avoid back rank issues</li>
-      <li>Control key squares (f2/f7)</li>
-      <li>Coordinate your pieces effectively</li>
-    </ul>
-
-    <hr/>
-
-    <h2>Phase 7: Game Review &amp; Self-Analysis</h2>
-    <strong>Goal:</strong> Learn from your own mistakes and improve consistently.<br/>
-    <ul>
-      <li>Game Archive &gt; Select Game &gt; Click \"Game Review\"</li>
-      <li>Retry missed tactics</li>
-      <li>Compare your ideas with engine recommendations</li>
-      <li>Follow linked lessons from the report</li>
-    </ul>
-    <p><strong>Post-Game Habit:</strong></p>
-    <ul>
-      <li>Write down:</li>
-      <ul>
-        <li>One tactical opportunity you missed</li>
-        <li>One strategic idea that worked well</li>
-        <li>One question you want to research</li>
-      </ul>
-    </ul>
-
-    <hr/>
-
-    <h2>Weekly Training Plan (Sample)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Activity</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Mon</td><td>Solve 5 puzzles + 1 endgame drill</td></tr>
-        <tr><td>Tue</td><td>Play 1 bot game + review it</td></tr>
-        <tr><td>Wed</td><td>Watch 1 lesson + solve challenges</td></tr>
-        <tr><td>Thu</td><td>Play 1 rapid game + Game Review</td></tr>
-        <tr><td>Fri</td><td>Opening Practice + Puzzle Rush</td></tr>
-        <tr><td>Sat</td><td>2 rapid games + Game Review</td></tr>
-        <tr><td>Sun</td><td>Light day: Daily game move + puzzle</td></tr>
-      </tbody>
-    </table>
-
-    <hr/>
-
-    <h2>Final Advice</h2>
-    <ul>
-      <li><strong>Consistency beats intensity.</strong> Try to study or play at least 15–30 minutes per day.</li>
-      <li><strong>Be active, not passive.</strong> Solve puzzles, review games, take notes.</li>
-      <li><strong>Track your progress.</strong> Use <a href="https://www.chess.com/insights" target="_blank">Chess.com Insights</a> to monitor your performance.</li>
-      <li><strong>Build your tactical vocabulary.</strong> Forks,      pins, skewers, discovered attacks, and double attacks are your building blocks.</li>
-      <li><strong>Enjoy the process.</strong> Improvement is a journey; celebrate small wins!</li>
-    </ul>
-
-  </main>
-
-  <div id="time-box">
-    <div class="time-zone-item">
-      <strong>Pacific Time</strong>
-      <span id="pt-time"></span>
+  <!-- Time Zone Bar -->
+  <footer class="time-bar">
+    <div class="time-zone">
+      <div class="time-label">LOCAL TIME</div>
+      <div class="time-value" id="local-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>Eastern Time</strong>
-      <span id="et-time"></span>
+    <div class="time-zone">
+      <div class="time-label">PACIFIC</div>
+      <div class="time-value" id="pt-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>UTC</strong>
-      <span id="utc-time"></span>
+    <div class="time-zone">
+      <div class="time-label">EASTERN</div>
+      <div class="time-value" id="et-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>New Delhi</strong>
-      <span id="ist-time"></span>
+    <div class="time-zone">
+      <div class="time-label">UTC</div>
+      <div class="time-value" id="utc-time">--:--:--</div>
     </div>
-  </div>
+    <div class="time-zone">
+      <div class="time-label">NEW DELHI</div>
+      <div class="time-value" id="ist-time">--:--:--</div>
+    </div>
+  </footer>
 
+  <script>
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+       
+      
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
+      }
+      
+      renderUserArea();
+      
+      // === GSAP Animations ===
+      // Initial load animations
+      gsap.from(".cyber-sidebar", {
+        duration: 1,
+        x: -300,
+        ease: "power3.out",
+        delay: 0.3
+      });
+      
+      gsap.from(".cyber-header", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5
+      });
+      
+      gsap.from(".plan-container", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1
+      });
+      
+      gsap.from(".time-bar", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.2
+      });
+    });
+  </script>
 </body>
 </html>
-

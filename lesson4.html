@@ -1,416 +1,931 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lesson 4 - Time Management in Chess</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4 - Time Management | ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    /* Basic Reset */
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
     }
 
-    /* Sidebar styles */
-    #sidebar {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
       position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
       top: 0;
       left: 0;
-      width: 220px;
-      height: 100%;
-      background: #004a99;
-      color: white;
-      padding-top: 60px;
-      box-sizing: border-box;
-      transition: width 0.3s ease;
-      overflow-y: auto;
-      z-index: 1300;
     }
-    #sidebar.collapsed {
-      width: 60px;
+
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
-    #sidebar .toggle-btn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: #007acc;
-      border: none;
-      color: white;
-      font-size: 22px;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      border-radius: 4px;
-      z-index: 1350;
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
     }
-    #sidebar.collapsed .sidebar-content a span {
-      display: none;
-    }
-    #sidebar .sidebar-content {
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      padding-left: 15px;
-    }
-    #sidebar .sidebar-content a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 10px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      transition: background-color 0.2s ease;
-    }
-    #sidebar .sidebar-content a:hover {
-      background-color: #0062cc;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
-    /* Top header (login/signup) */
-    #top-header {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 50px;
-      width: calc(100% - 220px);
-      background: white;
-      border-bottom: 1px solid #ddd;
+    .sidebar-header {
+      padding: 20px;
       display: flex;
-      justify-content: flex-end;
       align-items: center;
-      padding: 0 20px;
-      box-sizing: border-box;
-      z-index: 1400;
-      transition: width 0.3s ease;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
     }
-    #sidebar.collapsed + #top-header {
-      width: calc(100% - 60px);
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
     }
-    #user-area a {
-      margin-left: 15px;
-      color: #007acc;
-      text-decoration: none;
-      font-weight: 600;
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
     }
-    #user-area button {
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    .toggle-btn {
       background: none;
       border: none;
-      color: #007acc;
-      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.5rem;
       cursor: pointer;
-      margin-left: 15px;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
     }
 
-    /* Main content */
-    main.main-content {
-      margin-left: 220px;
-      padding: 70px 30px 100px 30px;
-      max-width: 900px;
-      transition: margin-left 0.3s ease;
-    }
-    #sidebar.collapsed ~ main.main-content {
-      margin-left: 60px;
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
     }
 
-    /* Time zones box (bottom right) */
-    #time-box {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #fff;
-      border: 2px solid #007acc;
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
       border-radius: 8px;
-      padding: 10px 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: #007acc;
-      max-width: 180px;
-      user-select: none;
-      z-index: 1200;
+      overflow: hidden;
     }
-    .time-zone-item {
-      margin-bottom: 6px;
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
     }
-    .time-zone-item strong {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 2px;
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
     }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
+    }
+
+    .nav-link:hover {
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
+    }
+
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
+    }
+
+    .nav-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
+    .main-content {
+      padding: 30px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* === Cyber Header === */
+    .cyber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Lesson Content === */
+    .lesson-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .lesson-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .lesson-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .lesson-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    /* === Tables === */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      font-weight: 600;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 247, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* === Lists === */
+    .styled-list {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    .styled-list li {
+      margin-bottom: 10px;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .styled-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    /* === Blockquotes === */
+    .quote-block {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* === Code Blocks === */
+    .code-block {
+      font-family: var(--font-code);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 3px solid var(--secondary);
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    /* === Time Zone Bar === */
+    .time-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 20, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .app-container.expanded .time-bar {
+      left: 280px;
+    }
+
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
+    }
+
+    .time-zone:last-child::after {
+      display: none;
+    }
+
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .time-zone {
+        padding: 0 15px;
+      }
+      
+      .time-label {
+        font-size: 0.8rem;
+      }
+      
+      .time-value {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+
+      .lesson-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* === Animation Classes === */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
   </style>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar-content">
-      <a href="index.html"><span>Home</span></a>
-      <a href="lessons.html"><span>Lessons</span></a>
-      <a href="plans.html"><span>Personal Plans</span></a>
-      <a href="contact.html"><span>Contact</span></a>
-      <a href="social.html"><span>Social Media</span></a>
-      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
-    </div>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
+      </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link active">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Lesson Content -->
+      <div class="lesson-container fade-in delay-1">
+        <h1 class="lesson-title">TIME MANAGEMENT IN CHESS: A SCIENTIFIC APPROACH</h1>
+        
+        <div class="lesson-section">
+          <p class="lesson-text">Time management is not about "playing faster." It is about strategic resource allocation — knowing where to invest time, and when to trust intuition or force precision. Poor time usage leads to catastrophic blunders, even in technically winning positions. This lesson introduces a scientifically designed Time Allocation Framework built on clock control heuristics, decision tree profiling, and cognitive pacing strategies derived from high-level tournament play and time-pressure neuroscience.</p>
+          
+          <p class="lesson-text">You will learn to build a Time Budget, train with decision-type tagging, and apply temporal heuristics dynamically across game phases. Precision beats pace, but a structured pace allows precision when it matters most.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-clock"></i> 1. TIME BUDGETING PER GAMING FORMAT</h2>
+          <p class="lesson-text"><strong>Principle 1:</strong> Begin with a fixed time-per-decision budget tailored to the game format. Adjust only if the position demands it.</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time Control</th>
+                <th>Opening (0–10 moves)</th>
+                <th>Middlegame (11–35)</th>
+                <th>Endgame (36+)</th>
+                <th>Time Buffer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>90+30 (Classical)</td>
+                <td>~1 min/move</td>
+                <td>~2.5 min/critical, ~1.5 min/quiet</td>
+                <td>2+ min</td>
+                <td>Reserve 20 min</td>
+              </tr>
+              <tr>
+                <td>45+15 (Training Rapid)</td>
+                <td>~30 sec/move</td>
+                <td>1–2 min for tactical/imbalanced</td>
+                <td>1–1.5 min</td>
+                <td>Reserve 10 min</td>
+              </tr>
+              <tr>
+                <td>15+10 (Tournament Rapid)</td>
+                <td>15–25 sec</td>
+                <td>30 sec–1 min for complexity</td>
+                <td>45 sec</td>
+                <td>Reserve 2 min</td>
+              </tr>
+              <tr>
+                <td>5+3 (Blitz)</td>
+                <td>5–10 sec</td>
+                <td>15 sec for tactics</td>
+                <td>10 sec</td>
+                <td>No reserve</td>
+              </tr>
+              <tr>
+                <td>1+0 (Bullet)</td>
+                <td>0.5–1 sec</td>
+                <td>3–4 sec if decisive</td>
+                <td>Flag faster</td>
+                <td>None</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="lesson-text"><em>Note:</em> Create a Time Per Move Ceiling (TPMC) in your notebook or pre-game checklist. Exceed only if critical.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-tags"></i> 2. THE DECISION-TYPE TAGGING SYSTEM</h2>
+          <p class="lesson-text"><strong>Principle:</strong> Not all positions require deep thought. Classify position types to match the appropriate time investment.</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Max Time Allocation (Rapid 15+10)</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Type A: Theoretical Recall</td>
+                <td>Book moves; Known lines</td>
+                <td>≤10 seconds</td>
+                <td><code>1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6</code></td>
+              </tr>
+              <tr>
+                <td>Type B: Automatic Move</td>
+                <td>Recaptures: Only legal move</td>
+                <td>≤5 seconds</td>
+                <td><code>22...gxf6</code> after <code>22.Bxf6</code></td>
+              </tr>
+              <tr>
+                <td>Type C: Strategic Choice</td>
+                <td>Positional tradeoff (e.g., bishop vs knight)</td>
+                <td>≤30–40 seconds</td>
+                <td>Should I trade the light-square bishop on d3 for a knight on f5?</td>
+              </tr>
+              <tr>
+                <td>Type D: Tactical Alert</td>
+                <td>Concrete lines or traps are possible</td>
+                <td>1–2 minutes max</td>
+                <td>Suspicious knight sac on g5 — calculate accurately</td>
+              </tr>
+              <tr>
+                <td>Type E: Critical Decision</td>
+                <td>Game-defining moment</td>
+                <td>Up to 20–25% of the remaining time</td>
+                <td>Choosing to play ...d5 break in closed center with opposite-side castling</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="lesson-text"><em>Note:</em> After each move in study games, label it A–E. Track if you over-/underspent relative to your class. This increases time allocation accuracy by up to 35% within weeks.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-bolt"></i> 3. PATTERNED INSTINCT - BLITZ</h2>
+          <p class="lesson-text"><strong>Principle:</strong> Blitz time management is about pre-built heuristics and forcing reactive errors.</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rule</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"Never Think of Opening"</td>
+                <td>First 8–10 moves = &lt;5 sec per move</td>
+              </tr>
+              <tr>
+                <td>"You Move, I Move"</td>
+                <td>Respond to fast opponent moves within 2 seconds — even if it's off-beat</td>
+              </tr>
+              <tr>
+                <td>"Avoid 30-Second Holes"</td>
+                <td>Never spend more than 20 seconds on any single move</td>
+              </tr>
+              <tr>
+                <td>"Clock Blitzing"</td>
+                <td>If the opponent drops below 30 seconds, switch to threats/forcing moves only.</td>
+              </tr>
+              <tr>
+                <td>"Pre-move Zones"</td>
+                <td>Endgames, known recaptures, single-move threats = use pre-moves</td>
+              </tr>
+              <tr>
+                <td>"3-Second Scan"</td>
+                <td>Final 10 sec: stop calculating. Just scan for mate/blunder, move.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="lesson-text"><em>Note:</em> Drill Blitz with post-game voice logs: After the game, immediately say why you spent time at key moments. Builds awareness.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-brain"></i> CONCLUSION</h2>
+          <p class="lesson-text">
+            Time management is not a side skill — it is a core calculation amplifier. Structured clock usage prevents time pressure, reduces errors, and lets you out-resource opponents when they collapse. Build your time intuition like any tactical skill: with drills, labels, benchmarks, and review.
+          </p>
+
+          <p class="lesson-text">
+            This lesson provides you with a complete system. Adopt the Decision-Type Tagging method. Track Time Burn patterns. Apply dynamic phase budgets. You don't need to play faster — you need to play on time.
+          </p>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- Top header -->
-  <header id="top-header">
-    <div id="user-area"></div>
-  </header>
-
-  <!-- Main content -->
-  <main class="main-content">
-    <h1>Time Management in Chess: A Scientific Approach</h1>
-    <p>
-      Time management is not about "playing faster." It is about strategic resource allocation — knowing where to invest time, and when to trust intuition or force precision. Poor time usage leads to catastrophic blunders, even in technically winning positions. This lesson introduces a scientifically designed Time Allocation Framework built on clock control heuristics, decision tree profiling, and cognitive pacing strategies derived from high-level tournament play and time-pressure neuroscience.
-    </p>
-    <p>
-      You will learn to build a Time Budget, train with decision-type tagging, and apply temporal heuristics dynamically across game phases. Precision beats pace, but a structured pace allows precision when it matters most.
-    </p>
-
-    <h2>1. Time Budgeting Per Gaming Format</h2>
-    <p><strong>Principle 1:</strong> Begin with a fixed time-per-decision budget tailored to the game format. Adjust only if the position demands it.</p>
-
-    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 700px; margin-bottom: 20px;">
-      <thead style="background:#007acc; color: white;">
-        <tr>
-          <th>Time Control</th>
-          <th>Opening (0–10 moves)</th>
-          <th>Middlegame (11–35)</th>
-          <th>Endgame (36+)</th>
-          <th>Time Buffer</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>90+30 (Classical)</td>
-          <td>~1 min/move</td>
-          <td>~2.5 min/critical, ~1.5 min/quiet</td>
-          <td>2+ min</td>
-          <td>Reserve 20 min</td>
-        </tr>
-        <tr>
-          <td>45+15 (Training Rapid)</td>
-          <td>~30 sec/move</td>
-          <td>1–2 min for tactical/imbalanced</td>
-          <td>1–1.5 min</td>
-          <td>Reserve 10 min</td>
-        </tr>
-        <tr>
-          <td>15+10 (Tournament Rapid)</td>
-          <td>15–25 sec</td>
-          <td>30 sec–1 min for complexity</td>
-          <td>45 sec</td>
-          <td>Reserve 2 min</td>
-        </tr>
-        <tr>
-          <td>5+3 (Blitz)</td>
-          <td>5–10 sec</td>
-          <td>15 sec for tactics</td>
-          <td>10 sec</td>
-          <td>No reserve</td>
-        </tr>
-        <tr>
-          <td>1+0 (Bullet)</td>
-          <td>0.5–1 sec</td>
-          <td>3–4 sec if decisive</td>
-          <td>Flag faster</td>
-          <td>None</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p><strong>Note:</strong> Create a Time Per Move Ceiling (TPMC) in your notebook or pre-game checklist. Exceed only if critical.</p>
-
-    <h2>2. The Decision-Type Tagging System</h2>
-    <p><strong>Principle:</strong> Not all positions require deep thought. Classify position types to match the appropriate time investment.</p>
-
-    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 700px; margin-bottom: 20px;">
-      <thead style="background:#007acc; color: white;">
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Max Time Allocation (Rapid 15+10)</th>
-          <th>Example</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Type A: Theoretical Recall</td>
-          <td>Book moves; Known lines</td>
-          <td>≤10 seconds</td>
-          <td>1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6</td>
-        </tr>
-        <tr>
-          <td>Type B: Automatic Move</td>
-          <td>Recaptures: Only legal move</td>
-          <td>≤5 seconds</td>
-          <td>22...gxf6 after 22.Bxf6</td>
-        </tr>
-        <tr>
-          <td>Type C: Strategic Choice</td>
-          <td>Positional tradeoff (e.g., bishop vs knight)</td>
-          <td>≤30–40 seconds</td>
-          <td>Should I trade the light-square bishop on d3 for a knight on f5?</td>
-        </tr>
-        <tr>
-          <td>Type D: Tactical Alert</td>
-          <td>Concrete lines or traps are possible</td>
-          <td>1–2 minutes max</td>
-          <td>Suspicious knight sac on g5 — calculate accurately</td>
-        </tr>
-        <tr>
-          <td>Type E: Critical Decision</td>
-          <td>Game-defining moment</td>
-          <td>Up to 20–25% of the remaining time</td>
-          <td>Choosing to play ...d5 break in closed center with opposite-side castling</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p><strong>Note:</strong> After each move in study games, label it A–E. Track if you over-/underspent relative to your class. This increases time allocation accuracy by up to 35% within weeks.</p>
-
-    <h2>3. Patterned Instinct - Blitz</h2>
-    <p><strong>Principle:</strong> Blitz time management is about pre-built heuristics and forcing reactive errors.</p>
-
-    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 700px; margin-bottom: 20px;">
-      <thead style="background:#007acc; color: white;">
-        <tr>
-          <th>Rule</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>“Never Think of Opening”</td>
-          <td>First 8–10 moves = &lt;5 sec per move</td>
-        </tr>
-        <tr>
-          <td>“You Move, I Move”</td>
-          <td>Respond to fast opponent moves within 2 seconds — even if it’s off-beat</td>
-        </tr>
-        <tr>
-          <td>“Avoid 30-Second Holes”</td>
-          <td>Never spend more than 20 seconds on any single move</td>
-        </tr>
-        <tr>
-          <td>“Clock Blitzing”</td>
-          <td>If the opponent drops below 30 seconds, switch to threats/forcing moves only.</td>
-        </tr>
-        <tr>
-          <td>“Pre-move Zones”</td>
-          <td>Endgames, known recaptures, single-move threats = use pre-moves</td>
-        </tr>
-        <tr>
-          <td>“3-Second Scan”</td>
-          <td>Final 10 sec: stop calculating. Just scan for mate/blunder, move.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p><strong>Note:</strong> Drill Blitz with post-game voice logs: After the game, immediately say why you spent time at key moments. Builds awareness.</p>
-
-    <h2>Conclusion</h2>
-    <p>
-      Time management is not a side skill — it is a core calculation amplifier. Structured clock usage prevents time pressure, reduces errors, and lets you out-resource opponents when they collapse. Build your time intuition like any tactical skill: with drills, labels, benchmarks, and review.
-    </p>
-    <p>
-      This lesson provides you with a complete system. Adopt the Decision-Type Tagging method. Track Time Burn patterns. Apply dynamic phase budgets. You don’t need to play faster — you need to play on time.
-    </p>
-  </main>
-
-  <!-- Time zones compact fixed bottom-right -->
-  <div id="time-box" aria-label="Current time zones">
-    <div class="time-zone-item">
-      <strong>Pacific Time</strong>
-      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+  <!-- Time Zone Bar -->
+  <footer class="time-bar">
+    <div class="time-zone">
+      <div class="time-label">LOCAL TIME</div>
+      <div class="time-value" id="local-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>Eastern Time</strong>
-      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">PACIFIC</div>
+      <div class="time-value" id="pt-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>UTC</strong>
-      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">EASTERN</div>
+      <div class="time-value" id="et-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>New Delhi</strong>
-      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">UTC</div>
+      <div class="time-value" id="utc-time">--:--:--</div>
     </div>
-  </div>
+    <div class="time-zone">
+      <div class="time-label">NEW DELHI</div>
+      <div class="time-value" id="ist-time">--:--:--</div>
+    </div>
+  </footer>
 
   <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-      // Adjust top header width when sidebar collapses
-      const topHeader = document.getElementById("top-header");
-      if(sidebar.classList.contains("collapsed")){
-        topHeader.style.width = "calc(100% - 60px)";
-      } else {
-        topHeader.style.width = "calc(100% - 220px)";
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+      
+      
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
       }
-    }
-
-    function updateTimes() {
-      const now = new Date();
-
-      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
-        timeZone: 'America/Los_Angeles',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-
-      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
-        timeZone: 'America/New_York',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-
-      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
-        timeZone: 'UTC',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      });
-
-      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      });
-    }
-
-    function renderUserArea() {
-      const userArea = document.getElementById('user-area');
-      const userJSON = localStorage.getItem('loggedInUser');
-      const user = userJSON ? JSON.parse(userJSON) : null;
-
-      if (user) {
-        userArea.innerHTML = `
-          <span>Hello, ${user.firstName}!</span>
-          <button id="logout-btn">Logout</button>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', () => {
-          localStorage.removeItem('loggedInUser');
-          renderUserArea();
-        });
-      } else {
-        userArea.innerHTML = `
-          <a href="login.html" class="login">Login</a>
-          <a href="signup.html" class="signup">Sign Up</a>
-        `;
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      updateTimes();
-      setInterval(updateTimes, 1000);
+      
       renderUserArea();
+      
+      // === GSAP Animations ===
+      // Initial load animations
+      gsap.from(".cyber-sidebar", {
+        duration: 1,
+        x: -300,
+        ease: "power3.out",
+        delay: 0.3
+      });
+      
+      gsap.from(".cyber-header", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5
+      });
+      
+      gsap.from(".lesson-container", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1
+      });
+      
+      gsap.from(".time-bar", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.2
+      });
     });
   </script>
-
 </body>
 </html>

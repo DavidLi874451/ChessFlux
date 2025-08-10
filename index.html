@@ -1,280 +1,1552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ChessFlux</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChessFlux | Next-Gen Chess Platform</title>
+  <meta name="description" content="The most advanced chess learning platform with AI analysis, holographic boards, and immersive training">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Three.js for 3D elements -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- GSAP for advanced animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    * {
       margin: 0;
-      padding-left: 200px; /* Reserve space for sidebar */
+      padding: 0;
       box-sizing: border-box;
     }
 
-    /* Sidebar */
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 200px;
-      background-color: #007acc;
-      transition: width 0.3s ease;
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
       overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      z-index: 1000;
+      perspective: 1000px;
     }
 
-    #sidebar.collapsed {
-      width: 60px;
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+
+    /* === Neon Glow Effects === */
+    .neon {
+      text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 20px var(--primary);
+    }
+    .neon-secondary {
+      text-shadow: 0 0 5px var(--secondary), 0 0 10px var(--secondary), 0 0 20px var(--secondary);
+    }
+
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
     }
 
     .toggle-btn {
       background: none;
       border: none;
-      color: white;
+      color: var(--primary);
       font-size: 1.5rem;
-      padding: 1rem;
       cursor: pointer;
-      text-align: left;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .nav-link {
-      color: white;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
       text-decoration: none;
-      padding: 1rem;
-      display: block;
-      transition: background-color 0.3s ease;
-      white-space: nowrap;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
     }
 
     .nav-link:hover {
-      background-color: #005f99;
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
     }
 
-    #sidebar.collapsed .nav-link span {
-      display: none;
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
     }
 
-    .sidebar-content {
-      flex-grow: 1;
+    .nav-link.active::before {
+      transform: scaleY(1);
     }
 
-    /* Content layout */
-    .container {
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
+    .main-content {
+      padding: 20px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* === Cyber Header === */
+    .cyber-header {
       display: flex;
-      gap: 2rem;
-      padding: 2rem;
-      transition: margin-left 0.3s ease;
-    }
-
-    #sidebar.collapsed ~ .container {
-      margin-left: 80px;
-    }
-
-    .image-box {
-      width: 20%;
-    }
-
-    .image-box img {
-      width: 100%;
-      height: auto;
-      border: 2px solid #007acc;
-      border-radius: 8px;
-    }
-
-    .welcome-box {
-      width: 80%;
-      border: 2px solid #007acc;
-      background-color: #ffffff;
-      padding: 1.5rem;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      color: #007acc;
-    }
-
-    /* Time zone box styling */
-    #time-box {
-      width: calc(100% - 200px);
-      margin-left: 200px;
-      background-color: #ffffff;
-      border: 2px solid #007acc;
-      border-radius: 10px;
-      padding: 1rem 2rem;
-      margin-bottom: 2rem;
-      display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       align-items: center;
-      box-sizing: border-box;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Hero Section === */
+    .hero-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .chess-logo-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chess-logo {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 15px;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 30px rgba(0, 247, 255, 0.4);
+      transition: all 0.5s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chess-logo:hover {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 0 50px rgba(0, 247, 255, 0.6);
+    }
+
+    .logo-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0, 247, 255, 0.3) 0%, transparent 70%);
+      border-radius: 15px;
+      animation: pulse 4s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+
+    .welcome-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: all 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(0, 247, 255, 0.05) 50%,
+        transparent 100%
+      );
+      transform: rotate(45deg);
+      animation: shine 6s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    .welcome-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 247, 255, 0.3);
+    }
+
+    .welcome-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .welcome-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .highlight {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 25px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: all 0.5s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 30px rgba(0, 247, 255, 0.6);
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    /* === Features Section === */
+    .features-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 25px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 247, 255, 0.2);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 247, 255, 0.05) 0%,
+        transparent 50%,
+        rgba(0, 247, 255, 0.05) 100%
+      );
+      z-index: -1;
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    .feature-title {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .feature-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* === Upcoming Events === */
+    .events-section {
+      margin-bottom: 40px;
+    }
+
+    .events-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .event-card {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      border-left: 4px solid var(--primary);
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.2);
+    }
+
+    .event-date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 247, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .event-day {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .event-month {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .event-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .event-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-primary);
+    }
+
+    .event-time {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* === Testimonials === */
+    .testimonials-section {
+      margin-bottom: 40px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .testimonial-card {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 25px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 247, 255, 0.2);
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .testimonial-text::before,
+    .testimonial-text::after {
+      content: '"';
+      font-size: 2rem;
+      color: var(--primary);
+      opacity: 0.3;
+      position: absolute;
+    }
+
+    .testimonial-text::before {
+      top: -10px;
+      left: -10px;
+    }
+
+    .testimonial-text::after {
+      bottom: -20px;
+      right: -10px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg-darker);
+      font-weight: bold;
+    }
+
+    .author-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .author-title {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* === Time Zone Bar === */
+    .time-bar {
       position: fixed;
       bottom: 0;
       left: 0;
-      transition: margin-left 0.3s ease, width 0.3s ease;
+      right: 0;
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
-    #sidebar.collapsed ~ #time-box {
-      margin-left: 60px;
-      width: calc(100% - 60px);
+    .app-container.expanded .time-bar {
+      left: 280px;
     }
 
-    .time-zone-item {
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
       text-align: center;
-      padding: 0.5rem 1rem;
+      padding: 0 20px;
+      position: relative;
     }
 
-    .time-zone-item strong {
-      color: #007acc;
-      display: block;
-      margin-bottom: 0.25rem;
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
     }
+
+    .time-zone:last-child::after {
+      display: none;
+    }
+
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    /* === Holographic Effect === */
+    .holographic-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .holographic-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(0, 247, 255, 0) 0%,
+        rgba(0, 247, 255, 0.1) 50%,
+        rgba(0, 247, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      animation: holographic 6s infinite linear;
+    }
+
+    @keyframes holographic {
+      0% { transform: translateY(-100%) rotate(30deg); }
+      100% { transform: translateY(100%) rotate(30deg); }
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .chess-logo-container {
+        order: -1;
+      }
+      
+      .chess-logo {
+        max-width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+    }
+
+    /* === Animation Classes === */
+    .float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .glow {
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px rgba(0, 247, 255, 0.5); }
+      to { box-shadow: 0 0 20px rgba(0, 247, 255, 0.8); }
+    }
+
+    /* === Loading Animations === */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    .delay-4 { animation-delay: 0.8s; }
+    .delay-5 { animation-delay: 1s; }
   </style>
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-    }
-
-    function updateTimeZones() {
-      const now = new Date();
-      const utc = now.toUTCString().split(' ')[4];
-      const pt = now.toLocaleTimeString("en-US", { timeZone: "America/Los_Angeles" });
-      const et = now.toLocaleTimeString("en-US", { timeZone: "America/New_York" });
-      const ist = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" });
-
-      document.getElementById('pt-time').textContent = pt;
-      document.getElementById('et-time').textContent = et;
-      document.getElementById('utc-time').textContent = utc;
-      document.getElementById('ist-time').textContent = ist;
-    }
-
-    setInterval(updateTimeZones, 1000);
-    window.onload = updateTimeZones;
-  </script>
 </head>
 <body>
-  
-  <header id="top-header" style="position: fixed; top: 0; right: 0; padding: 1rem 2rem; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1100; display: flex; gap: 1rem; align-items: center; font-family: Arial, sans-serif;">
-  <div id="user-area">
-    <!-- Content controlled by JavaScript -->
-  </div>
-</header>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-<!-- Add padding-top to body or main container to avoid content being hidden under fixed header -->
-<style>
-  body {
-    padding-top: 60px; /* adjust based on header height */
-  }
-</style>
-
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <div>
-      <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-      <div class="sidebar-content">
-        <a href="index.html" class="nav-link"><span>Home</span></a>
-        <a href="lessons.html" class="nav-link"><span>Lessons</span></a>
-        <a href="plans.html" class="nav-link"><span>Personal Plans</span></a>
-        <a href="contact.html" class="nav-link"><span>Contact</span></a>
-        <a href="social.html" class="nav-link"><span>Social Media</span></a>
-        <a href="termsandconditions.html" class="nav-link"><span>Terms & Conditions</span></a>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
       </div>
-    </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link active">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="chess-logo-container float fade-in delay-1">
+          <div class="logo-glow"></div>
+          <img src="logo.png" alt="ChessFlux Logo" class="chess-logo">
+        </div>
+        
+        <div class="welcome-container holographic-card fade-in delay-2">
+          <h1 class="welcome-title neon">WELCOME TO CHESSFLUX</h1>
+          <p class="welcome-text">We are thrilled to welcome you to this amazing community of like-minded individuals and cannot wait to assist you with your chess journey!</p>
+          <p class="welcome-text"><span class="highlight">ChessFlux</span> is a hub for aspiring chess players to grow stronger, offering free coaching, guidance from professionals, and interactive lessons.</p>
+          <p class="welcome-text">We frequently post free instructional content and exercises to help expand your chess knowledge and skills.</p>
+          
+          <div style="margin-top: 30px;">
+            <a href="https://www.chess.com/club/chessflux" target="_blank" class="cta-button glow">
+              <i class="fas fa-chess-knight"></i>
+              Connect to our Chess.com Club!
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features-section fade-in delay-3">
+        <h2 class="section-title">
+          <i class="fas fa-star"></i> KEY FEATURES
+        </h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3 class="feature-title">AI-Powered Analysis</h3>
+            <p class="feature-description">Get instant feedback on your games with AI that learns your playing style and suggests improvements.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3 class="feature-title">Interactive Lessons</h3>
+            <p class="feature-description">Learn from 2200+ ELO coachesthrough our immersive lessons with personalized training plans for free.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="feature-title">Like-Minded Community</h3>
+            <p class="feature-description">Connect with other like-minded indivduals and high-rated players to optimize ELO profression.</p>
+
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="testimonials-section fade-in delay-5">
+        <h2 class="section-title">
+          <i class="fas fa-quote-left"></i> TESTIMONIALS
+        </h2>
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <p class="testimonial-text">ChessFlux transformed my game completely. The articles and features pointed out weaknesses I never noticed, and the lessons are incredibly engaging.</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">A</div>
+              <div class="author-info">
+                <div class="author-name">Adam</div>
+                <div class="author-title">Rated 1830</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p class="testimonial-text">As a beginner, I was intimidated by chess, but the staff members were so supporting and encouraging! The interactive lessons make learning fun and effective.</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">EZ</div>
+              <div class="author-info">
+                <div class="author-name">Elaine Zhang</div>
+                <div class="author-title">Rated 1200</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p class="testimonial-text">I've improved my rating by 300 points in just 3 months thanks to the regular competitive play and recieving personalized help from the owner, highly recommend for those who are looking towards breaking the 2000 ELO Barrier!</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">AS</div>
+              <div class="author-info">
+                <div class="author-name">Abdallah S</div>
+                <div class="author-title">Rated 2150</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <!-- Main Content -->
-  <div class="container">
-    <div class="image-box">
-      <img src="logo.png" alt="ChessFlux Logo">
-    </div>
-    <div class="welcome-box">
-      <h1>Welcome to ChessFlux!</h1>
-      <p>We are so glad for you to be able to join this amazing community of like-minded individuals and cannot wait to assist you with your chess endeavors!</p>
-
-      <p><strong>ChessFlux</strong> is a community designed to assist all aspiring chess players towards becoming stronger players. This club provides several opportunities for individuals from all chess backgrounds to improve their game as they receive free coaching and guidance from professional coaches and top players.</p>
-
-      <p>We frequently post instructional articles and lessons that help individuals expand their sphere of chess knowledge for free. We also provide multiple chess exercises for all individuals to attempt and learn from.</p>
-
-      <div style="margin-top: 2rem;">
-  <a href="https://www.chess.com/club/chessflux" target="_blank" style="
-    display: inline-flex;
-    align-items: center;
-    background-color: #00b300;
-    color: white;
-    padding: 0.75rem 1.25rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease;
-  " onmouseover="this.style.backgroundColor='#009900'" onmouseout="this.style.backgroundColor='#00b300'">
-    Connect to our Chess.com Club!
-  </a>
-</div>
-
-</div>
-
-    </div>
+  <!-- Time Zone Footer -->
+<footer class="time-bar">
+  <div class="time-zone">
+    <div class="time-label">LOCAL TIME</div>
+    <div class="time-value" id="local-time">--:--:--</div>
   </div>
-
-  <!-- Time Zones -->
-  <div id="time-box">
-    <div class="time-zone-item">
-      <strong>Pacific Time</strong>
-      <span id="pt-time"></span>
-    </div>
-    <div class="time-zone-item">
-      <strong>Eastern Time</strong>
-      <span id="et-time"></span>
-    </div>
-    <div class="time-zone-item">
-      <strong>UTC</strong>
-      <span id="utc-time"></span>
-    </div>
-    <div class="time-zone-item">
-      <strong>New Delhi</strong>
-      <span id="ist-time"></span>
-    </div>
+  <div class="time-zone">
+    <div class="time-label">PACIFIC</div>
+    <div class="time-value" id="pt-time">--:--:--</div>
   </div>
-<!-- Simulate user session stored in localStorage -->
+  <div class="time-zone">
+    <div class="time-label">EASTERN</div>
+    <div class="time-value" id="et-time">--:--:--</div>
+  </div>
+  <div class="time-zone">
+    <div class="time-label">UTC</div>
+    <div class="time-value" id="utc-time">--:--:--</div>
+  </div>
+  <div class="time-zone">
+    <div class="time-label">NEW DELHI</div>
+    <div class="time-value" id="ist-time">--:--:--</div>
+  </div>
+</footer>
+
 <script>
-  function renderUserArea() {
-    const userArea = document.getElementById('user-area');
-    const userJSON = localStorage.getItem('loggedInUser');
-    const user = userJSON ? JSON.parse(userJSON) : null;
+// Time Zone Management
+class TimeZoneManager {
+  constructor() {
+    this.timeZones = {
+      local: {
+        element: document.getElementById('local-time'),
+        options: { hour: '2-digit', minute: '2-digit', second: '2-digit' }
+      },
+      pt: {
+        element: document.getElementById('pt-time'),
+        options: { 
+          timeZone: 'America/Los_Angeles',
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        }
+      },
+      et: {
+        element: document.getElementById('et-time'),
+        options: { 
+          timeZone: 'America/New_York',
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        }
+      },
+      utc: {
+        element: document.getElementById('utc-time'),
+        options: null // Special handling for UTC
+      },
+      ist: {
+        element: document.getElementById('ist-time'),
+        options: { 
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        }
+      }
+    };
+    this.updateInterval = null;
+  }
 
-    if (user) {
-      userArea.innerHTML = `
-        <span style="font-weight: 600; color: #007acc;">Hello, ${user.firstName}!</span>
-        <button id="logout-btn" style="background: #e63946; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Logout</button>
-      `;
-      document.getElementById('logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('loggedInUser');
-        renderUserArea();
-        // Optionally redirect to homepage after logout
-        // window.location.href = 'index.html';
-      });
-    } else {
-      userArea.innerHTML = `
-        <a href="login.html" style="text-decoration: none; color: #007acc; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid #007acc; border-radius: 5px;">Login</a>
-        <a href="signup.html" style="text-decoration: none; color: white; font-weight: 600; background: #007acc; padding: 0.5rem 1rem; border-radius: 5px;">Sign Up</a>
-      `;
+  init() {
+    this.updateAllClocks();
+    this.startClock();
+    this.setupResponsiveHandling();
+  }
+
+  updateAllClocks() {
+    const now = new Date();
+    
+    // Update each time zone
+    for (const [zone, config] of Object.entries(this.timeZones)) {
+      if (zone === 'utc') {
+        // Special handling for UTC
+        const utcTime = now.toISOString().substr(11, 8);
+        config.element.textContent = utcTime;
+      } else {
+        // Format local and other time zones
+        const timeString = now.toLocaleTimeString('en-US', config.options);
+        // Ensure consistent 24-hour format
+        config.element.textContent = this.ensure24HourFormat(timeString);
+      }
     }
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    renderUserArea();
-    updateTimeZones();
-  });
+  ensure24HourFormat(timeString) {
+    // Convert AM/PM to 24-hour format for consistency
+    const timeParts = timeString.split(' ');
+    if (timeParts.length === 1) return timeString; // Already 24h format
+    
+    let [hours, minutes, seconds] = timeParts[0].split(':');
+    const period = timeParts[1];
+    
+    if (period === 'PM' && hours !== '12') {
+      hours = String(parseInt(hours, 10) + 12).padStart(2, '0');
+    } else if (period === 'AM' && hours === '12') {
+      hours = '00';
+    }
+    
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  startClock() {
+    // Update immediately
+    this.updateAllClocks();
+    
+    // Then update every second
+    this.updateInterval = setInterval(() => {
+      this.updateAllClocks();
+    }, 1000);
+  }
+
+  setupResponsiveHandling() {
+    // Handle window resize for responsive time bar
+    window.addEventListener('resize', this.handleResize.bind(this));
+    this.handleResize(); // Initial check
+  }
+
+  handleResize() {
+    const timeBar = document.querySelector('.time-bar');
+    if (!timeBar) return;
+    
+    if (window.innerWidth < 768) {
+      // Mobile view - show fewer time zones
+      this.timeZones.pt.element.parentElement.style.display = 'none';
+      this.timeZones.et.element.parentElement.style.display = 'none';
+      this.timeZones.ist.element.parentElement.style.display = 'none';
+    } else if (window.innerWidth < 1024) {
+      // Tablet view - show all but IST
+      this.timeZones.pt.element.parentElement.style.display = 'block';
+      this.timeZones.et.element.parentElement.style.display = 'block';
+      this.timeZones.ist.element.parentElement.style.display = 'none';
+    } else {
+      // Desktop view - show all time zones
+      this.timeZones.pt.element.parentElement.style.display = 'block';
+      this.timeZones.et.element.parentElement.style.display = 'block';
+      this.timeZones.ist.element.parentElement.style.display = 'block';
+    }
+  }
+
+  destroy() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+    window.removeEventListener('resize', this.handleResize);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const timeManager = new TimeZoneManager();
+  timeManager.init();
+  
+  // For demonstration - in a real app you might want to keep this reference
+  window.timeManager = timeManager;
+});
 </script>
 
+<style>
+/* Time Zone Bar Styles */
+.time-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(5, 5, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 247, 255, 0.2);
+  box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+  padding: 12px 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.time-zone {
+  text-align: center;
+  padding: 0 15px;
+  position: relative;
+  min-width: 90px;
+}
+
+.time-zone::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 30px;
+  background: rgba(0, 247, 255, 0.3);
+}
+
+.time-zone:last-child::after {
+  display: none;
+}
+
+.time-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #00f7ff;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.time-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .time-zone {
+    padding: 0 10px;
+    min-width: 80px;
+  }
+  
+  .time-label {
+    font-size: 0.7rem;
+  }
+  
+  .time-value {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .time-bar {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  
+  .time-zone {
+    padding: 0 8px;
+    min-width: auto;
+  }
+  
+  .time-zone::after {
+    display: none;
+  }
+  
+  .time-label {
+    font-size: 0.65rem;
+  }
+  
+  .time-value {
+    font-size: 0.85rem;
+  }
+}
+</style>
+
+  <!-- Three.js Holographic Chess Board (Placeholder) -->
+  <div id="chess-board-3d" style="position: fixed; bottom: 80px; right: 30px; width: 200px; height: 200px; z-index: 50;"></div>
+
+  <script>
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+      
+      // === Time Zone Updates ===
+      function updateTimeZones() {
+        const now = new Date();
+        
+        // Format time with leading zeros
+        function formatTime(date, timeZone) {
+          return date.toLocaleTimeString("en-US", { 
+            timeZone: timeZone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          }).replace(/^24/, '00');
+        }
+        
+        // Pacific Time
+        const pt = formatTime(now, "America/Los_Angeles");
+        
+        // Eastern Time
+        const et = formatTime(now, "America/New_York");
+        
+        // UTC
+        const utc = now.toISOString().substr(11, 8);
+        
+        // India Time
+        const ist = formatTime(now, "Asia/Kolkata");
+        
+        document.getElementById('pt-time').textContent = pt;
+        document.getElementById('et-time').textContent = et;
+        document.getElementById('utc-time').textContent = utc;
+        document.getElementById('ist-time').textContent = ist;
+      }
+      
+      // Update immediately and then every second
+      updateTimeZones();
+      setInterval(updateTimeZones, 1000);
+      
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
+      }
+      
+      renderUserArea();
+      
+      // === 3D Chess Board Initialization (Placeholder) ===
+      function init3DChessBoard() {
+        const container = document.getElementById('chess-board-3d');
+        if (!container) return;
+        
+        // Basic Three.js setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(200, 200);
+        container.appendChild(renderer.domElement);
+        
+        // Chess board
+        const boardGeometry = new THREE.BoxGeometry(10, 0.5, 10);
+        const boardMaterial = new THREE.MeshPhongMaterial({ 
+          color: 0x222222,
+          specular: 0x00ffff,
+          shininess: 30
+        });
+        const board = new THREE.Mesh(boardGeometry, boardMaterial);
+        scene.add(board);
+        
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0x00ffff, 1);
+        directionalLight.position.set(5, 10, 7);
+        scene.add(directionalLight);
+        
+        camera.position.z = 15;
+        camera.position.y = 10;
+        camera.rotation.x = -0.5;
+        
+        // Animation loop
+        function animate() {
+          requestAnimationFrame(animate);
+          board.rotation.y += 0.005;
+          renderer.render(scene, camera);
+        }
+        
+        animate();
+      }
+      
+      // Uncomment to enable 3D chess board
+      // init3DChessBoard();
+      
+      // === GSAP Animations ===
+      // Initial load animations
+      gsap.from(".cyber-sidebar", {
+        duration: 1,
+        x: -300,
+        ease: "power3.out",
+        delay: 0.3
+      });
+      
+      gsap.from(".cyber-header", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.5
+      });
+      
+      gsap.from(".chess-logo", {
+        duration: 1.5,
+        scale: 0.5,
+        opacity: 0,
+        rotation: -10,
+        ease: "elastic.out(1, 0.5)",
+        delay: 0.8
+      });
+      
+      gsap.from(".welcome-container", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1
+      });
+      
+      gsap.from(".features-section", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.2
+      });
+      
+      gsap.from(".events-section", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.4
+      });
+      
+      gsap.from(".testimonials-section", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.6
+      });
+      
+      gsap.from(".time-bar", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 1.8
+      });
+      
+      // Scroll animations
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        gsap.from(section, {
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none"
+          },
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out"
+        });
+      });
+    });
+  </script>
 </body>
 </html>

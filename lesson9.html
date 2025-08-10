@@ -1,320 +1,794 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lesson - Opening Repertoire Tips</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 9 - Opening Repertoire Tips | ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --warning: #ffcc00;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
     }
-    #sidebar {
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    /* === Cyberpunk Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 5px;
+      border: 2px solid var(--bg-darker);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* === Particle Background === */
+    #particles-js {
       position: fixed;
-      top: 0; left: 0;
-      width: 220px; height: 100%;
-      background: #004a99;
-      color: white;
-      padding-top: 60px;
-      box-sizing: border-box;
-      overflow-y: auto;
-      transition: width 0.3s ease;
-      z-index: 1300;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
     }
-    #sidebar.collapsed { width: 60px; }
-    #sidebar .toggle-btn {
-      position: fixed; top: 10px; left: 10px;
-      background: #007acc;
-      border: none; color: white;
-      font-size: 22px;
-      width: 40px; height: 40px;
-      cursor: pointer;
-      border-radius: 4px;
-      z-index: 1350;
+
+    /* === Main Layout === */
+    .app-container {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      min-height: 100vh;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
     }
-    #sidebar.collapsed .sidebar-content a span { display: none; }
-    #sidebar .sidebar-content {
-      display: flex; flex-direction: column; gap: 15px;
-      padding-left: 15px;
+    .app-container.expanded {
+      grid-template-columns: 280px 1fr;
     }
-    #sidebar .sidebar-content a {
-      color: white; text-decoration: none;
-      font-weight: 600; padding: 8px 10px;
-      border-radius: 4px;
-      display: flex; align-items: center;
-      transition: background-color 0.2s ease;
-    }
-    #sidebar .sidebar-content a:hover { background-color: #0062cc; }
-    #top-header {
-      position: fixed; top: 0; right: 0;
-      height: 50px;
-      width: calc(100% - 220px);
-      background: white;
-      border-bottom: 1px solid #ddd;
+
+    /* === Cyber Sidebar === */
+    .cyber-sidebar {
+      background: rgba(5, 5, 20, 0.9);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
       display: flex;
-      justify-content: flex-end;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
       align-items: center;
-      padding: 0 20px;
-      box-sizing: border-box;
-      z-index: 1400;
-      transition: width 0.3s ease;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
     }
-    #sidebar.collapsed + #top-header { width: calc(100% - 60px); }
-    #user-area a {
-      margin-left: 15px;
-      color: #007acc;
-      text-decoration: none;
-      font-weight: 600;
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      overflow: hidden;
+      white-space: nowrap;
     }
-    #user-area button {
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--bg-darker);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    .toggle-btn {
       background: none;
       border: none;
-      color: #007acc;
-      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.5rem;
       cursor: pointer;
-      margin-left: 15px;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
-    main.main-content {
-      margin-left: 220px;
-      padding: 70px 30px 100px 30px;
-      max-width: 900px;
-      transition: margin-left 0.3s ease;
+    .toggle-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      transform: rotate(90deg);
     }
-    #sidebar.collapsed ~ main.main-content { margin-left: 60px; }
-    h1 {
-      margin-bottom: 15px;
+
+    .nav-menu {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
     }
-    h2 {
-      margin-top: 40px;
-      margin-bottom: 15px;
-    }
-    p {
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
-    ul {
-      margin-left: 20px;
-      margin-bottom: 15px;
-    }
-    ul li {
-      margin-bottom: 8px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 700px;
-      margin-bottom: 25px;
-    }
-    th, td {
-      border: 1px solid #007acc;
-      padding: 8px;
-      text-align: left;
-      vertical-align: top;
-    }
-    th {
-      background-color: #007acc;
-      color: white;
-    }
-    code {
-      background: #eee;
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: monospace;
-    }
-    #time-box {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      background: #fff;
-      border: 2px solid #007acc;
+
+    .nav-item {
+      position: relative;
+      margin: 5px 15px;
       border-radius: 8px;
-      padding: 10px 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: #007acc;
-      max-width: 180px;
-      user-select: none;
-      z-index: 1200;
+      overflow: hidden;
     }
-    .time-zone-item {
-      margin-bottom: 6px;
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
     }
-    .time-zone-item strong {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 2px;
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
     }
+
+    .nav-link:hover::before {
+      transform: scaleY(1);
+    }
+
+    .nav-link:hover {
+      background: rgba(0, 247, 255, 0.05);
+      padding-left: 20px;
+    }
+
+    .nav-link.active {
+      background: rgba(0, 247, 255, 0.1);
+    }
+
+    .nav-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      min-width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-text {
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .app-container:not(.expanded) .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .app-container:not(.expanded) .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* === Main Content Area === */
+    .main-content {
+      padding: 30px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* === Cyber Header === */
+    .cyber-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-greeting {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .auth-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .login-btn:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .signup-btn {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+    }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    /* === Lesson Content === */
+    .lesson-container {
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .lesson-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .lesson-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .lesson-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    /* === Tables === */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      font-weight: 600;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 247, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* === Lists === */
+    .styled-list {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    .styled-list li {
+      margin-bottom: 10px;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .styled-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    /* === Blockquotes === */
+    .quote-block {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* === Time Zone Bar === */
+    .time-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 20, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.4);
+      padding: 15px 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-around;
+      transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .app-container.expanded .time-bar {
+      left: 280px;
+    }
+
+    .app-container:not(.expanded) .time-bar {
+      left: 80px;
+    }
+
+    .time-zone {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .time-zone::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+      background: var(--glass-border);
+    }
+
+    .time-zone:last-child::after {
+      display: none;
+    }
+
+    .time-label {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .time-value {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+      .time-zone {
+        padding: 0 15px;
+      }
+      
+      .time-label {
+        font-size: 0.8rem;
+      }
+      
+      .time-value {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-container.expanded {
+        grid-template-columns: 1fr;
+      }
+      
+      .cyber-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transition: left 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      
+      .cyber-sidebar.expanded {
+        left: 0;
+      }
+      
+      .time-bar {
+        left: 0 !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .time-zone::after {
+        display: none;
+      }
+      
+      .main-content {
+        padding-top: 80px;
+      }
+
+      .lesson-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* === Animation Classes === */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
   </style>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <div id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar-content">
-      <a href="index.html"><span>Home</span></a>
-      <a href="lessons.html"><span>Lessons</span></a>
-      <a href="plans.html"><span>Personal Plans</span></a>
-      <a href="contact.html"><span>Contact</span></a>
-      <a href="social.html"><span>Social Media</span></a>
-      <a href="termsandconditions.html"><span>Terms & Conditions</span></a>
-    </div>
+  <div class="app-container">
+    <!-- Cyber Sidebar -->
+    <aside class="cyber-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">♞</div>
+          <span class="logo-text">CHESSFLUX</span>
+        </div>
+        <button class="toggle-btn" id="sidebarToggle">☰</button>
+      </div>
+      
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="lessons.html" class="nav-link active">
+            <i class="nav-icon fas fa-book"></i>
+            <span class="nav-text">Lessons</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="plans.html" class="nav-link">
+            <i class="nav-icon fas fa-clipboard-list"></i>
+            <span class="nav-text">Personal Plans</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">
+            <i class="nav-icon fas fa-phone-alt"></i>
+            <span class="nav-text">Contact</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="social.html" class="nav-link">
+            <i class="nav-icon fas fa-globe"></i>
+            <span class="nav-text">Social Media</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="termsandconditions.html" class="nav-link">
+            <i class="nav-icon fas fa-balance-scale"></i>
+            <span class="nav-text">Terms</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Cyber Header -->
+      <header class="cyber-header fade-in">
+        <div id="user-area" class="user-area">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+      </header>
+
+      <!-- Lesson Content -->
+      <div class="lesson-container fade-in delay-1">
+        <h1 class="lesson-title">OPENING REPERTOIRE TIPS</h1>
+        <h2 class="section-title"><i class="fas fa-chess-board"></i> BUILD CONFIDENCE FROM THE START</h2>
+        
+        <div class="lesson-section">
+          <p class="lesson-text">Do you want to enter the opening phase with confidence, knowing your moves, understanding your ideas, and smoothly steering into favorable middlegames? Then you're not alone. But here's the catch: most players never get there. Why? Because they build their opening repertoire the wrong way.</p>
+          <p class="lesson-text">Let's fix that. Below, I'll walk you through the five most common opening repertoire mistakes—and show you what to do instead.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> MISTAKE #1: SKIPPING THE FUNDAMENTALS</h2>
+          <p class="lesson-text">You wouldn't build a house without a foundation. So why try building an opening without understanding opening principles?</p>
+          <p class="lesson-text">Players often jump straight into lines like the King's Indian or Sicilian without grasping why we fight for the center, how to develop efficiently, or when to break the rules.</p>
+          <p class="lesson-text"><strong>Fix:</strong> Learn the why before the what. Build your base with core ideas like center control, piece activity, king safety, and development speed. This way, when your opponent leaves theory, you're still playing good chess.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> MISTAKE #2: PLAYING "COOL" OPENINGS INSTEAD OF THE RIGHT ONES</h2>
+          <p class="lesson-text">Everyone wants to play like Nakamura or Carlsen—but if you're rated 1000 and trying to survive the complexities of the Najdorf or Grünfeld, you're setting yourself up to fail.</p>
+          <p class="lesson-text">Advanced openings are full of nuance—subtle pawn breaks, deep positional concessions, and sharp tactical lines that require hours of study.</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>RATING RANGE</th>
+                <th>RECOMMENDED OPENING TYPES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Below 1000</td><td>Focus on open games (e.g., Italian, Scandinavian)</td></tr>
+              <tr><td>1000–1600</td><td>Learn structured systems (e.g., London, Caro-Kann)</td></tr>
+              <tr><td>1600–2000+</td><td>Branch out into richer openings with clear strategic themes</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> MISTAKE #3: MEMORIZING WITHOUT CONTEXT</h2>
+          <p class="lesson-text">Some players treat openings like a script—memorizing 15 moves deep without knowing why they're played. As soon as the opponent deviates, the game starts to spiral.</p>
+          <p class="lesson-text">Don't just study moves. Study motifs. Ask questions like:</p>
+          <ul class="styled-list">
+            <li>What's the idea behind this pawn move?</li>
+            <li>Which piece is the weakest?</li>
+            <li>What type of middlegame is this opening trying to reach, and how comfortable will this be for me?</li>
+          </ul>
+          <p class="lesson-text">Ultimately, understandability equals flexibility, where flexibility is a crucial component to winning games.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> MISTAKE #4: IGNORING MIDDLEGAME PLANS</h2>
+          <p class="lesson-text">Let's say you survive the opening. Great. Now what?</p>
+          <p class="lesson-text">If you don't know the strategic ideas behind your opening, you'll flounder in the middlegame. It's like finishing the introduction of a book and not knowing how the story continues.</p>
+          <p class="lesson-text"><strong>Fix:</strong> Study model games in your chosen openings. Watch how strong players handle common pawn structures. Observe typical maneuvers and plans—like minority attacks in the Queen's Gambit or e5 breaks in the London.</p>
+          <p class="lesson-text">You'll learn more from five annotated games than from fifty move sequences.</p>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> MISTAKE #5: NEVER REVIEWING YOUR GAMES</h2>
+          <p class="lesson-text">Opening preparation doesn't stop after studying. It continues in your own games.</p>
+          <p class="lesson-text">Yet most players make the same errors repeatedly because they never check their games against their prep. "Oh, I played h6 here again...was that in my repertoire?"</p>
+          <p class="lesson-text">Try to:</p>
+          <ul class="styled-list">
+            <li>Identify where you left prep — This is extremely important!</li>
+            <li>Look up better / more playable lines</li>
+            <li>Add to your files</li>
+            <li>Fix holes in your understanding</li>
+          </ul>
+        </div>
+
+        <div class="lesson-section">
+          <h2 class="section-title"><i class="fas fa-chess-king"></i> CONCLUSION</h2>
+          <p class="lesson-text">Openings don't need to be a mystery or a memory contest. With the right approach, they can become a powerful factor in playing more dynamic, enjoyable games.</p>
+          <p class="lesson-text">Stop trying to memorize your way to mastery. Start learning your openings the way strong players do: with clarity and purpose.</p>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <header id="top-header">
-    <div id="user-area"></div>
-  </header>
-
-  <main class="main-content">
-    <h1>Opening Repertoire Tips: Build Confidence from the Start</h1>
-
-    <p>Do you want to enter the opening phase with confidence, knowing your moves, understanding your ideas, and smoothly steering into favorable middlegames?</p>
-    <p>Then you’re not alone. But here's the catch: most players never get there. Why? Because they build their opening repertoire the wrong way.</p>
-    <p>Let’s fix that. Below, I’ll walk you through the five most common opening repertoire mistakes—and show you what to do instead.</p>
-
-    <h2>❌ Mistake #1: Skipping the Fundamentals</h2>
-    <p>You wouldn't build a house without a foundation. So why try building an opening without understanding opening principles?</p>
-    <p>Players often jump straight into lines like the King's Indian or Sicilian without grasping why we fight for the center, how to develop efficiently, or when to break the rules.</p>
-    <p><strong>Fix:</strong> Learn the why before the what. Build your base with core ideas like center control, piece activity, king safety, and development speed. This way, when your opponent leaves theory, you’re still playing good chess.</p>
-
-    <h2>❌ Mistake #2: Playing “Cool” Openings Instead of the Right Ones</h2>
-    <p>Everyone wants to play like Nakamura or Carlsen—but if you're rated 1000 and trying to survive the complexities of the Najdorf or Grünfeld, you're setting yourself up to fail.</p>
-    <p>Advanced openings are full of nuance—subtle pawn breaks, deep positional concessions, and sharp tactical lines that require hours of study.</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Rating Range</th>
-          <th>Recommended Opening Types</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Below 1000</td><td>Focus on open games (e.g., Italian, Scandinavian)</td></tr>
-        <tr><td>1000–1600</td><td>Learn structured systems (e.g., London, Caro-Kann)</td></tr>
-        <tr><td>1600–2000+</td><td>Branch out into richer openings with clear strategic themes</td></tr>
-      </tbody>
-    </table>
-
-    <h2>❌ Mistake #3: Memorizing Without Context</h2>
-    <p>Some players treat openings like a script—memorizing 15 moves deep without knowing why they’re played. As soon as the opponent deviates, the game starts to spiral.</p>
-    <p>Don’t just study moves. Study motifs. Ask questions like:</p>
-    <ul>
-      <li>What’s the idea behind this pawn move?</li>
-      <li>Which piece is the weakest?</li>
-      <li>What type of middlegame is this opening trying to reach, and how comfortable will this be for me?</li>
-    </ul>
-    <p>Ultimately, understandability equals flexibility, where flexibility is a crucial component to winning games.</p>
-
-    <h2>❌ Mistake #4: Ignoring Middlegame Plans</h2>
-    <p>Let’s say you survive the opening. Great. Now what?</p>
-    <p>If you don’t know the strategic ideas behind your opening, you’ll flounder in the middlegame. It’s like finishing the introduction of a book and not knowing how the story continues.</p>
-    <p><strong>Fix:</strong> Study model games in your chosen openings. Watch how strong players handle common pawn structures. Observe typical maneuvers and plans—like minority attacks in the Queen’s Gambit or e5 breaks in the London.</p>
-    <p>You’ll learn more from five annotated games than from fifty move sequences.</p>
-
-    <h2>❌ Mistake #5: Never Reviewing Your Games</h2>
-    <p>Opening preparation doesn’t stop after studying. It continues in your own games.</p>
-    <p>Yet most players make the same errors repeatedly because they never check their games against their prep. “Oh, I played h6 here again…was that in my repertoire?”</p>
-    <p>Try to:</p>
-    <ul>
-      <li>Identify where you left prep — This is extremely important!</li>
-      <li>Look up better / more playable lines</li>
-      <li>Add to your files</li>
-      <li>Fix holes in your understanding</li>
-    </ul>
-
-    <h2>Conclusion</h2>
-    <p>Openings don’t need to be a mystery or a memory contest. With the right approach, they can become a powerful factor in playing more dynamic, enjoyable games.</p>
-    <p>Stop trying to memorize your way to mastery. Start learning your openings the way strong players do: with clarity and purpose.</p>
-  </main>
-
-  <div id="time-box" aria-label="Current time zones">
-    <div class="time-zone-item">
-      <strong>Pacific Time</strong>
-      <span id="pt-time" aria-live="polite" aria-atomic="true"></span>
+  <!-- Time Zone Bar -->
+  <footer class="time-bar">
+    <div class="time-zone">
+      <div class="time-label">LOCAL TIME</div>
+      <div class="time-value" id="local-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>Eastern Time</strong>
-      <span id="et-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">PACIFIC</div>
+      <div class="time-value" id="pt-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>UTC</strong>
-      <span id="utc-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">EASTERN</div>
+      <div class="time-value" id="et-time">--:--:--</div>
     </div>
-    <div class="time-zone-item">
-      <strong>New Delhi</strong>
-      <span id="ist-time" aria-live="polite" aria-atomic="true"></span>
+    <div class="time-zone">
+      <div class="time-label">UTC</div>
+      <div class="time-value" id="utc-time">--:--:--</div>
     </div>
-  </div>
+    <div class="time-zone">
+      <div class="time-label">NEW DELHI</div>
+      <div class="time-value" id="ist-time">--:--:--</div>
+    </div>
+  </footer>
 
   <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
-      const topHeader = document.getElementById("top-header");
-      if (sidebar.classList.contains("collapsed")) {
-        topHeader.style.width = "calc(100% - 60px)";
-      } else {
-        topHeader.style.width = "calc(100% - 220px)";
+    // === Initialize Particles.js ===
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load particles.js configuration
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      // Initialize particles.js
+      particlesJS('particles-js', particlesConfig);
+      
+      // === Sidebar Toggle ===
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appContainer = document.querySelector('.app-container');
+      const cyberSidebar = document.querySelector('.cyber-sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        appContainer.classList.toggle('expanded');
+        
+        // For mobile view
+        if (window.innerWidth <= 768) {
+          cyberSidebar.classList.toggle('expanded');
+        }
+      });
+      
+      
+      // === User Area Rendering ===
+      function renderUserArea() {
+        const userArea = document.getElementById('user-area');
+        const userJSON = localStorage.getItem('loggedInUser');
+        const user = userJSON ? JSON.parse(userJSON) : null;
+        
+        if (user) {
+          userArea.innerHTML = `
+            <span class="user-greeting">HELLO, ${user.firstName.toUpperCase()}!</span>
+            <button id="logout-btn" class="auth-btn" style="background: var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+          `;
+          
+          document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            renderUserArea();
+          });
+        } else {
+          userArea.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <a href="signup.html" class="auth-btn signup-btn">
+              <i class="fas fa-user-plus"></i> SIGN UP
+            </a>
+          `;
+        }
       }
-    }
-
-    function updateTimes() {
-      const now = new Date();
-
-      document.getElementById('pt-time').textContent = now.toLocaleTimeString('en-US', {
-        timeZone: 'America/Los_Angeles',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-
-      document.getElementById('et-time').textContent = now.toLocaleTimeString('en-US', {
-        timeZone: 'America/New_York',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: true
-      });
-
-      document.getElementById('utc-time').textContent = now.toLocaleTimeString('en-GB', {
-        timeZone: 'UTC',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      });
-
-      document.getElementById('ist-time').textContent = now.toLocaleTimeString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      });
-    }
-
-    function renderUserArea() {
-      const userArea = document.getElementById('user-area');
-      const userJSON = localStorage.getItem('loggedInUser');
-      const user = userJSON ? JSON.parse(userJSON) : null;
-
-      if (user) {
-        userArea.innerHTML = `
-          <span>Hello, ${user.firstName}!</span>
-          <button id="logout-btn">Logout</button>
-        `;
-        document.getElementById('logout-btn').addEventListener('click', () => {
-          localStorage.removeItem('loggedInUser');
-          renderUserArea();
-        });
-      } else {
-        userArea.innerHTML = `
-          <a href="login.html" class="login">Login</a>
-          <a href="signup.html" class="signup">Sign Up</a>
-        `;
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      updateTimes();
-      setInterval(updateTimes, 1000);
+      
       renderUserArea();
     });
   </script>
-
 </body>
 </html>

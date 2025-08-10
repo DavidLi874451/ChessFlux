@@ -1,112 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - ChessFlux</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #00b3ff;
+      --secondary: #ff00e4;
+      --bg-dark: #0a0a15;
+      --bg-darker: #050510;
+      --bg-gradient: linear-gradient(135deg, #0a0a15 0%, #050510 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --success: #00ff9d;
+      --danger: #ff4d6d;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-heading: 'Orbitron', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      padding: 20px;
     }
-    .form-container {
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    /* Particle Background */
+    #particles-js {
+      position: fixed;
       width: 100%;
-      max-width: 400px;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
     }
-    h2 {
-      color: #007acc;
-      margin-bottom: 1rem;
+
+    /* Login Container */
+    .login-container {
+      background: rgba(10, 10, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 40px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                  0 0 20px rgba(0, 247, 255, 0.2);
+      width: 100%;
+      max-width: 450px;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-header {
       text-align: center;
+      margin-bottom: 30px;
     }
-    label {
+
+    .login-title {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .login-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-label {
       display: block;
-      margin: 1rem 0 0.5rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
-    input[type="text"],
-    input[type="password"] {
+
+    .form-input {
       width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 1.5rem;
-      background-color: #007acc;
-      color: white;
-      border: none;
-      padding: 0.75rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
+      padding: 12px 15px;
+      background: rgba(5, 5, 20, 0.7);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-main);
       font-size: 1rem;
+      transition: all 0.3s ease;
     }
-    button:hover {
-      background-color: #005f99;
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
     }
-    .link {
-      display: block;
-      margin-top: 1rem;
+
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: var(--bg-darker);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+    }
+
+    .form-footer {
       text-align: center;
-      color: #007acc;
-      text-decoration: none;
+      margin-top: 25px;
+      color: var(--text-secondary);
     }
-    .link:hover {
-      text-decoration: underline;
+
+    .form-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .form-link:hover {
+      color: var(--secondary);
+      text-shadow: 0 0 10px rgba(255, 0, 228, 0.5);
+    }
+
+    /* Error Message */
+    .error-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--danger);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(255, 77, 109, 0.4);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      font-family: var(--font-main);
+      font-weight: 500;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .error-message.show {
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+      
+      .login-title {
+        font-size: 1.8rem;
+      }
     }
   </style>
+</head>
+<body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+
+  <!-- Error Message Container -->
+  <div id="error-message" class="error-message"></div>
+
+  <!-- Login Form -->
+  <div class="login-container">
+    <div class="login-header">
+      <h1 class="login-title">CHESSFLUX LOGIN</h1>
+      <p class="login-subtitle">Enter your credentials to continue</p>
+    </div>
+
+    <form onsubmit="loginUser(event)" novalidate>
+      <div class="form-group">
+        <label for="username" class="form-label">
+          <i class="fas fa-user"></i> USERNAME
+        </label>
+        <input type="text" id="username" class="form-input" required autocomplete="username" placeholder="Enter your username">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <i class="fas fa-lock"></i> PASSWORD
+        </label>
+        <input type="password" id="password" class="form-input" required minlength="6" autocomplete="current-password" placeholder="Enter your password">
+      </div>
+
+      <button type="submit" class="login-btn">
+        <i class="fas fa-sign-in-alt"></i> LOGIN
+      </button>
+    </form>
+
+    <div class="form-footer">
+      Don't have an account? 
+      <a href="signup.html" class="form-link">
+        <i class="fas fa-user-plus"></i> SIGN UP
+      </a>
+    </div>
+  </div>
+
   <script>
+    // Initialize particles.js
+    document.addEventListener('DOMContentLoaded', function() {
+      const particlesConfig = {
+        particles: {
+          number: { value: 60, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f7ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#00f7ff", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      };
+      
+      particlesJS('particles-js', particlesConfig);
+    });
+
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = message;
+      errorElement.classList.add('show');
+      
+      setTimeout(() => {
+        errorElement.classList.remove('show');
+      }, 5000);
+    }
+
     function loginUser(event) {
       event.preventDefault();
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
 
       if (!username || password.length < 6) {
-        alert("Please enter a valid username and a password with at least 6 characters.");
+        showError("Please enter a valid username and a password with at least 6 characters.");
         return;
       }
 
       const storedUserJSON = localStorage.getItem("user_" + username.toLowerCase());
       if (!storedUserJSON) {
-        alert("No account found with that username.");
+        showError("No account found with that username.");
         return;
       }
 
       const storedUser = JSON.parse(storedUserJSON);
       if (storedUser.password !== password) {
-        alert("Incorrect password.");
+        showError("Incorrect password.");
         return;
       }
 
       // Save logged in user info with firstName from stored data
-      localStorage.setItem("loggedInUser", JSON.stringify({ firstName: storedUser.firstName }));
+      localStorage.setItem("loggedInUser", JSON.stringify({ 
+        firstName: storedUser.firstName,
+        username: username.toLowerCase()
+      }));
 
-      alert("Login successful!");
-      window.location.href = "index.html";
+      // Show success message
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = "Login successful! Redirecting...";
+      errorElement.style.background = "var(--success)";
+      errorElement.classList.add('show');
+      
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
     }
   </script>
-</head>
-<body>
-  <div class="form-container">
-    <h2>Login to ChessFlux</h2>
-    <form onsubmit="loginUser(event)" novalidate>
-      <label for="username">Username</label>
-      <input type="text" id="username" required autocomplete="username" />
-
-      <label for="password">Password</label>
-      <input type="password" id="password" required minlength="6" autocomplete="current-password" />
-
-      <button type="submit">Login</button>
-    </form>
-    <a href="signup.html" class="link">Don't have an account? Sign up here</a>
-  </div>
 </body>
 </html>
